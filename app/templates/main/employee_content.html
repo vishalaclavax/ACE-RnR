@@ -1,0 +1,18 @@
+{% from "_macros/helpers.html" import flash_messages with context %}
+{% if all_customers %}
+    {% for customer in all_customers %}
+        <div class="col-md-6 employeeDetails">
+            <div class="fullbox rempselectbox rempselected">
+                <div class="empimagebox">
+                    <img src="{{ url_for('static', filename='img/add_employee_more.png') }}" width="50" />
+                </div>
+                <div class="empdetailsbox">
+                    <h6 class="employee_name">{{ customer.get('Emp_Name') }}</h6>
+                    <p class="employee_email">{{ customer.get('email') }}</p>
+                    <p class="manager">Manager- {{ customer.get('Manager_Name') }}</p>
+                    <p class="manager_email" style="display: none">{{ customer.get('Manager_email_ID') }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

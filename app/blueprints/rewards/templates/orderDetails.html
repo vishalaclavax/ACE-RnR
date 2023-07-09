@@ -1,0 +1,325 @@
+{% if 'payment_type' in order_detail['data'] and order_detail['data']['payment_type'] =='currency'  %}
+    {% set total_delivery_charges = 0 %}
+{% else %}  
+    {% set total_delivery_charges = order_detail['data']['delivery_charge'] %}  
+{% endif %} 
+<style>
+    .modal-dialog.large {
+			max-width: 850px;
+		}
+        .modal.fade .modal-dialog .modal-content {
+            border: none;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            -o-border-radius: 8px;
+            border-radius: 8px;
+        }
+        .popupStyle2 {
+            width: 100%;
+            padding: 40px;
+        }
+        .modal.fade .modal-dialog .modelClose {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            line-height: 1px;
+        }
+        .modal.fade .modal-dialog .modelClose img {
+            width: 16px;
+            opacity: 0.6;
+        }
+
+  .orderdetailsPopup {
+    max-height: 600px;
+    overflow: auto;
+}
+.orderdetailsPopup .infoBlock {
+    margin-bottom: 20px;
+    background: #f5f5f5;
+}
+.orderdetailsPopup .infoBlock .deliveredInfo {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 15px 0;
+}
+.orderdetailsPopup .infoBlock .deliveredInfo h4 {
+    font-size: 17px;
+    margin: 0;
+    color: #000;
+}
+.orderdetailsPopup .infoBlock .deliveredInfo p {
+    margin: 0;
+}
+@media screen and (max-width: 768px) {
+    .orderdetailsPopup .infoBlock .deliveredInfo {
+        padding: 10px 0;
+        text-align: center;
+        flex-direction: column;
+        justify-content: center;
+   }
+}
+.orderdetailsPopup .infoBlock .productInfo {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .infoBlock .productInfo {
+        flex-direction: column;
+   }
+}
+.orderdetailsPopup .infoBlock .productInfo figure {
+    width: 25%;
+    margin: 0;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .infoBlock .productInfo figure {
+        width: 100%;
+        margin-bottom: 15px;
+   }
+}
+.orderdetailsPopup .infoBlock .productInfo .txtBox {
+    width: 45%;
+    padding-left: 10px;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .infoBlock .productInfo .txtBox {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 15px;
+   }
+}
+.orderdetailsPopup .infoBlock .productInfo .totals {
+    width: 40%;
+    display: flex;
+    justify-content: flex-end;
+}
+.orderdetailsPopup .infoBlock .productInfo .totals .bold{
+    font-weight: 600;
+}
+.orderdetailsPopup .infoBlock .productInfo .totals .points_label {
+    margin: 0 0 0 10px;
+    background-color: #000;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .infoBlock .productInfo .totals {
+        width: 100%;
+        justify-content: flex-end;
+        align-items: center;
+   }
+}
+.orderdetailsPopup .infoBlock .table {
+    margin: 0;
+}
+.orderdetailsPopup .infoBlock .table thead th {
+    vertical-align: bottom;
+    border-bottom: 0px solid #dee2e6;
+    background-color: #e9e9e9;
+}
+.orderdetailsPopup .infoBlock .table tbody tr {
+    border-bottom: 1px solid #e3e3e3;
+}
+.orderdetailsPopup .infoBlock .table tbody tr:last-child {
+    border-bottom: none;
+}
+.orderdetailsPopup .addressBlock {
+    display: flex;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .addressBlock {
+        flex-direction: column;
+   }
+}
+.orderdetailsPopup .addressBlock__list {
+    width: 30%;
+    border: solid 1px #ccc;
+    padding: 10px;
+    margin: 0 10px 0 0;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .addressBlock__list {
+        width: 100%;
+        margin: 0 0 10px;
+   }
+}
+.orderdetailsPopup .addressBlock__list:last-child {
+    width: 40%;
+    margin: 0;
+}
+@media (max-width: 990px) {
+    .orderdetailsPopup .addressBlock__list:last-child {
+        width: 100%;
+        margin: 0;
+   }
+}
+.orderdetailsPopup .addressBlock__list h4 {
+    font-size: 16px;
+    color: #000;
+    font-weight: 600;
+}
+.orderdetailsPopup .addressBlock__list h3 {
+    font-size: 20px;
+    color: #303030;
+    font-weight: 600;
+}
+.orderdetailsPopup .addressBlock__list p {
+    font-size: 14px;
+}
+.orderdetailsPopup .addressBlock__list .tag {
+    border: solid 1px #ccc;
+    padding: 2px 5px;
+    display: inline-block;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr {
+    display: flex;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr div {
+    padding: 3px 5px 3px 0;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr .summary {
+    width: 50%;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr .price, .orderdetailsPopup .addressBlock__list .summaryTable__tr .points {
+    width: 25%;
+    text-align: right;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr .points {
+    padding-right: 0;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr.promoDode .summary, .orderdetailsPopup .addressBlock__list .summaryTable__tr.promoDode .price, .orderdetailsPopup .addressBlock__list .summaryTable__tr.promoDode .points {
+    color: #2b8c54;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr.total {
+    border-top: solid 1px #ccc;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+.orderdetailsPopup .addressBlock__list .summaryTable__tr.total .summary, .orderdetailsPopup .addressBlock__list .summaryTable__tr.total .price, .orderdetailsPopup .addressBlock__list .summaryTable__tr.total .points {
+    font-weight: 600;
+}
+
+</style>   
+<div class="modal-dialog large" role="document">
+    <div class="modal-content white">
+        <a href="javascript:void(0);" data-dismiss="modal" class="modelClose" id="modelClose">
+            <img src="{{ url_for('static', filename='img/close_black.svg') }}" alt="close">
+        </a>
+        <div class="modalContainer">
+            <div class="popupStyle2 orderdetailsPopup">
+                <h3 class="size30 normal text-center margin-bottom-10">Order Details</h3>
+                <p class="size18 normal text-center margin-bottom-10">Order ID : {{order_detail['data']['code']}}</p>
+                <div class="productDetails__boxes">
+                    {% for product in order_detail['data']['item_list']  %}
+                    <div class="productDetailsBox">
+                        <div class="infoBlock">
+                            <div class="deliveredInfo">
+                                <h4>{{ config.ORDER_STATUS[product.status|string] }}</h4>
+                                <p>Ordered on {{ order_detail['data'].order_date|format_date }}</p>
+                            </div>
+                            <div class="productInfo">
+                                <figure><img src="{{product.image}}" alt="{{product.name}}"></figure>
+                                <div class="txtBox">
+                                    <p class="margin-bottom-10">{{product.name}}</p>
+                                    <p class="small light margin-bottom-0">Quantity: {{product.quantity}}</p>
+                                    <p class="small light margin-bottom-0">Code: {{product.product_code}}</p>
+                                </div>
+				            {% if 'order_type' in order_detail['data'] and 'Giftcard' in order_detail['data']['order_type'] %}
+                                {% for product in order_detail['data']['item_list']  %}
+							        {% if product.item_type == 'Giftcard' %}
+								        {% if product.vendor_order_response[0]|length > 0 %}
+									        {% for card_response in product.vendor_order_response[0] %}
+										        {% for card in card_response.cards %}
+                                                    <div class="txtBox">
+                                                        <p class="margin-bottom-10">Voucher Details</p>
+                                                        <p class="medium light margin-bottom-0">Voucher Code: {{card.cardNumber}}</p>
+                                                        <p class="medium light margin-bottom-0">PIN: {{card.cardPin}}</p>
+                                                    </div>
+                                
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                               
+                                <div class="totals">
+                                    <p class="big bold margin-bottom-0">&#8377; {{product.amount}}</p>
+<!--                                    <p class="points_label">Pts {{(product.amount|int *4) + (product.delivery_charge|int*4 if 'delivery_charge' in product else 0) }}</p>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="addressBlock">
+                    <div class="addressBlock__list">
+                        {% if order_detail['data']['shipping_address']['zip'] %}
+                        <h4>Shipping Address</h4>
+                        <h3>{{ order_detail['data']['shipping_address']['firstname'] }} {{order_detail['data']['shipping_address']['lastname']}}</h3>
+                        <p>
+                            {{order_detail['data']['shipping_address']['city']}}, {{order_detail['data']['shipping_address']['state']}},<br>
+                            Zipcode : {{order_detail['data']['shipping_address']['zip']}}
+                        </p>
+                        <!-- <div class="tag">Office</div> -->
+                        {% else %}
+                            <h4>Giftcard</h4>
+                        <h3>{{ order_detail['data']['shipping_address']['firstname'] }}</h3>
+                        <p>
+                            {{order_detail['data']['shipping_address']['email']}}<br>
+                            {{order_detail['data']['shipping_address']['mobile']}}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="addressBlock__list">
+                        <h4>Payment Mode</h4>
+                        {% if order_detail['data'].razorpay_payment_id != '' %}
+                            <p>Online Payment</p>
+                        {% elif 'payment_type' in order_detail['data'] and order_detail['data']['payment_type'] =='currency' %}
+                            <p>Employee Rewards Points</p>
+                        {% else %}
+                            {% set poitnts_var = 'yes' %}
+                            <p>RNR Rewards Points</p>
+                        {% endif %}
+                    </div>
+                    <div class="addressBlock__list">
+                        <h4>Order Summary</h4>
+                            <div class="summaryTable">
+                        {% if order_detail['data']['payment_type'] == 'point' %}
+                                <!-- <div class="summaryTable__tr">
+                                    <div class="summary">Redeem Points</div>                                    
+                                    <div class="points">Pts {{ (order_detail['data']['total_payment']|int + total_delivery_charges|int) * 4 }}</div>
+                                </div> -->
+                                <div class="summaryTable__tr total">
+                                    <div class="summary">Total Redmeed Points</div>
+                                    <div class="points">Pts {{ (order_detail['data']['total_payment']|int + total_delivery_charges|int) * 4 }}</div>
+                                </div>
+                        {% else %}
+                                <div class="summaryTable__tr">
+                                    <div class="summary">Price</div>
+                                    <div class="price">&#8377;{{ order_detail['data']['total_payment']|int }}</div>
+                                    <div class="points">Pts {{ (order_detail['data']['total_payment']|int) * 4 }}</div>
+                                </div>
+                                <!-- <div class="summaryTable__tr promoDode">
+                                    <div class="summary">Promo code applied</div>
+                                    <div class="price">-&#8377;150</div>
+                                    <div class="points">Pts 1000</div>
+                                </div> -->
+                                 <div class="summaryTable__tr">
+                                    <div class="summary">Delivery Charges</div>
+                                    <div class="price">&#8377;{{total_delivery_charges}}</div>
+                                    <div class="points">Pts {{total_delivery_charges * 4}}</div>
+                                </div>
+                                <div class="summaryTable__tr total">
+                                    <div class="summary">Total</div>
+                                    <div class="price">&#8377;{{ order_detail['data']['total_payment']+total_delivery_charges }}</div>
+                                    <div class="points">Pts {{ (order_detail['data']['total_payment']+total_delivery_charges) * 4}}</div>
+                                </div>
+                        {% endif %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

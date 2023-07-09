@@ -1,0 +1,64 @@
+{% extends "_layout.html" %} {% block page_title %}Register{% endblock %} {% block page_content %}
+<section class="section userPanelMain">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-xl-10">
+				<div class="userPanelBox">
+					<div class="userPanelBox__left">
+						<div class="userPanelBox__form">
+							<h3 class="size24 medium mb-2">New Customer?</h3>
+							<p class="mb-4">Welcome! Let’s get started</p>
+							<form class="formBox" id="register_form" name="register_form" action="{{ url_for('auth.signup') }}" method="POST">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+								<div id="flash_msg" class="padding-bottom-20">{{ flash_messages() }}</div>
+
+								<div class="row">
+									<div class="col-lg-6">
+										<fieldset class="mb-4">
+											<span class="placeholder">First Name</span>
+											<input type="text" id="first_name" name="first_name" value="{{name}}" class="form-control input__field" required />
+										</fieldset>
+									</div>
+									<div class="col-lg-6">
+										<fieldset class="mb-4">
+											<span class="placeholder">Last Name</span>
+											<input type="text" id="last_name" name="last_name" value="{{lastname}}" class="form-control input__field" required />
+										</fieldset>
+									</div>
+									<div class="col-lg-12">
+										<fieldset class="mb-4">
+											<span class="placeholder">Email</span>
+											<input type="email" id="email" name="email" value="{{email}}" class="form-control input__field" required />
+										</fieldset>
+									</div>
+									<div class="col-lg-12">
+										<fieldset class="mb-4">
+											<span class="placeholder">Password</span>
+											<input type="password" id="register_password" name="password" class="form-control input__field" required />
+										</fieldset>
+									</div>
+								</div>
+								<input type="submit" id="register_form_id" value="Create Account" class="btn btn-block btn-lg btn-secondary" />
+							</form>
+						</div>
+					</div>
+					<div class="userPanelBox__right">
+						<div class="userPanelBox__option">
+							<p><strong>Already have an account?</strong>We would love to keep you associated! Login to our network and shop an exclusive range of premium pillows.</p>
+							<a href="{{url_for('main.login') }}" class="btn btn-outline-primary">Login</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %} {% block page_scripts %}
+<script>
+	$("form#register-form").on("submit", function () {
+		var c_pass = $("#register_password").val();
+		$("#register_password").val(btoa(c_pass));
+	});
+</script>
+{% endblock %}

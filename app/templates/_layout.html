@@ -1,0 +1,133 @@
+{% from "_macros/helpers.html" import flash_messages with context %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>{% block page_title %} Awards, Celebrations & Expressions {% endblock %}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootoast.min.css') }}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/custom_style.min.css') }}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.growl.min.css') }}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+		{% block page_style %}{% endblock %}
+		<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+	</head>
+	<body class="">
+		<div class="dashboardMain">
+			<!-- sidebar menu-->
+			{% include '_sidebarMenu.html' %}
+			<!-- sidebar menu end-->
+			<div class="dashboardcontent">
+				<!--<div class="mobheader">
+					<a href="{{ url_for('main.index') }}">
+						<img src="{{ url_for('static', filename='img/ace_logo_white.png') }}" class="img-fluid"/>
+					</a>
+				</div>-->
+				<!--<div class="mobheader">
+					<div class="mobLogo"><a href="{{ url_for('main.index') }}"><img src="{{ url_for('static', filename='img/ace_logo_white.png') }}" class="img-fluid" /></a></div>
+					<div class="mobLogo2"><a href="{{ url_for('main.index') }}"><img src="{{ url_for('static', filename='img/company_logo_old.png') }}" class="img-fluid" /></a> </div>
+				</div>-->
+				<div class="mobheader">
+					<img class="mobileView" src="https://rupayrewardassets.blob.core.windows.net/npciace/Homepagebanner_mobile.png" alt="" />
+					<div class="mobLogo"><img src="{{ url_for('static', filename='img/ace_logo_white.png') }}" class="img-fluid" /></div>
+					<div class="mobLogo2 mLleft"><img src="{{ url_for('static', filename='img/company_logo_old.png') }}" class="img-fluid" /></div>
+					<!-- <div class="mobLogo2 mLright"><img src="{{ url_for('static', filename='img/company_logo_old.png') }}" class="img-fluid" /></div> -->
+					</div>
+					<!-- Header Part-->
+					{% include '_header.html' %}
+
+				</div>
+				<!-- Header Part-->
+				{% include '_header.html' %}
+				<!-- Header Part end-->
+				{% block page_content %}{% endblock %}
+				<div class="loaderbox" style="display: none">
+					<div class="npci_loader"><img src="{{ url_for('static', filename='img/npci_arrow.png') }}" /></div>
+				</div>
+			</div>
+		</div>
+		{% if page and page == "home" %}
+		<div class="dashboardMain"></div>
+		{% endif %}
+
+		<div class="copyright">
+			<div class="container">
+				<p>Powered by <a href="https://nthrewards.com/" target="_blank">Nth Rewards</a></p>
+			</div>
+		</div>
+
+		<div class="circle" id="navbar" title="Menubar">
+			<span class="line first"></span>
+			<span class="line second"></span>
+			<span class="line third"></span>
+		</div>
+
+		<div class="nveMenu text-left">
+			<div class="employee_name">
+				<div class="employee_image">
+					<figure>
+						<img src="{% if session[config['USER_SESSION_KEY']]['imageUrl'] %}{{ session[config['USER_SESSION_KEY']]['imageUrl'] }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="120" class="img-fluid user_image_uploaded" id="userUploadedMobileImages" />
+						<label for="imgmobupload">
+							<img src="{{ url_for('static', filename='img/user_image.png') }}" width="50" class="user_image_to_upload" />
+						</label>
+						<form method="post" name="upload_mob_form" id="upload_mob_form" enctype="multipart/form-data">
+							<input type="hidden" name="profile_pic_name" value="" />
+							<input type="file" id="imgmobupload" style="display: none" name="profileMobilePic" />
+						</form>
+					</figure>
+				</div>
+				<h3>{{ session[config['USER_SESSION_KEY']]['name'] }}</h3>
+				<p>{{ session[config['USER_SESSION_KEY']]['description'] if session[config['USER_SESSION_KEY']]['description'] != None else "" }}</p>
+				<span>{{ session[config['USER_SESSION_KEY']]['reward_points'] }} Points</span>
+			</div>
+			<div class="menuSection">
+				<h3>Menu</h3>
+				<ul class="navlinks">
+					<li>
+						<a href="{{ url_for('main.dashboard') }}"> <!--<img src="{{ url_for('static', filename='img/home.png') }}"/>--><i class="fas fa-home"></i> Home</a>
+					</li>
+					<li>
+						<a href="{{ url_for('awards.index') }}"><!--<img src="{{ url_for('static', filename='img/award.png') }}"/>--><i class="fas fa-gift"></i> My Awards</a>
+					</li>
+					<!--<li><a href="{{ url_for('recognize.index') }}"><img src="{{ url_for('static', filename='img/recognize.png') }}"/>Recognize</a></li>-->
+					{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or session[config['USER_SESSION_KEY']]['Sr_Mangement_HR'] == True or session[config['USER_SESSION_KEY']]['IsManager'] == True or session[config['USER_SESSION_KEY']]['IsHOD'] == True %}
+					<li>
+						<a href="{{ url_for('nominate.nomination_list') }}" id="sideBarNotifMobileCnt"><i class="fas fa-trophy"></i> Nomination List <span class="notifications"></span></a>
+					</li>
+					{% endif %}
+					<li>
+						<a href="{{ url_for('rewards.index') }}"
+							><!--<img src="{{ url_for('static', filename='img/rewards.png') }}"/>-->
+							<i class="fas fa-medal"></i> Redemption</a
+						>
+					</li>
+					<!--<li><a href="{{ url_for('notifications.index') }}"><i class="fas fa-envelope"></i> Notifications <span class="notifications">10</span></a></li>-->
+					<li>
+						<a href="{{ url_for('main.settings') }}"><!--<img src="{{ url_for('static', filename='img/setting.png') }}"/>--><i class="fas fa-user-cog"></i> My Account</a>
+					</li>
+					<li>
+						<a href="{{ url_for('auth.logout') }}"><!--<img src="{{ url_for('static', filename='img/logout.png') }}"/>--><i class="fas fa-sign-out-alt"></i> Logout</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="overlay"></div>
+		<script>
+			var app_base_url = "{{ config['APP_BASE_URL'] }}";
+			var per_page = "{{ config['PER_PAGE'] }}";
+			var csrf_token = "{{ csrf_token() }}";
+		</script>
+		<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/bootoast.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery-validation/jquery.validate.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/custom_validator.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.growl.min.js') }}"></script>
+
+		<script src="{{ url_for('static', filename='js/common.min.js') }}?v=3.0"></script>
+		{% block page_scripts %}{% endblock %}
+	</body>
+</html>

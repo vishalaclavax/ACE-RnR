@@ -1,0 +1,485 @@
+{% extends "_layout.html" %} {% block page_title %} Nominate{% endblock %} {% block page_content %}
+
+<div class="dashboardportalbox">
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2 class="text-center">Nominations</h2>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="approvalsboxheading">
+					<h3 class="text-center">Approval Status</h3>
+				</div>
+				<div id="flash_msg">{{ flash_messages() }}</div>
+				<div class="nominationsMainBox">
+					<div class="nominationsTabsBox">
+						<ul class="nominationsList nominations_list">
+							<li class="active"><a href="#all">All Nominations</a></li>
+							<li><a href="#pending">Pending Approvals</a></li>
+							<li><a href="#preapproved">Previously Approved</a></li>
+							<li><a href="#predeclined">Previously Declined</a></li>
+						</ul>
+					</div>
+					<div class="nominationsTabsContentBox">
+						<div class="nominationsBoxes active" id="all">
+							<div class="table-responsive">
+								<table class="table table-borderless">
+									<thead>
+										<tr>
+											<th>Employee Name</th>
+											<th>Award</th>
+											<th>Award Giver Name</th>
+											<th>Citation Msg</th>
+											<th>Points</th>
+											<th>Date</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% if all_nomination %} {% for nomination in all_nomination %} {% if nomination.date %} {% set nomination_date = nomination.date|format_date('%d-%m-%y %I:%M %p') %} {% else %} {% set nomination_date = '' %} {% endif %}
+										<tr>
+											<td>{{nomination.empname}}</td>
+											<td>{{nomination.awardtype}}</td>
+											
+											<td>{{ nomination.awardgiver if nomination.awardgiver else '-' }}</td>
+											<td id="{{loop.index}}"><div class="nominationCitationMsg" title="{{ nomination.citation_msg if nomination.citation_msg else '-' }}"> </div>
+											<input type="text" id="typesort{{loop.index}}" hidden value="{{ nomination.citation_msg if nomination.citation_msg else '-' }}">
+										</td>
+											<td>{{nomination.earnedvalue}}</td>
+											<td>{{nomination_date}}</td>
+											<td>
+												{% if nomination.awardtype|lower == 'well done' or nomination.awardtype|lower == 'bravo' %} {% if nomination.awardee_manager == session[config['USER_SESSION_KEY']]['email'] %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% else %} {% if nomination.awardee_hod == session[config['USER_SESSION_KEY']]['email'] and session[config['USER_SESSION_KEY']]['IsHOD'] == True %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% elif nomination.status == 1 and session[config['USER_SESSION_KEY']]['is_hr'] == True %} {% if nomination.hrstatus == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="javascript:void(0)" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="javascript:void(0)" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 2 or nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% elif nomination.status == 1 and nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HOD</a>
+												</div>
+												{% elif nomination.hrstatus == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HR</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% endif %}
+											</td>
+										</tr>
+										{% endfor %} {% endif %}
+									</tbody>
+								</table>
+							</div>
+							<!--<div class="pagination-container">
+								<div class="pagination-number arrow">
+									<i class="fas fa-chevron-left"></i>
+									<span class="arrow-text">Previous</span>
+								</div>
+								<div class="pagination-number">1</div>
+								<div class="pagination-number">2</div>
+								<div class="pagination-number active">3</div>
+								<div class="pagination-number">4</div>
+								<div class="pagination-number arrow">
+									<span class="arrow-text">Next</span>
+									<i class="fas fa-chevron-right"></i>
+								</div>
+							</div>-->
+						</div>
+						<div class="nominationsBoxes" id="pending">
+							<div class="table-responsive">
+								<table class="table table-borderless">
+									<thead>
+										<tr>
+											<th>Employee Name</th>
+											<th>Award</th>
+											<th>Award Giver Name</th>
+											<th>Citation Msg</th>
+											<th>Points</th>
+											<th>Date</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% if pending_approval %} {% for nomination in pending_approval%} {% if nomination.date %} {% set nomination_date = nomination.date|format_date('%d-%m-%y %I:%M %p') %} {% else %} {% set nomination_date = '' %} {% endif %}
+										<tr>
+											<td>{{nomination.empname}}</td>
+											<td>{{nomination.awardtype}}</td>
+											<td>{{ nomination.awardgiver if nomination.awardgiver else '-' }}</td>
+											<td>{{ nomination.citation_msg if nomination.citation_msg else '-' }}</td>
+											<td>{{nomination.earnedvalue}}</td>
+											<td>{{nomination_date}}</td>
+											<td>
+												{% if nomination.awardtype|lower == 'well done' or nomination.awardtype|lower == 'bravo' %} {% if nomination.awardee_manager == session[config['USER_SESSION_KEY']]['email'] %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% else %} {% if nomination.awardee_hod == session[config['USER_SESSION_KEY']]['email'] and session[config['USER_SESSION_KEY']]['IsHOD'] == True %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% elif nomination.status == 1 and session[config['USER_SESSION_KEY']]['is_hr'] == True %} {% if nomination.hrstatus == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="javascript:void(0)" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="javascript:void(0)" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 2 or nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% elif nomination.status == 1 and nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HOD</a>
+												</div>
+												{% elif nomination.hrstatus == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HR</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% endif %}
+											</td>
+										</tr>
+										{% endfor %} {% endif %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="nominationsBoxes" id="preapproved">
+							<div class="table-responsive">
+								<table class="table table-borderless">
+									<thead>
+										<tr>
+											<th>Employee Name</th>
+											<th>Award</th>
+											<th>Award Giver Name</th>
+											<th>Citation Msg</th>
+											<th>Points</th>
+											<th>Date</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% if previously_approved %} {% for nomination in previously_approved%} {% if nomination.date %} {% set nomination_date = nomination.date|format_date('%d-%m-%y %I:%M %p') %} {% else %} {% set nomination_date = '' %} {% endif %}
+										<tr>
+											<td>{{nomination.empname}}</td>
+											<td>{{nomination.awardtype}}</td>
+											<td>{{ nomination.awardgiver if nomination.awardgiver else '-' }}</td>
+											<td>{{ nomination.citation_msg if nomination.citation_msg else '-' }}</td>
+											<td>{{nomination.earnedvalue}}</td>
+											<td>{{nomination_date}}</td>
+											<td>
+												{% if nomination.awardtype|lower == 'well done' or nomination.awardtype|lower == 'bravo' %} {% if nomination.awardee_manager == session[config['USER_SESSION_KEY']]['email'] %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% else %} {% if nomination.awardee_hod == session[config['USER_SESSION_KEY']]['email'] and session[config['USER_SESSION_KEY']]['IsHOD'] == True %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% elif nomination.status == 1 and session[config['USER_SESSION_KEY']]['is_hr'] == True %} {% if nomination.hrstatus == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="javascript:void(0)" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="javascript:void(0)" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 2 or nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% elif nomination.status == 1 and nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HOD</a>
+												</div>
+												{% elif nomination.hrstatus == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HR</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% endif %}
+											</td>
+										</tr>
+										{% endfor %} {% endif %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="nominationsBoxes" id="predeclined">
+							<div class="table-responsive">
+								<table class="table table-borderless">
+									<thead>
+										<tr>
+											<th>Employee Name</th>
+											<th>Award</th>
+											<th>Award Giver Name</th>
+											<th>Citation Msg</th>
+											<th>Points</th>
+											<th>Date</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% if previously_declined %} {% for nomination in previously_declined %} {% if nomination.date %} {% set nomination_date = nomination.date|format_date('%d-%m-%y %I:%M %p') %} {% else %} {% set nomination_date = '' %} {% endif %}
+										<tr>
+											<td>{{nomination.empname}}</td>
+											<td>{{nomination.awardtype}}</td>
+											<td>{{ nomination.awardgiver if nomination.awardgiver else '-' }}</td>
+											<td>{{ nomination.citation_msg if nomination.citation_msg else '-' }}</td>
+											<td>{{nomination.earnedvalue}}</td>
+											<td>{{nomination_date}}</td>
+											<td>
+												{% if nomination.awardtype|lower == 'well done' or nomination.awardtype|lower == 'bravo' %} {% if nomination.awardee_manager == session[config['USER_SESSION_KEY']]['email'] %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% else %} {% if nomination.awardee_hod == session[config['USER_SESSION_KEY']]['email'] and session[config['USER_SESSION_KEY']]['IsHOD'] == True %} {% if nomination.status == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="#" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="#" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.status == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% elif nomination.status == 1 and session[config['USER_SESSION_KEY']]['is_hr'] == True %} {% if nomination.hrstatus == 0 %}
+												<div class="onefifthbox change_status" id="change_status_{{ loop.index }}" name="change_status">
+													<a href="javascript:void(0)" class="approvebtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','approve','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="approve" name="approve">Approve</a>
+													<a href="javascript:void(0)" class="rejectbtn" onclick="change_nominate_status(this,'{{nomination.transactionid}}','reject','{{nomination.awardtype}}','{{nomination.status}}','{{nomination.hrstatus}}')" id="reject" name="reject">Reject</a>
+												</div>
+												{% elif nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% endif %} {% else %} {% if nomination.status == 2 or nomination.hrstatus == 2 %}
+												<div class="onefifthbox">
+													<a href="#" class="rejected">Rejected</a>
+												</div>
+												{% elif nomination.status == 1 and nomination.hrstatus == 1 %}
+												<div class="onefifthbox">
+													<a href="#" class="approved">Approved</a>
+												</div>
+												{% elif nomination.status == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HOD</a>
+												</div>
+												{% elif nomination.hrstatus == 0 %}
+												<div class="onefifthbox">
+													<a href="#" class="pending">Pending at HR</a>
+												</div>
+												{% else %} {% endif %} {% endif %} {% endif %}
+											</td>
+										</tr>
+										{% endfor %} {% endif %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script type="text/javascript" src="{{ url_for('nominate.static', filename='nominate.js') }}"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".nominationsList li a").click(function (e) {
+			e.preventDefault();
+		});
+
+		$(".nominationsList li").click(function () {
+			var tabid = $(this).find("a").attr("href");
+			$(".nominationsList li,.nominationsTabsContentBox nominationsBoxes").removeClass("active"); // removing active class from tab
+
+			$(".nominationsBoxes").hide();
+			$(tabid).show();
+			$(this).addClass("active");
+		});
+	});
+
+	$(function () {
+
+		var maxCharacters = 20,
+			index = 1;
+
+		$('.nominationCitationMsg').each(function () {
+
+			id = 'typesort' + index
+
+			index = index + 1;
+
+			var text = $("#" + id).val();
+
+			if (text.length > maxCharacters) {
+				
+				var begin = text.substr(0, maxCharacters),
+					end = text.substr(maxCharacters);
+					
+				$(this).html(begin).append($('<span/>').html(' ...')).append($('<div style="display: none;" />').html(end));
+			}
+		});
+	})
+</script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "_layout.html" %}
+{% block page_title %} Redeem Rewards{% endblock %}
+{% block page_content %}
+
+    <div class="dashboardportalbox">
+        <a href="{{ url_for('rewards.index') }}" class="backtorewards">Back to Rewards</a>
+        <div class="recongnizebox">
+            <div class="recognize_heading">
+                <h2 class="text-center">Amazon E-Voucher</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="rewardredemptionbox">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="redeemrewardimagebox">
+                                    <img id="giftcardImg" src="{{ giftcard.image }}" class="img-fluid"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="rewardselectbox">
+                                    <h3 id="giftcardName">{{ giftcard.title }}</h3>
+                                    <h4>Select Voucher Value (INR)</h4>
+                                    <ul class="rewardprice" id="rewardPrice">
+                                        <li value="100">&#8377; 100</li>
+                                        <li value="200">&#8377; 200</li>
+                                        <li value="500">&#8377; 500</li>
+                                        <li value="1000">&#8377; 1000</li>
+                                    </ul>
+                                    <p class="error" id="giftcardValue-error"></p>
+                                    <div class="rewardquantity">
+                                        <span>Quantity</span>
+                                        <select id="voucherQty" name="voucher_qty">
+                                            {% set cnt = 7 %}
+                                            {% for i in range(1,cnt) %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span id="pointsvalue"></span>
+                                    </div>
+                                    <!--<h3 class="totalprice">Total Price : <span id="showPricePoint">&#8377; 200 (Pts 800)</span></h3>-->
+                                    <h3 class="totalprice" id="totalPrice"></h3>
+                                    <input type="hidden" id="giftcardValue" value=""/>
+                                    <input type="hidden" id="giftcardQty" value=""/>
+                                    <input type="hidden" id="giftcardPoints" value=""/>
+                                    <input type="hidden" id="giftcard_code" value="{{giftcard.get('code')}}"/>
+
+
+                                    
+                                    <!--<button type="submit" class="cmnbtn" onclick="window.location.href='#cont'">Redeem Points</button>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rewardtncbox">
+                            <h4>Terms &amp; Conditions</h4>
+                            <p>{{ giftcard.vendors[0].tnc|safe }}</p>
+                            <!--<p>Amazon Gift Cards ("GCs") are issued by the Qwikcilver Solutions Private limited ("Qwikcilver"). Credit and Debit Cards issued outside India cannot be used to purchase Amazon.in Gift Cards.</p>
+                            <p>To add your GC to your Amazon Pay balance, visit www.amazon.in/addgiftcard</p>
+                            <p>Beneficiary can apply the 14 digit code (under scratch card) on amazon.in/addgiftcard and add the gift card balance in his/her Amazon.in account. This balance gets automatically applied at the time of next purchase. There is no cap on number of gift cards that can be added to an account.</p>
+                            <p>Amazon Pay balance is a sum of all balances associated with the GCs in your Amazon.in account.</p>
+                            <p>Amazon Pay balance are redeemable across all products on Amazon.in except apps, certain global store products and other Amazon.in gift cards.</p>
+                            <p>Amazon Pay balance must be used only towards the purchase of eligible products on amazon.in</p>
+                            <p>The GCs, including any unused Amazon Pay balance, expire one year from the date of issuance of the GC</p>
+                            <p>GCs cannot be transferred for value or redeemed for the cash.</p>
+                            <p>Qwikcilver, Amazon Seller Services Private Limited (Amazon) or their affiliates are not responsible if a GC is lost, stolen, destroyed or used without permission.</p>
+                            <p>For Complete terms and conditions, see www.amazon.in/giftcardtnc</p>
+                            <p>Amazon.in logo/trademark is an IP of Amazon or its affiliates and the Qwikcilver trademark/logo is an IP of Qwikcilver.</p>
+                            <p>To redeem your GC, visit www.amazon.in/addgiftcard</p>
+                            <p>E-Gift Cards are normally delivered instantly. But sometimes due to system issues, the delivery can be delayed up-to 24 - 48 hours.</p>
+                            <p>For detailed T&Cs of this E-Gift Card please refer www.woohoo.in/termsandconditions</p>
+                            <p>Certain merchants may provide you services only on the pre-condition that you allow us to hold balances in your Amazon Pay balance: Gift Card till the service completion by the merchant. However, your prior consent would be taken before holding such balances. In such cases, you agree and authorize us to: (i) hold your balance until service completion; and (ii) fail the transaction if your balance in the Amazon Pay Gift Card is less than the actual amount charged by the merchant at the end of the services.</p>
+                            <p>You may request for revalidation of any expired Gift Cards. Upon receipt of such request, the Gift Card may be revalidated after due verification and subject to applicable terms and conditions.</p>
+                            <p>No returns and no refunds on gift cards, e-gift cards and gift vouchers shipped by woohoo.in. Please check the refund policy at http://www.woohoo.in/faq for further details.</p>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loaderbox" style="display:none;">
+        <div class="npci_loader"><img src="{{ url_for('static', filename='img/npci_arrow.png') }}" /></div>
+    </div>
+    <div class="" id="cont">
+            <div class="popupbox" id="exampleModal">
+                <a href="javascript:void(0)" class="closebox" id="closeVoucherBox">×</a>
+                <div class="rewardsubmitbox" id="confirmorder">
+                    <form name="redeem_point_frm" id="redeemPointFrm" method="post">
+                        <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
+                        <img id="selectedGiftcardImg" class="img-fluid" width="264px" height="168px"/>
+                        <h3 id="selectedGiftcardName">Amazon Pay Gift Card</h3>
+                        <h4 id="selectedTotalPrice">Total Price : <span>&#8377; 200 (Pts 800)</span></h4>
+                        <p>Are you sure you want to Redeem Points?</p>
+                        <input type="hidden" name="giftcard_value" id="selectedGiftcardValue" value=""/>
+                        <input type="hidden" name="giftcard_qty" id="selectedGiftcardQty" value=""/>
+                        <input type="hidden" name="giftcard_points" id="selectedGiftcardPoints" value=""/>
+                        <input type="hidden" id="giftcardCode" name="giftcardCode" value=""/>
+
+                    </form>
+
+                </div>
+                <div class="rewardsubmitbox" id="orderplaced">
+                    <img  class="voucher_image" src="" id="voucher_image_placed" class="img-fluid"/>
+                    <h3>Congratulations!</h3>
+                    <p>Your order has been placed & voucher details <br/>will be send on registered email after order has been processed. <b id="email"></b></p>
+                    <!-- <h3 id="voucherCode">Voucher Code : ----</h3>
+                    <h3 id="pin">PIN :---</h3> -->
+                    <a href="javascript:void(0)" class="cmnbtn" id="checkorderfailed">Thank You</a>
+                </div>
+                <div class="rewardsubmitbox" id="orderfailed">
+                    <h3>We Apologize</h3>
+                    <p>but you don't have enough points to Redeem</p>
+                    <a href="javascript:void(0)" class="cmnbtn" id="close_popup">Ok</a>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
+{% block page_scripts %}
+    <script type="text/javascript" src="{{ url_for('rewards.static', filename='redeem.js') }}?v={{timestamp}}"></script>
+    <script>
+        $(document).on('click','#checkorderfailed', function(){
+            window.location.reload();
+        });
+    </script>
+{% endblock %}

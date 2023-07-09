@@ -1,0 +1,60 @@
+{% extends "_layout.html" %}
+{% block page_title %} Nominate{% endblock %}
+{% block page_content %}
+
+    <div class="dashboardportalbox">
+        <!-- <h4>Employee Rewards &amp; Recognition Portal</h4> -->
+        <div class="recongnizebox">
+            <div class="recognize_heading">
+                <h2>Recognize</h2>
+                <p>Recognise your colleagues with a Non-monetary Reward</p>
+            </div>
+            <div class="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="remployeemainbox">
+                            <div class="remployeebox">
+                                <!-- <a href="#"><img src="img/add_employee.png"/> Add Employee</a> -->
+                                <a href="#">
+                                    <div class="fullbox rempselectbox">
+                                        <div class="empimagebox">
+                                            <img src="{{ url_for('static', filename='img/add_employee.png') }}" width="50"/>
+                                        </div>
+                                        <div class="empdetailsbox">
+                                            <h6>Arun Verma</h6>
+                                            <p>arunverma@npci.org.in</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="remployeeimagebox reselected">
+                                            <img src="{{ url_for('static', filename='img/well_done_reward_selected.png') }}" class="img-fluid"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="">
+                                            <h3>Well Done! Award</h3>
+                                            <form class="rewardmessageform">
+                                                <p>Write Citation Message</p>
+                                                <textarea placeholder="Great job on delivering the project on time" rows="2"></textarea>
+                                                <p>Write Business Justification</p>
+                                                <textarea type="text" placeholder="He has delivered the project as per the timeline assigned with all milestones and payments received from client" rows="3"></textarea>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flt-right">
+                                <button type="submit" class="cmnbtn" >Post</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block page_scripts %}
+{% endblock %}

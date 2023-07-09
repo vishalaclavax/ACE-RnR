@@ -1,0 +1,92 @@
+{% extends "_layout.html" %} {% block page_title %} My Award{% endblock %} {% block page_content %}
+
+<div class="dashboardportalbox">
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2 class="text-center">My Awards</h2>
+		</div>
+		<div class="myAwardsTabs">
+			<div class="myAwardsTabs__main">
+				<div class="tab-buttons">
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="awardsReceived-tab" data-bs-toggle="tab" data-bs-target="#awardsReceived" type="button" role="tab" aria-controls="awardsReceived" aria-selected="true">Awards Received</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="awardsGiven-tab" data-bs-toggle="tab" data-bs-target="#awardsGiven" type="button" role="tab" aria-controls="awardsGiven" aria-selected="false">Awards Given</button>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="awardsReceived" role="tabpanel" aria-labelledby="awardsReceived-tab">
+						<div class="col-sm-12" id="awardReceivedData">
+							{% if received_award_list %} {% for reward in received_award_list %}
+							<div class="updates_box myaward_box">
+								<div class="update_header_row">
+									<div class="updater_header">
+										<div class="updater_header-top">
+											<h4>
+												<img src="{% if session[config['USER_SESSION_KEY']]['imageUrl'] %}{{ session[config['USER_SESSION_KEY']]['imageUrl'] }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+												You have been {% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' %}celebrated/recognized{% else %}rewarded{% endif %} <strong>{{reward.get('transactionData').get('reward_id')}}</strong> by <strong class="profileBox">{{ reward.customer.awarded_by_name }} <img src="{% if 'customer' in reward and reward.customer.awarded_by_image %}{{ reward.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img" /></strong>{% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' and reward.get('transactionData').get('award_values') %}<span class="block"> NPCI Way Tenet Exhibited -<strong> {{ reward.get('transactionData').get('award_values')}}</strong></span
+												>{% endif %}
+											</h4>
+										</div>
+										<div class="updater_header-bottom">
+											<p>{{reward.get('transactionData').get('citation_msg')}}</p>
+											<p class="award_date">{% if reward.transactionData.transaction_date %}{{ reward.get('transactionData').get('transaction_date')|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+										</div>
+									</div>
+								</div>
+								<div class="update_image_box">
+									<img src="{{ reward.get('awardImage') }}" class="img-fluid" />
+								</div>
+							</div>
+							{% endfor %} {% endif %}
+						</div>
+						{% if received_award_list|length > 9 %}
+						<div id="loadMoreAwardReceived" class="text-center">
+							<button class="cmnbtn" type="button" onclick="loadMoreAwards('received');" id="loadMoreAwardsReceived">Load More</button>
+						</div>
+						{% endif %}
+					</div>
+					<div class="tab-pane fade" id="awardsGiven" role="tabpanel" aria-labelledby="awardsGiven-tab">
+						<div class="col-sm-12" id="awardGivenData">
+							{% if given_award_list %} {% for reward in given_award_list %}
+							<div class="updates_box myaward_box">
+								<div class="update_header_row">
+									<div class="updater_header">
+										<div class="updater_header-top">
+											<h4>
+												<img src="{% if reward.customer.Profileimage %}{{ reward.customer.Profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+												<strong>{{ reward.customer.Emp_Name }}</strong> has been {% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' %}celebrated/recognized{% else %}rewarded{% endif %} <strong>{{reward.get('transactionData').get('reward_id')}}</strong> by <strong class="profileBox">you <img src="{% if 'customer' in reward and reward.customer.awarded_by_image %}{{ reward.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img" /></strong>{% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' and reward.get('transactionData').get('award_values') %} <span class="block">NPCI Way Tenet Exhibited -<strong> {{ reward.get('transactionData').get('award_values')}}</strong></span
+												>{% endif %}
+											</h4>
+										</div>
+										<div class="updater_header-bottom">
+											<p>{{reward.get('transactionData').get('citation_msg')}}</p>
+											<p class="award_date">{% if reward.transactionData.transaction_date %}{{ reward.get('transactionData').get('transaction_date')|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+										</div>
+									</div>
+								</div>
+								<div class="update_image_box">
+									<img src="{{ reward.get('awardImage') }}" class="img-fluid" />
+								</div>
+							</div>
+							{% endfor %} {% endif %}
+						</div>
+						{% if given_award_list|length > 9 %}
+						<div id="loadMoreAwardGiven" class="text-center">
+							<button class="cmnbtn" type="button" onclick="loadMoreAwards('given');" id="loadMoreAwardsGiven">Load More</button>
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script type="text/javascript" src="{{ url_for('awards.static', filename='awards.min.js') }}"></script>
+
+{% endblock %}

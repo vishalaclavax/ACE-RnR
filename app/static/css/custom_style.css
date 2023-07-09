@@ -1,0 +1,128 @@
+.loaderbox {
+	position: fixed;
+	z-index: 999;
+	height: 2em;
+	width: 2em;
+	overflow: show;
+	margin: auto;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.loaderbox:before {
+	content: "";
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255, 255, 255, 0.9);
+}
+
+.loaderbox:not(:required) {
+	font: 0/0 a;
+	color: transparent;
+	text-shadow: none;
+	background-color: transparent;
+	border: 0;
+}
+
+.npci_loader {
+	width: 50px;
+	height: 50px;
+	border: 5px #f16112 solid;
+	border-top: 5px #11b455 solid;
+	border-radius: 50%;
+	-webkit-animation: spin-circle 0.8s infinite linear;
+	animation: spin-circle 0.8s infinite linear;
+	box-sizing: content-box;
+}
+
+.npci_loader img {
+	height: 50px;
+	width: 50px;
+	animation: spinlogo 0.8s linear infinite;
+	box-sizing: content-box;
+}
+
+@-webkit-keyframes spin-circle {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spin-circle {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spinlogo {
+	0% {
+		transform: rotate(360deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+@-webkit-keyframes spinlogo {
+	0% {
+		transform: rotate(360deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+.forgotpasswordbox {
+	padding: 10px;
+	margin-top: 60px;
+}
+
+.forgotpasswordbox h3 {
+	font-family: "Gilroy SemiBold";
+	margin-bottom: 20px;
+}
+
+.forgotpasswordbox input {
+	width: 100%;
+	padding: 15px;
+	border-radius: 10px;
+	background-color: transparent;
+	margin-bottom: 20px;
+	border: none;
+	border: 1px solid #707070;
+}
+
+.forgotpasswordbox button {
+	width: 100%;
+	padding: 10px;
+	background-color: #00266f;
+	border-radius: 4px;
+	border: none;
+	color: #fff;
+	text-transform: uppercase;
+	margin-bottom: 30px;
+}
+
+.someshadow {
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.error {
+	color: #c31d1d;
+}
+
+.custom_error {
+	color: #c31d1d;
+}

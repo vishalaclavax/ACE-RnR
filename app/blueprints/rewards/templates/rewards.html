@@ -1,0 +1,84 @@
+{% extends "_layout.html" %} {% block page_title %} Rewards{% endblock %} {% block page_content %}
+
+<div class="dashboardportalbox">
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2 class="text-center">Rewards</h2>
+			<p class="text-center">Use you reward points to buy E-Vouchers from great brands</p>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					{% if giftcards %} {% for gc in giftcards %}
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ gc.image }}" class="img-fluid" /></figure>
+							<a href="{{ url_for('rewards.giftcard_details',giftcard_code=gc.code) }}" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					{% endfor %} {% endif %} {#
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/flipkart_gift_card.png') }}" class="img-fluid" /></figure>
+							<a href="{{ url_for('rewards.redeem_rewards') }}" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/myntra_gift_card.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/big_bazaar.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/lifestyle.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/nykaa.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/croma.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/himalaya.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="all_rewards_box">
+							<figure><img src="{{ url_for('static', filename='img/rewards/cleartrip.png') }}" class="img-fluid" /></figure>
+							<a href="javascript:void(0)" class="cmnbtn">Redeem Points</a>
+						</div>
+					</div>
+					#}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script>
+	$(document).ready(function () {
+		$("#showselectareward").click(function () {
+			$("#selecttheemployee").hide();
+			$("#selectareward").show();
+		});
+	});
+</script>
+{% endblock %}

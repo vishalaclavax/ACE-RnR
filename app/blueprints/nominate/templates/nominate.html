@@ -1,0 +1,146 @@
+{% extends "_layout.html" %} {% block page_title %} Nominate{% endblock %} {% block page_content %}
+<div class="dashboardportalbox">
+	<!-- <h4>Employee Rewards &amp; Recognition Portal</h4> -->
+	<div id="flash_msg">{{ flash_messages() }}</div>
+	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2 class="text-center">Nominate</h2>
+			<!--<p class="text-center">Nominate your colleagues for a Monetary Reward</p>-->
+		</div>
+		<div class="rselectmainbox">
+			<div class="row">
+				<div class="col-lg-6" id="empSelectBox">
+					<div class="rselectboxes">
+						<a href="javascript:void(0)" onclick="select_employee_popup(this)">
+							<img src="{{ url_for('static', filename='img/select_employee.png') }}" />
+							<span id="selectedEmpTxt"> Select an Employee</span>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-6" id="awardSelectBox">
+					<div class="rselectboxes">
+						<a href="javascript:void(0)" onclick="select_award(this)"><img src="{{ url_for('static', filename='img/select_award.png') }}" height="40" /><span id="selectedAwardTxt"> Select an Award</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="rewardmessageform">
+						<form id="nomination_form" method="post" action="">
+							<div class="remployeemainbox">
+								<div class="remployeebox">
+									<a href="javascript:void(0)" id="selectEmpSection" style="cursor: default">
+										<div class="fullbox">
+											<div class="empimagebox">
+												<img src="{{ url_for('static', filename='img/add_employee.png') }}" />
+											</div>
+											<div class="empdetailsbox">
+												<h6>Employee Name</h6>
+											</div>
+										</div>
+									</a>
+									<div class="row" id="selectedEmpSection"></div>
+									<div class="row">
+										<div class="col-lg-5 col-md-6">
+											<div class="remployeeimagebox">
+												<img id="setRewardImge" src="{{ url_for('static', filename='img/employee_imagebox.png') }}" class="img-fluid" />
+											</div>
+										</div>
+										<div class="col-lg-7 col-md-6">
+											<div class="rewardboxed">
+												<h3 id="rewardName">Reward Name</h3>
+												<input type="hidden" name="emp_email" id="emp_email" value="" />
+												<input type="hidden" name="emp_name" id="emp_name" value="" />
+												<input type="hidden" name="emp_manager" id="emp_manager" value="" />
+												<input type="hidden" name="emp_manager_email" id="emp_manager_email" value="" />
+												<input type="hidden" name="reward" id="reward" value="" />
+												<input type="hidden" name="reward_img" id="rewardImg" value="" />
+												<p>Write Citation Message</p>
+												<textarea placeholder="" rows="2" name="citation_msg" id="citationMsg"></textarea>
+												<div id="showOtherFields">
+													<p>Achievement</p>
+													<textarea rows="5" placeholder="Please elaborate the achievement / contribution" name="achievement" id="achievement"></textarea>
+													<p>Business Impact</p>
+													<textarea rows="5" placeholder="Mention the relevant section(s) details as shared" name="business_impact" id="businessImpact"></textarea>
+													<p>Challenges Faced During The Assignment</p>
+													<textarea rows="5" placeholder="Describe the challenges" name="assignment_challenges" id="assignmentChallenges"></textarea>
+													<p>Overall Benefit to Org</p>
+													<textarea rows="5" placeholder="Describe the overall benefit" name="benefit" id="benefit"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="" id="cont">
+	<div class="popupbox nominatepopupbox" id="exampleModal">
+		<a href="javascript:void(0)" class="closebox" id="closeNominateBox">×</a>
+		<div class="selecttheemployee" id="selecttheemployee">
+			<h3>Select an Employee</h3>
+			<div class="employeesearchbox">
+				<span><img src="{{ url_for('static', filename='img/search.png') }}" /></span>
+				<input type="text" id="employeeSearch" value="" />
+			</div>
+			<div class="employeesbox my_custom_scroll" id="customScrollbar">
+				<div class="message"></div>
+				<div class="row" id="employeeList">
+					{% if all_customers %} {% for customer in all_customers %} {% if customer.get('emp_email_ID') and customer.get('emp_email_ID') != 'subhashkk@clavax.com' %}
+					<div class="col-md-6 employeeDetails">
+						<div class="fullbox rempselectbox rempselected">
+							<div class="empimagebox">
+								<img src="{{ url_for('static', filename='img/add_employee_more.png') }}" width="50" />
+							</div>
+							<div class="empdetailsbox">
+								<h6 class="employee_name">{{ customer.get('Emp_Name') }}</h6>
+								<p class="employee_email">{{ customer.get('emp_email_ID') }}</p>
+								<p class="manager">Manager- {{ customer.get('Manager_Name') }}</p>
+								<p class="manager_email" style="display: none">{{ customer.get('Manager_email_ID') }}</p>
+							</div>
+						</div>
+					</div>
+					{% endif %} {% endfor %} {% endif %}
+				</div>
+			</div>
+			<div class="flt-right">
+				<a href="javascript:void(0)" class="cmnbtn" id="showselectareward">Select</a>
+			</div>
+		</div>
+		<div class="selectareward" id="selectable">
+			<h3>Select a Reward</h3>
+			<div class="message"></div>
+			<div class="somespacebelow nominate_award_box">
+				{% for reward in rewards %} {% if reward.get('title')|lower != 'welldone award' %}
+				<div class="rawardbox rawardselected">
+					<i class="fas fa-info-circle" title="{{reward.get('hover_message')}}"></i>
+					<a href="javascript:void(0)" class="reward_a" id="RewardImage_{{ loop.index }}" data-title="{{reward.get('title')}}" data-imageLink="{{reward.get('imageLink')}}">
+						<img class="rewardImage" src="{{ reward.get('imageLink') }}" class="img-fluid" />
+						<h4 class="reward">{{reward.get('title')}}</h4>
+					</a>
+				</div>
+				{% endif %} {% if reward.get('title')|lower == 'welldone award' %} {% if session[config['USER_SESSION_KEY']]['is_hr'] == True or session[config['USER_SESSION_KEY']]['Sr_Mangement_HR'] == True %}
+				<div class="rawardbox rawardselected">
+					<i class="fas fa-info-circle" title="{{reward.get('hover_message')}}"></i>
+					<a href="javascript:void(0)" class="reward_a" id="RewardImage_{{ loop.index }}" data-title="{{reward.get('title')}}" data-imageLink="{{reward.get('imageLink')}}">
+						<img class="rewardImage" src="{{ reward.get('imageLink') }}" class="img-fluid" />
+						<h4 class="reward">{{reward.get('title')}}</h4>
+					</a>
+				</div>
+				{% endif %} {% endif %} {% endfor %}
+			</div>
+			<div class="flt-right">
+				<a href="javascript:void(0)" class="cmnbtn" id="closeNominateBoxNext">Next</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script type="text/javascript" src="{{ url_for('nominate.static', filename='nominate.js') }}"></script>
+{% endblock %}

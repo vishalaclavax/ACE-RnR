@@ -1,0 +1,100 @@
+{% extends "_layout.html" %} {% block page_title %} Reports{% endblock %}
+{% block page_content %}
+
+<div class="dashboardportalbox">
+    <form action="{{url_for('main.download_report')}}" method="POST">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <input type="hidden" id="test" name="test" value="123456">
+                    <label style="margin: 0 0 10px;">Please select the report to download</label>
+                    <select class="form-control" id="reportOptions" name="reportOptions">
+                        <option value="select">Select Report</option>
+                        <option value="reward_and_recognition">Report of Awards status</option>
+                        <option value="login_access_report">Report Of Users</option>
+                        <option value="awards_and_citation_message">Report Of Awards With Citation Message</option>
+                        <option value="award_stuck_in_approval">Report Of Awards Stuck In Approval</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6" id="customOptions">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label style="margin: 0 0 10px;">&nbsp;</label>
+                            <select class="form-control" id="month" name="month">
+                                <option value="">Select Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label style="margin: 0 0 10px;">&nbsp;</label>
+                            <select class="form-control" id="year" name="year">
+                                <option value="">Select Year</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2" id="downloadOption">
+                <label style="margin: 0 0 10px;">&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">Download</button>
+            </div>
+        </div>
+    </form>
+            {% if page_err %}
+                <div id ="msg" class="padding-bottom-20">{{page_err}}</div>
+            {% endif %}
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+    $('#customOptions').hide();
+    $('#downloadOption').hide();
+
+    $('#reportOptions').on('change', function () {
+        if (this.value == "awards_and_citation_message") {
+            $('#customOptions').show();
+            $('#msg').hide();
+            $('#downloadOption').show();
+        } else if (this.value == "login_access_report") {
+            $('#customOptions').hide();
+            $('#downloadOption').show();
+            $('#msg').hide();
+
+        } else if (this.value == "award_stuck_in_approval") {
+            $('#customOptions').hide();
+            $('#downloadOption').show();
+            $('#msg').hide();
+
+        } else if (this.value == "reward_and_recognition") {
+            $('#customOptions').hide();
+            $('#downloadOption').show();
+            $('#msg').hide();
+
+        } else {
+            $('#customOptions').hide();
+            $('#downloadOption').hide();
+            $('#msg').hide();
+
+        }
+    });
+</script>
+{% endblock %}

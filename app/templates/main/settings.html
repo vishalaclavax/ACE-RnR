@@ -1,0 +1,364 @@
+{% extends "_layout.html" %} {% block page_title %} Settings{% endblock %} {% block page_style %}
+<!-- <style>
+    .panel {text-align: center;}
+    .button_outer {background: #f4d070; border-radius:30px; text-align: center; height: 50px; width: 250px; display: inline-block; transition: .2s; position: relative; overflow: hidden;}
+    .btn_upload {padding: 15px 30px; color: #000; text-align: center; position: relative; display: inline-block; overflow: hidden; z-index: 3; white-space: nowrap;}
+    .btn_upload input {position: absolute; width: 100%; left: 0; top: 0; width: 100%; height: 105%; cursor: pointer; opacity: 0;}
+    .file_uploading {width: 100%; height: 10px; margin-top: 20px; background: #ccc;}
+    .file_uploading .btn_upload {display: none;}
+    .processing_bar {position: absolute; left: 0; top: 0; width: 0; height: 100%; border-radius: 30px; background:#f4d070; transition: 3s;}
+    .file_uploading .processing_bar {width: 100%;}
+    .success_box {display: none; width: 50px; height: 50px; position: relative;}
+    .success_box:before {content: ''; display: block; width: 12px; height: 22px; border-bottom: 4px solid #fff; border-right: 4px solid #fff; -webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); transform:rotate(45deg); position: absolute; left: 20px; top: 10px;}
+    .file_uploaded .success_box {display: inline-block;}
+    .file_uploaded {margin-top: 0; width: 50px; background:#f4d070; height: 50px;}
+    .uploaded_file_view {max-width: 200px; margin: 40px auto; text-align: center; position: relative; transition: .2s; opacity: 0; border: 2px solid #ddd; padding: 15px;}
+    .file_remove{width: 30px; height: 30px; border-radius: 50%; display: block; position: absolute; background: #aaa; line-height: 30px; color: #fff; font-size: 12px; cursor: pointer; right: -15px; top: -15px;}
+    .file_remove:hover {background: #222; transition: .2s;}
+    .uploaded_file_view img {max-width: 100%;}
+    .uploaded_file_view.show {opacity: 1;}
+    .error_msg {text-align: center; color: #f00}
+</style> -->
+{% endblock %} {% block page_content %}
+<div class="dashboardportalbox">
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2 class="text-center">My Account</h2>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="settingsMainBox">
+					<div class="settingsTabsBox">
+						<ul class="settingsList">
+							<li class="active"><a href="#myprofile" id="myprofie_">My Profile</a></li>
+							<li><a href="#changepassword" id="changepassword_">Change Password</a></li>
+							<li><a href="#pointhistory" id="pointhistory_">Points Redemption History</a></li>
+						</ul>
+					</div>
+					<div class="settingsTabsContentBox">
+						<div class="settingsBoxes active" id="myprofile">
+							<div class="myprofile">
+								<div class="employeedetails">
+									<h3>Personal Details</h3>
+									<div class="pdetailsbox">
+										<h4><strong>Employee Name</strong></h4>
+										<p>{{ session[config['USER_SESSION_KEY']]['name'] }}</p>
+									</div>
+									<div class="pdetailsbox">
+										<h4><strong>Functional Title</strong></h4>
+										<p>{{ session[config['USER_SESSION_KEY']]['designation'] }}</p>
+									</div>
+									<div class="pdetailsbox">
+										<h4><strong>Department</strong></h4>
+										<p>{{ session[config['USER_SESSION_KEY']]['department'] }}</p>
+									</div>
+								</div>
+								<div class="employeedetailsbox">
+									<form action="{{url_for('main.settings')}}" method="POST">
+										<div class="col-md-6 col-sm-8">
+											<h3>About Yourself</h3>
+											<div id="flash_msg mb-4">{{ flash_messages() }}</div>
+											<textarea rows="3" name="description" placeholder="{{session.get('description') if session['description'] else 'Type Here' }}"></textarea>
+											<div class="right">
+												<button type="submit" class="cmnbtn" id="desButon">Submit</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="settingsBoxes" id="changepassword">
+							<div class="changepassword">
+								<h3>Change Password</h3>
+								<form class="changepasswordform" id="changePasswordFrm">
+									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+									<div class="message"></div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<input class="password_field" type="password" name="new_password" id="newPassword" placeholder="Enter New Password" value="" />
+												<span class="showpassword" onmouseenter="view_password('newPassword')" onmouseleave="remove_view_password('newPassword')"><img src="{{ url_for('static', filename='img/view.png') }}" class="hideit" /><img src="{{ url_for('static', filename='img/invisible.png') }}" class="showit" /></span>
+											</div>
+											<p class="custom_error"></p>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<input class="password_field" type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm New Password" value="" />
+												<span class="showpassword" onmouseenter="view_password('confirmPassword')" onmouseleave="remove_view_password('confirmPassword')"><img src="{{ url_for('static', filename='img/view.png') }}" class="hideit" /><img src="{{ url_for('static', filename='img/invisible.png') }}" class="showit" /></span>
+											</div>
+											<p class="custom_error"></p>
+										</div>
+									</div>
+									<button type="submit" id="submit" class="cmnbtn">Update</button>
+								</form>
+							</div>
+						</div>
+						<div class="settingsBoxes" id="pointhistory">
+							<div class="orderHistory" id="orderList" style="padding: 0;">
+								{% if current_order|length> 0 %}
+								{% for order in current_order %}
+								<div class="orderHistory__item productSearh loadingHolder">
+									<!--Sppiner Code-->
+									<div class="spinner-border text-warning" role="status" id="loadingData_{{loop.index}}" style="display:none;">
+										<span class="visually-hidden">Loading...</span>
+									</div>
+									<!--Sppiner Code-->
+									<!-- <div id="loadingData_{{loop.index}}"></div> -->
+									<div class="orderHistory__item--head">
+										<div class="item">
+											<div class="dropdown">
+												<span class="orderId">Order ID: {{order.code}}</span>
+												{% if order.discriminator == 'Order' %}
+													<span class="smallPadding">|</span>
+													<span class="cursor" data-toggle="dropdown">Shipping To : {% if order.shipping_address.zip %} {{order.billing_address.firstname}} {% else %} {{order.shipping_address.firstname}} {% endif %} <i class="fas fa-angle-down margin-left-5"></i></span>
+													<div class="dropdown-menu">
+														<p>
+															{% if order.shipping_address.zip %}
+																<span>{{order.billing_address.firstname}} {{order.billing_address.lastname}}</span>
+																{{order.billing_address.address_line1}}
+																{{order.billing_address.address_line2}}
+																{{order.billing_address.city}}
+																{{order.billing_address.state|upper}} {{order.billing_address.zip}}
+																<br>
+																Phone : {{order.billing_address.mobile}}
+															{% else %}
+																<span>{{order.shipping_address.firstname}} {{order.shipping_address.lastname}}</span>
+																{{order.shipping_address.email}}
+															{% endif %}
+														</p>
+													</div>
+												{% endif %}
+											</div>
+										</div>
+										<div class="item last">
+											{% if order.discriminator == 'Order' %}
+												<span class="orderId cursor order_details" data-index="{{loop.index}}" data-ordercode="{{order.code}}" data-id="{{order.id}}" >Order Details</span>
+											{% endif %}
+											<span class="smallPadding">|</span>
+											<span class="orderId">Order On: {{ order.order_date|format_date }}</span>
+										</div>                                    
+									</div>
+									{% if order.discriminator == 'Order' %}
+										{% if order.item_list|length> 0 %}
+											{% for itmes in order.item_list %}
+												<div class="orderHistory__item--list">
+													<div class="productInfo">
+														<figure><img src="{{itmes.image}}" alt=""></figure>
+														<div class="txt">
+															<p class="big">{{itmes.name}}</p>
+															<p>Quantity:  {{itmes.quantity}}</p>
+															<p>Code:  {{itmes.product_code}}</p>
+														</div>
+													</div>
+													<div class="otherDetails">
+														<ul>
+															<li class="price"><span>&#8377;</span> {{itmes.amount if itmes.amount else '0'}}</li>
+															<li>
+																<span class="points_label">Pts: {{itmes.amount * 4 if itmes.amount else '0' }}</span>
+															</li>
+														</ul>
+														<ul class="flex-column align-items-center">
+															{% if itmes.item_type == 'Giftcard' and  itmes.status == 1 %}
+															<!-- <div id="loadingVoucherData_{{loop.index}}"></div>
+															<li>
+																<span class="btn btn-primary btn-sm margin-bottom-10 cursor voucher_details" data-index="{{loop.index}}" data-ordercode="{{order.code}}" >View Voucher</span>
+															</li> -->
+															{% endif %}
+															<li>
+																{% if itmes.feedback|length> 0 %}
+																	<div class="ratingStars">
+																		{% set max_rating = 5 %}
+																		{% set feedback_rating = itmes.feedback[0]['rating']|int %}
+																		{% set left_rating = max_rating-feedback_rating %}
+																		{% for star_rating in range(0, feedback_rating) %}
+																			<i class="fas fa-star" style="color: gold"></i>
+																		{% endfor %}
+																		{% for i in range(0, left_rating) %}
+																			<i class="far fa-star"></i>
+																		{% endfor %}
+																	</div>
+																{% else %}
+																	{% if itmes.status == 1 and itmes.item_type == 'Product' %}
+																		<a id="feedback_button_{{ order.code }}_{{ itmes['product_code'] }}" href="#modal_feedback" onclick="feedbackFunction(`{{ itmes['product_code'] }}`, `{{ order.code }}`, `{{ user_details['customercode'] }}`, `{{ itmes.image }}`, `{{ itmes.name }}` )" data-target="#feedback_form" id="feedback_value" data-toggle="modal" class="btn btn-primary btn-sm feedback-only" >Leave feedback</a>
+																	{% endif %}
+																{% endif %}
+																<!-- <div class="ratingStars" id="rating_li" style="display: none">
+																	<i class="fas fa-star" style="color: gold"></i>
+																	<i class="far fa-star"></i>
+																</div> -->
+																{% if config.ORDER_STATUS[itmes.status|string] == "Cancelled" or config.ORDER_STATUS[itmes.status|string] == "Failed" %}
+																<span class="btn btn-danger">{{ config.ORDER_STATUS[itmes.status|string] }}</span> 
+																{% elif config.ORDER_STATUS[itmes.status|string] == "Refunded"%}
+																<span class="btn btn-warning">{{ config.ORDER_STATUS[itmes.status|string] }}</span> 
+																{% elif config.ORDER_STATUS[itmes.status|string] == "Completed"%}
+																<span class="btn btn-success">{{ config.ORDER_STATUS[itmes.status|string] }}</span>
+																{% else %}
+																<span class="btn btn-info">{{ config.ORDER_STATUS[itmes.status|string] }}</span>
+																{% endif %}
+																<!-- <span class="status{% if itmes.status ==1 %}success{ % elif itmes.status == 2%}warning{% endif %}{{'success' if itmes.status ==1 else 'failed' if itmes.status == 2  else 'warning'}}">{{ config.ORDER_STATUS[itmes.status|string] }}</span>  -->
+																
+															</li>
+														</ul>
+													</div>
+												</div>
+											{% endfor %}
+										{% endif %}
+									{% else %}
+										<div class="orderHistory__item--list">
+											<div class="productInfo">
+												<figure><img src="{{ url_for('static', filename='assets/img/milaap.png') }}" alt=""></figure>
+												<div class="txt">
+													<p class="big">Milaap (Donation)</p>
+												</div>
+											</div>
+											<div class="otherDetails">
+												<ul>
+													<!-- <li class="price"><span>&#8377;</span> {{ order.total_payment }}</li> -->
+													<li>
+														<span class="points_label">Pts: {{ order.total_points_redeemed }}</span>
+													</li>
+												</ul>
+												<ul class="flex-column align-items-center">
+													<li>
+														<span class="status {{'success' if order.order_status ==1 else 'failed' if order.order_status == 2  else 'warning'}}">{{ config.ORDER_STATUS[order.order_status|string] }}</span>
+													</li>
+												</ul>
+											</div>
+										</div>                                
+									{% endif %}
+								</div>
+								{% endfor %}
+								{% else %}
+								<div class="noRecordsFound" id="noRecordsFound">
+									<div class="noRecordsFound__item">
+										<div class="icon"><img src="{{ url_for('static', filename='img/no_order.png') }}" alt="no_order"></div>
+										<h4 class="size21 semi primary_color margin-bottom-0">No Order Placed</h4>
+									</div>
+								</div>
+								{% endif %}                        
+							</div>
+							<div class="noRecordsFound" id="noRecordsFound_new" style="display:none">
+								<div class="noRecordsFound__item">
+									<div class="icon"><img src="{{ url_for('static', filename='img/no_order.png') }}" alt="no_order"></div>
+									<h4 class="size21 semi primary_color margin-bottom-0">No Order Placed</h4>
+								</div>
+							<!-- <div class="pointhistory">
+								<div class="table-responsive">
+									<table class="table table-borderless">
+										<thead>
+											<tr>
+												<th>Order Details</th>
+												<th>Points</th>
+												<th>Redemption Date</th>
+												<th>Transaction Type</th>
+												<th>Details</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% if redeem_history %} {% for redeem in redeem_history %}
+											<tr>
+												<td><p>Order ID: {{ redeem.orderdetails }}</p></td>
+												<td>{{ redeem.points|int }}</td>
+												<td>{{ redeem.redemptiondate|format_date('%d/%m/%y') }}</td>
+												<td>{{ redeem.transactiontype }}</td>
+
+												{% if redeem.voucherDetails is not none %}
+												<td><a href="javascript:void(0)" onclick="get_voucher_details('{{ redeem.orderdetails }}','{{redeem.voucherDetails|convert_to_json}}')">Giftcard Details</a></td>
+												{% else %}
+												<td>-</td>
+												{% endif %}
+											</tr>
+											{% endfor %} {% else %}
+											<tr>
+												<td colspan="4">No Data Found!</td>
+											</tr>
+											{% endif %}
+										</tbody>
+									</table>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="loaderbox" style="display: none">
+	<div class="npci_loader"><img src="{{ url_for('static', filename='img/npci_arrow.png') }}" /></div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h5 class="modal-title" style="width: 100%" id="voucherHeading">Voucher details <br />Order Code : -</h5>
+				<div class="table-responsive">
+					<table class="table table-borderless">
+						<thead>
+							<tr>
+								<th class="text-center">Giftcard Type</th>
+								<th class="text-center">Card Number</th>
+								<th class="text-center">Card Pin</th>
+							</tr>
+						</thead>
+						<tbody id="voucherDetailsRow"></tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--// Modal Order Details \\-->
+<div id="modal_orderDetails" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true"></div>
+<!--// Modal Order Details::END \\-->
+ 
+
+{% endblock %} {% block page_scripts %}
+<script type="text/javascript" src="{{ url_for('auth.static', filename='js/src/authenticate.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/userDetails.js') }}"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".settingsList li a").click(function (e) {
+			e.preventDefault();
+		});
+
+		$(".settingsList li").click(function () {
+			var tabid = $(this).find("a").attr("href");
+			$(".settingsList li, .settingsTabsContentBox.settingsBoxes").removeClass("active"); // removing active class from tab
+
+			$(".settingsBoxes").hide();
+			$(tabid).show();
+			$(this).addClass("active");
+		});
+	});
+	$(document).on("click", "#desButon", function () {
+		$(".loaderbox").show();
+	});
+	function scrollWin() {
+		window.scrollTo(200, 0);
+	}
+	function get_voucher_details(order_details, voucher_details) {
+		try {
+			var item_data = JSON.parse(voucher_details);
+			var voucher_html = "";
+			$.each(item_data, function (i, item) {
+				voucher_html += '<tr><td class="text-center">' + item.productName + '</td><td class="text-center">' + item.cardNumber + '</td><td class="text-center">' + item.cardPin + "</td></tr>";
+			});
+			var ord_details = "Voucher details <br>Order Code : " + order_details;
+		} catch (ex) {
+			console.log(ex);
+			var voucher_html = "";
+			var ord_details = "";
+		}
+		$("#voucherHeading").html(ord_details);
+		$("#voucherDetailsRow").html(voucher_html);
+		$("#exampleModal").modal("show");
+	}
+</script>
+{% endblock %}

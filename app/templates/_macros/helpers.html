@@ -1,0 +1,26 @@
+{% macro flash_messages() %}
+    {% set msg_types = dict(info='info', success='success', warning='warning', error='danger') %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ msg_types.get(category, 'info') }} alert-dismissible">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                {{ message|safe }}
+              </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if page_msg %}
+        <div class="alert alert-dismissible alert-info" role="alert">
+            <a href="#!" class="btn-close" data-bs-dismiss="alert"></a>
+            {{ page_msg|safe }}
+        </div>
+    {% endif %}
+    {% if page_err %}
+        <div class="alert alert-dismissible alert-danger" role="alert">
+            <a href="#!" class="btn-close" data-bs-dismiss="alert"></a>
+            {{ page_err|safe }}
+        </div>
+    {% endif %}
+{% endmacro %}

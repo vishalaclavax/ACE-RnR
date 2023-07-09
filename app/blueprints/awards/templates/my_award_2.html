@@ -1,0 +1,56 @@
+{% extends "_layout.html" %} {% block page_title %} My Award{% endblock %} {% block page_content %}
+
+<div class="dashboardportalbox">
+	<div class="recongnizebox">
+		<div class="recognize_heading">
+			<h2>My Awards</h2>
+		</div>
+		<div class="row">
+			{% for reward in rewards %} {% if reward.get('transactionmethodkey') != 'Post & Announcement' %}
+			<div class="col-md-6">
+				<div class="updates_box myaward_box">
+					<div class="row update_header_row">
+						<div class="col-md-12">
+							<div class="updater_header">
+								<table>
+									<tr>
+										<td><img src="{{ url_for('static', filename='img/user_1.png') }}" class="img-fluid" width="50" /></td>
+										<td>
+											<h4>
+												<!-- <a href="#">Ravindra Kumar</a> was awarded <strong>Value 1 Award</strong> by <a href="#">Narendra Singh</a> -->
+												You have been {% if reward.get('transactionmethodkey')|lower == 'post' %}recognized{% else %}rewarded{% endif %} with <strong>{{reward.get('reward_id')}}{% if reward.get('transactionmethodkey')|lower == 'post' and reward.get('award_values') %} ({{ reward.get('award_values')}}){% endif %}</strong> by <a href="javascript:void(0)"><img src="{{ url_for('static', filename='img/user.png') }}" width="30" class="recognizer_img" />{{reward.get('awarded_by_email')}}</a>
+											</h4>
+											<p class="award_date">{{ reward.get('transaction_date')|dmy_format }}</p>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="">
+						<p>{{reward.get('citation_msg')}}</p>
+					</div>
+					<div class="update_image_box">
+						<img src="{{ reward.get('imageLink') }}" class="img-fluid" />
+					</div>
+				</div>
+			</div>
+			{% endif %} {% endfor %}
+			<!-- <div class="my_award_box">
+				<div class="fullbox">
+					<div class="onefourthbox">
+						<img src="{{ url_for('static', filename='img/my_award_happy_birthday.png') }}" class="img-fluid" />
+					</div>
+					<div class="threefourthbox">
+						<div class="my_award_content_box">
+							<h3>Happy Birthday</h3>
+							<p>Congratulations on your Birthday. May all your wishes come true.</p>
+						</div>
+					</div>
+				</div>
+			</div> -->
+		</div>
+	</div>
+</div>
+
+{% endblock %}

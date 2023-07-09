@@ -1,0 +1,162 @@
+{% extends "_layout.html" %}
+{% from "_macros/helpers.html" import flash_messages with context %}
+{% block page_content %}
+
+<div class="dashboardportalbox">
+    <div class="message mt-5">{{ flash_messages() }}</div>
+    <div class="dashboard__importCustomers">
+        
+        <div class="dashboard__importHeading">
+            <!-- <a href="javascript:void(0)"> <i class="fa-solid fa-arrow-left"></i> Back</a> -->
+            <h6>Import Customers</h6>
+            <p> Import your customers through csv file
+                <span title="Importing points adds them to the Current Points Balance and Total Points Earned attributes in your customers' profiles"><i class="fa-solid fa-circle-info"></i> </span>
+            </p>
+        </div>
+        <div class="dashboard__importMainBox"> 
+            <div class="dashboard__importBox dashboard__importBox--stepOne">
+                <!-- <div class="dashboard__importHeader">
+                    <ul>
+                        <li class="active">
+                            <span class="dashboard__importNumber">1</span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li>
+                            <span class="dashboard__importNumber">2</span>
+                            <span class="dashboard__importText">Upload</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li>
+                            <span class="dashboard__importNumber">3</span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                        </li>
+                    </ul>
+                </div> -->
+                <!-- app/static/uploads/temp/CustReg02152023165330_34_02152023112330NPCIAllEmployeeData20230131.csv -->
+                <div class="dashboard__importBody">
+                    <p> <i class="fa-solid fa-check"></i> Download our sample
+                        <!-- {{ url_for('static', filename='js/common.js') }} -->
+                        <a href="{{ url_for('static', filename='uploads/temp/CustReg02152023165330_34_02152023112330NPCIAllEmployeeData20230131.csv') }}" download>CSV file</a>
+                        <!-- <a href="javascript:void(0)" download="" target="_blank"> CSV file <img src={downloadIcon} alt="" /> -->
+                        </a>
+                    </p>
+                    <!-- <p> <i class="fa-solid fa-check"></i>Added emails of the customers from your store to column A,
+                        and their points to column B. If you have more than 500,000 customers import in batches.
+                    </p> -->
+                    <p> <i class="fa-solid fa-check"></i>Double check each email is next to the customer
+                    </p>
+                </div>
+                <!-- <div class="dashboard__importFooter">
+                    <button class="btn btn-primary btn-lg">Next</button>
+                </div> -->
+            </div>
+            <div class="dashboard__importBox dashboard__importBox--stepTwo">
+                <!-- <div class="dashboard__importHeader">
+                    <ul>
+                        <li>
+                            <span class="dashboard__importNumber"> <i class="fa-solid fa-check"></i> </span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li class="active">
+                            <span class="dashboard__importNumber">2</span>
+                            <span class="dashboard__importText">Upload</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li>
+                            <span class="dashboard__importNumber">3</span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                        </li>
+                    </ul>
+                </div> -->
+                <div class="dashboard__importBody">
+                    <form class="dashboard__importForm" method="POST" id="upload_excel_form" action="{{url_for('main.upload_excel')}}" enctype="multipart/form-data">
+                        <div class="dashboard__importFormImage">
+                            <img src="" alt="" />
+                        </div>
+                        <div class="dashboard__importFormDescription">
+                            <div class="dashboard__importFormTitle">
+                                <!-- <span class="dashboard__importFormLeft">Drop your CSV file here or</span> -->
+                                <span class="dashboard__importFormRight">
+                                    <span class="dashboard__importFormText">select a file from your computer</span>
+                                    <input class="dashboard__importFormTInput" name="customercsv" type="file" accept=".csv" required/>
+                                </span>
+                            </div>
+                            <div class="dashboard__importFormSubtitle">Maximum file size is 25 MB</div>
+                        </div>
+
+                        <div class="dashboard__importFooter">
+                            <!-- <button class="btn btn-outline-primary"> Back</button> -->
+                            <button type="submit" class="btn btn-primary" id="upload_excel_button"> Upload File</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div> 
+            <!-- <div class="dashboard__importBox dashboard__importBox--stepThree">
+                <div class="dashboard__importHeader">
+                    <ul>
+                        <li>
+                            <span class="dashboard__importNumber"> <i class="fa-solid fa-check"></i></span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li>
+                            <span class="dashboard__importNumber"> <i class="fa-solid fa-check"></i> </span>
+                            <span class="dashboard__importText">Upload</span>
+                            <span class="dashboard__importArrow"> <i class="fa-solid fa-chevron-right"></i></span>
+                        </li>
+                        <li class="active">
+                            <span class="dashboard__importNumber">3</span>
+                            <span class="dashboard__importText">Prepare your file</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dashboard__importBody">
+                    <form class="dashboard__importForm">
+                        <div class="dashboard__importFormImage">
+                            <img src={uploadCSVIcon} alt="" />
+                        </div>
+                        <div class="dashboard__importFormDescription">
+                            <div class="dashboard__importFormTitle">
+                                <span class="dashboard__importFormLeft">Drop your CSV file here or</span>
+                                <span class="dashboard__importFormRight">
+                                    <span class="dashboard__importFormText">select a file from your computer</span>
+                                    <input class="dashboard__importFormTInput" type="file" accept=".csv" />
+                                </span>
+                            </div>
+                            <div class="dashboard__importFormSubtitle">Maximum file size is 25 MB</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="dashboard__importFooter">
+                    <button class="btn btn-outline-primary">Back</button>
+                    <button class="btn btn-primary" disabled> Upload File</button>
+                </div>
+            </div> -->
+        </div>
+        <!-- <div class="dashboard__importSidebar">
+            <div class="dashboard__importSidebarHeader">
+                <p>following this example to formate your CSV file:</p>
+            </div>
+            <div class="dashboard__importSidebarBody">
+                <img src="" alt="" />
+            </div>
+            <div class="dashboard__importSidebarFooter">
+                <p> Need help?<a href="/"> See our file guidelines <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#upload_excel_button").change(function () {
+        // submit the form
+        $("#upload_excel_form").submit();
+        $(".loaderbox").show();
+    });
+
+     
+</script>
+{% endblock %}

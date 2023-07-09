@@ -1,0 +1,225 @@
+{% from "_macros/helpers.html" import flash_messages with context %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Homepage - Awards, Celebrations & Expressions Reward and Recognition Platform</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+		<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+		<link href="{{ url_for('static', filename='css/custom_style.css') }}" rel="stylesheet" />
+		<link href="{{ url_for('static', filename='css/jquery.growl.css') }}" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
+		<style>
+			.styled-checkbox {
+				position: absolute;
+				opacity: 0;
+			}
+			.styled-checkbox + label {
+				position: relative;
+				cursor: pointer;
+				padding: 0;
+				margin-bottom: 15px;
+			}
+			.styled-checkbox + label:before {
+				content: "";
+				margin-right: 10px;
+				display: inline-block;
+				vertical-align: text-top;
+				width: 20px;
+				height: 20px;
+				background: #00266f;
+			}
+			.styled-checkbox:hover + label:before {
+				background: #00266f;
+			}
+			/* .styled-checkbox:focus + label:before {
+				box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+			} */
+			.styled-checkbox:checked + label:before {
+				background: #00266f;
+			}
+			.styled-checkbox:disabled + label {
+				color: #b8b8b8;
+				cursor: auto;
+			}
+			.styled-checkbox:disabled + label:before {
+				box-shadow: none;
+				background: #ddd;
+			}
+			.styled-checkbox:checked + label:after {
+				content: "";
+				position: absolute;
+				left: 5px;
+				top: 11px;
+				background: #00266f;
+				width: 2px;
+				height: 2px;
+				box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+				transform: rotate(45deg);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="logoSection">
+			<div class="ace_logo_box">
+				<img src="{{ url_for('static', filename='img/npci_logo.png') }}" />
+			</div>
+			<div class="npci_logo_box">
+				<img src="{{ url_for('static', filename='img/NPCI-EVP-Logo.jpg') }}" />
+			</div>
+		</div>
+		<div class="loginSection">
+			<div class="container">
+				<div class="loginSection__main">
+					<div class="loginSection__slider" id="loginSectionSlider">
+						<div class="loginSection__img">
+							<img src="https://rupayrewardassets.blob.core.windows.net/npciace/loginpage1.jpg" />
+						</div>
+						<!-- <div class="loginSection__img">
+							<img src="{{ url_for('static', filename='img/bodybg.jpg') }}" />
+						</div>
+						<div class="loginSection__img">
+							<img src="{{ url_for('static', filename='img/bodybg.jpg') }}" />
+						</div>
+						<div class="loginSection__img">
+							<img src="{{ url_for('static', filename='img/bodybg.jpg') }}" />
+						</div> -->
+					</div>
+					<div class="loginSection__loginBox">
+						<div class="employeelogbox">
+							<img src="{{ url_for('static', filename='img/ace_logo_white.png') }}" loading="lazy" class="clogo" />
+							<div class="ace_logo_caption_box">
+								<h4>Awards, Celebrations & Expressions <br />Rewards and Recognition Platform</h4>
+							</div>
+							{% set q = request.args.get('q') %}
+							<form class="employeeloginregform" id="emploginform" style="{% if not q or q == '' %}display:block;{% else %}display:none;{% endif %}">
+								<div class="message">{{ flash_messages() }}</div>
+								<div class="message"></div>
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+								<div class="phonenumberinputbox">
+									<input type="email" class="" name="login_email" id="loginEmail" placeholder="Email ID" value="" />
+									<p class="custom_error"></p>
+								</div>
+								<div class="passwordinputbox">
+									<input type="password" id="loginPassword" name="login_password" class="login_password" placeholder="Password" value="" />
+									<span class="showpassword" onmouseenter="view_password('loginPassword')" onmouseleave="remove_view_password('loginPassword')"><img src="{{ url_for('static', filename='img/view.png') }}" class="hideit" /><img src="{{ url_for('static', filename='img/invisible.png') }}" class="showit" /></span>
+									<p class="custom_error"></p>
+								</div>
+								<a href="javascript:void(0)" class="fgtpwd">Forgot Password?</a>
+								<input class="styled-checkbox" id="styled-checkbox-1" type="checkbox" name="disclamor_check" id="disclamorCheck" value="1" />
+								<label for="styled-checkbox-1">I agree to <a href="#!" data-bs-toggle="modal" data-bs-target="#exampleModal">Terms & Conditions</a></label>
+								<button type="submit" class="sbtn">Login</button>
+								<!-- <p class="register">Not Registered? <a href="javascript:void(0)" class="registernow">Register Now</a></p> -->
+							</form>
+							<form class="employeeloginregform" id="empregisterform" style="{% if q == 'reg' %}display:block;{% else %}display:none;{% endif %}">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+								<div class="message"></div>
+								<div class="phonenumberinputbox">
+									<input type="email" name="reg_email" id="regEmail" class="reg_email" placeholder="Email ID" />
+									<span class="verifynumber send_otp" onclick="send_reg_otp(this)">Verify</span>
+									<p class="custom_error"></p>
+								</div>
+								<div class="passwordinputbox">
+									<input type="password" name="reg_password" id="regPassword" class="reg_password" placeholder="Password" value="" />
+									<span class="showpassword" onmouseenter="view_password('regPassword')" onmouseleave="remove_view_password('regPassword')"><img src="{{ url_for('static', filename='img/view.png') }}" class="hideit" /><img src="{{ url_for('static', filename='img/invisible.png') }}" class="showit" /></span>
+									<p class="custom_error"></p>
+								</div>
+								<input type="text" name="verfied_otp" id="verfiedOtp" class="" placeholder="Enter OTP" />
+								<p class="custom_error"></p>
+								<button type="submit" class="sbtn">Register</button>
+								<p class="register">Already Register? <a href="javascript:void(0)" class="loginnow">Login Now</a></p>
+							</form>
+							<form class="employeeloginregform" id="emppwdform" style="{% if q == 'fpwd' %}display:block;{% else %}display:none;{% endif %}">
+								<div class="message"></div>
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+								<p>Enter your registered email address to retrieve your password</p>
+								<input type="email" name="fgt_email" id="fgtEmail" class="" placeholder="Email ID" />
+								<p class="custom_error"></p>
+								<button type="submit" class="sbtn">Send</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="loaderbox" style="display: none">
+			<div class="npci_loader"><img src="{{ url_for('static', filename='img/npci_arrow.png') }}" /></div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Terms & Conditions</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>This site should be used as an official platform for Awards, Celebration & Expressions within NPCI Code of conduct. Any inappropriate use/ content which may be constituted as derogatory/ defamatory / hurtful to any individual or group should be strongly avoided. NPCI reserves the right to take action against any breach of the NPCI Code of Conduct Policy</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var app_base_url = "{{ config['APP_BASE_URL'] }}";
+			var per_page = "{{ config['PER_PAGE'] }}";
+			var csrf_token = "{{ csrf_token() }}";
+		</script>
+		<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery-validation/jquery.validate.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.growl.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/custom_validator.js') }}"></script>
+		<script src="{{ url_for('auth.static', filename='js/src/authenticate.js') }}"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+		<script src="{{ url_for('static', filename='js/login_common.js') }}"></script>
+		<script>
+
+			function isNumberCheck(evt) {
+				var charCode = evt.which ? evt.which : event.keyCode;
+				if (charCode >= 48 && charCode <= 57) {
+					return true;
+				}
+				return false;
+			}
+			$("#loginSectionSlider").slick({
+	dots: true,
+	arrows: false,
+	infinite: true,
+	speed: 300,
+	slidesToShow: 1,
+	slidesToScroll: 1,
+	// responsive: [
+	// 	{
+	// 		breakpoint: 1024,
+	// 		settings: {
+	// 			slidesToShow: 3,
+	// 			slidesToScroll: 3,
+	// 			infinite: true,
+	// 			dots: true,
+	// 		},
+	// 	},
+	// 	{
+	// 		breakpoint: 600,
+	// 		settings: {
+	// 			slidesToShow: 2,
+	// 			slidesToScroll: 2,
+	// 		},
+	// 	},
+	// 	{
+	// 		breakpoint: 480,
+	// 		settings: {
+	// 			slidesToShow: 1,
+	// 			slidesToScroll: 1,
+	// 		},
+	// 	},
+	// 	// You can unslick at a given breakpoint now by adding:
+	// 	// settings: "unslick"
+	// 	// instead of a settings object
+	// ],
+});
+		</script>
+	</body>
+</html>

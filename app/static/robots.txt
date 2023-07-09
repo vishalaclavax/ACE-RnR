@@ -1,0 +1,3 @@
+User-agent: *
+
+sitemap: https://nthrewards.com/sitemap.xml

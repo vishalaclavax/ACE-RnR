@@ -1,0 +1,43 @@
+{% from "_macros/helpers.html" import flash_messages with context %} {% if received_award_list %} {% for reward in received_award_list %}
+<div class="updates_box myaward_box">
+	<div class="update_header_row">
+		<div class="updater_header">
+			<div class="updater_header-top">
+				<h4>
+					<img src="{% if session[config['USER_SESSION_KEY']]['imageUrl'] %}{{ session[config['USER_SESSION_KEY']]['imageUrl'] }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+					You have been {% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' %}celebrated/recognized{% else %}rewarded{% endif %} <strong>{{reward.get('transactionData').get('reward_id')}}</strong> by <strong class="profileBox">{{ reward.customer.awarded_by_name }} <img src="{% if 'customer' in reward and reward.customer.awarded_by_image %}{{ reward.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img" /></strong>{% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' and reward.get('transactionData').get('award_values') %} <span class="block">NPCI Way Tenet Exhibited -<strong> {{ reward.get('transactionData').get('award_values')}}</strong></span
+					>{% endif %}
+				</h4>
+			</div>
+			<div class="updater_header-bottom">
+				<p>{{reward.get('transactionData').get('citation_msg')}}</p>
+				<p class="award_date">{% if reward.transactionData.transaction_date %}{{ reward.get('transactionData').get('transaction_date')|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+			</div>
+		</div>
+	</div>
+	<div class="update_image_box">
+		<img src="{{ reward.get('awardImage') }}" class="img-fluid" />
+	</div>
+</div>
+{% endfor %} {% endif %} {% if given_award_list %} {% for reward in given_award_list %}
+<div class="updates_box myaward_box">
+	<div class="update_header_row">
+		<div class="updater_header">
+			<div class="updater_header-top">
+				<h4>
+					<img src="{% if reward.customer.Profileimage %}{{ reward.customer.Profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+					<strong>{{ reward.customer.Emp_Name }}</strong> has been {% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' %}celebrated/recognized{% else %}rewarded{% endif %} <strong>{{reward.get('transactionData').get('reward_id')}}</strong> by <strong class="profileBox">you <img src="{% if 'customer' in reward and reward.customer.awarded_by_image %}{{ reward.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img" /></strong>{% if reward.get('transactionData').get('transactionmethodkey')|lower == 'post' and reward.get('transactionData').get('award_values') %} <span class="block">NPCI Way Tenet Exhibited -<strong> {{ reward.get('transactionData').get('award_values')}}</strong></span
+					>{% endif %}
+				</h4>
+			</div>
+			<div class="updater_header-bottom">
+				<p>{{reward.get('transactionData').get('citation_msg')}}</p>
+				<p class="award_date">{% if reward.transactionData.transaction_date %}{{ reward.get('transactionData').get('transaction_date')|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+			</div>
+		</div>
+	</div>
+	<div class="update_image_box">
+		<img src="{{ reward.get('awardImage') }}" class="img-fluid" />
+	</div>
+</div>
+{% endfor %} {% endif %}

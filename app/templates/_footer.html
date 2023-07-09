@@ -1,0 +1,111 @@
+<footer class="mainFooter">
+	<div class="mainFooter__top">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-3 col-md-6 col-sm-12">
+					<div class="mainFooter__sponsored">
+						<!-- <p>Powered by</p>
+                        <ul>
+                            <li>
+                                <a target="_blank" href="https://seal.gtisec.com/85DpokRDn458k74kufrkjibh">
+                                    <img src="{{ url_for('static', filename='assets/img/pci_dss_logo.png') }}" alt="pci_dss" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.novusloyalty.com/" target="_blank">
+                                    <img src="{{ url_for('static', filename='assets/img/novusLoyaltyB-logo.png') }}" alt="Novus Loyalty" />
+                                </a>
+                            </li>
+                        </ul> -->
+						<ul>
+							<li>
+								<a href="{{url_for('main.index') }}">
+									<img href="{{url_for('main.index') }}" src="{{ url_for('static', filename='assets/img/logo-footer.png') }}" alt="" />
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="mainFooter__information">
+						<ul>
+							<li>
+								<a href="mainto:cc@sleepsia.in">
+									<img src="{{ url_for('static', filename='assets/img/envelope-icon.png') }}" alt="" />
+									<span>cc@sleepsia.in</span>
+								</a>
+							</li>
+							<li>
+								<a href="tel:93191-92254">
+									<img src="{{ url_for('static', filename='assets/img/phone-icon.png') }}" alt="" />
+									<span>93191-92254</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="mainFooter__socialLinks">
+						<ul>
+							<li>
+								<a href="https://www.facebook.com/sleepsiapillow" target="_blank" class="facebook"><i class="fab fa-facebook-square"></i></a>
+							</li>
+							<li>
+								<a href="https://www.instagram.com/accounts/login/?next=/sleepsiaindia/" target="_blank" class="instagram"><i class="fab fa-instagram-square"></i></a>
+							</li>
+							<li>
+								<a href="https://www.youtube.com/channel/UC6214ZxdESEHL-xLeDgHwXg?view_as=subscriber\" target="_blank" class="youtube"><i class="fab fa-youtube-square"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-12">
+					<div class="mainFooter__links">
+						<h3>Links</h3>
+						<ul>
+							<li><a href="{{url_for('giftcards.index') }}">Gift Cards</a></li>
+							<li><a href="javascript:void(0)">Terms of Service</a></li>
+							<li><a href="{{url_for('main.privacy_policy') }}">Privacy Policy</a></li>
+							<li><a href="{{url_for('main.return_policy') }}">Return Policy</a></li>
+							<li><a href="javascript:void(0)">Shipping Policy</a></li>
+							<li><a href="{{url_for('main.terms_condition') }}">Terms and Conditions</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-12">
+					<div class="mainFooter__links">
+						<h3>Information</h3>
+						<ul>
+							<li><a href="{{url_for('main.aboutus') }}">About Us</a></li>
+							<li><a href="{{url_for('main.contactus') }}">Contact Us</a></li>
+							<li><a href="{{url_for('main.refund_policy') }}">Cancellations and Refunds</a></li>
+							<li><a href="{{url_for('blogs/news.index') }}">Blog</a></li>
+							<!-- <li><a href="javascript:void(0)">Track Your Order</a></li> -->
+							<li><a href="{{url_for('main.corporate_sales') }}">Corporate Sales</a></li>
+							<li><a href="{{url_for('main.bulk_buy') }}">Buy in Bulk</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-12">
+					<div class="mainFooter__links">
+						<h3>Useful Links</h3>
+						<ul>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-bangalore') }}">Pillows In Bangalore</a></li>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-gurgaon') }}">Pillows in Gurugram</a></li>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-chennai') }}">Pillows In Chennai</a></li>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-hyderabad') }}">Pillows in Hyderabad</a></li>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-pune') }}">Pillows in Pune</a></li>
+							<li><a href="{{ url_for('blogs/news.blog_details',slug='memory-foam-pillow-in-mumbai') }}">Pillows in Mumbai</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mainFooter__bottom">
+		<div class="container">
+			<!-- <div class="mainFooter__links">
+				<ul></ul>
+			</div> -->
+			<div class="mainFooter__copyright">
+				<p>Copyright © 2022 Sleepsia All rights reserved. Powered by Sleepsia</p>
+			</div>
+		</div>
+	</div>
+</footer>

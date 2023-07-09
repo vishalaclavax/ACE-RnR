@@ -1,0 +1,217 @@
+{% extends "_layout.html" %} {% block page_title %} Settings{% endblock %} {% block page_style %}
+{% endblock %} {% block page_content %}
+<div class="userDashboard__contentBox tab-content">
+    <div class="" id="orderHistory">
+        <div class="userDashboard__contentBox--orderHistory">
+            <div class="headingBox margin-bottom-25">
+                <h3 class="size30">
+                    <i class="myOrder_Icon"></i>
+                    <span>My Order</span>
+                </h3>
+            </div>
+            <div class="dashboard--content">
+                <div class="row align-items-center searchAndFilterBox">
+                    <div class="col-md-6">
+                        <div class="heading-msg">
+                            <p class="margin-bottom-0">View the status and details of your orders here</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input type="text" name="" id="searchOrder" class="form-control" placeholder="Search Order...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select name="" id="sort_by" class="form-control cursor">
+                                <option value="10">--Filter By--</option>
+                                <option value="1">Last One Week</option>
+                                <option value="2">Last Two Weeks</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="loadingHolder">
+                    <div id="loadingData" style="height: 400px;display: none;"></div>
+                </div>
+                <div class="orderHistory" id="orderList" style="padding: 0;">
+                    {% if current_order|length> 0 %}
+                    {% for order in current_order %}
+                    <div class="orderHistory__item productSearh loadingHolder">
+                        <div id="loadingData_{{loop.index}}"></div>
+                        <div class="orderHistory__item--head">
+                            <div class="item">
+                                <div class="dropdown">
+                                    <span class="orderId">Order ID: {{order.code}}</span>
+                                    {% if order.discriminator == 'Order' %}
+                                        <span class="smallPadding">|</span>
+                                        <span class="cursor" data-toggle="dropdown">Shipping To : {% if order.shipping_address.zip %} {{order.billing_address.firstname}} {% else %} {{order.shipping_address.firstname}} {% endif %} <i class="fas fa-angle-down margin-left-5"></i></span>
+                                        <div class="dropdown-menu">
+                                            <p>
+                                                {% if order.shipping_address.zip %}
+                                                    <span>{{order.billing_address.firstname}} {{order.billing_address.lastname}}</span>
+                                                    {{order.billing_address.address_line1}}
+                                                    {{order.billing_address.address_line2}}
+                                                    {{order.billing_address.city}}
+                                                    {{order.billing_address.state|upper}} {{order.billing_address.zip}}
+                                                    <br>
+                                                    Phone : {{order.billing_address.mobile}}
+                                                {% else %}
+                                                    <span>{{order.shipping_address.firstname}} {{order.shipping_address.lastname}}</span>
+                                                    {{order.shipping_address.email}}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="item last">
+                                {% if order.discriminator == 'Order' %}
+                                    <span class="orderId cursor order_details" data-index="{{loop.index}}" data-ordercode="{{order.code}}" >Order Details</span>
+                                {% endif %}
+                                <span class="smallPadding">|</span>
+                                <span class="orderId">Order On: {{ order.order_date|format_date }}</span>
+                            </div>                                    
+                        </div>
+                        {% if order.discriminator == 'Order' %}
+                            {% if order.item_list|length> 0 %}
+                                {% for itmes in order.item_list %}
+                                    <div class="orderHistory__item--list">
+                                        <div class="productInfo">
+                                            <figure><img src="{{itmes.image}}" alt=""></figure>
+                                            <div class="txt">
+                                                <p class="big">{{itmes.name}}</p>
+                                                <p>Quantity:  {{itmes.quantity}}</p>
+                                                <p>Code:  {{itmes.product_code}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="otherDetails">
+                                            <ul>
+                                                <li class="price"><span>&#8377;</span> {{itmes.amount if itmes.amount else '0'}}</li>
+                                                <li>
+                                                    <span class="points_label">Pts: {{itmes.amount * 4 if itmes.amount else '0' }}</span>
+                                                </li>
+                                            </ul>
+                                            <ul class="flex-column align-items-center">
+                                                {% if itmes.item_type == 'Giftcard' and  itmes.status == 1 %}
+                                                <!-- <div id="loadingVoucherData_{{loop.index}}"></div>
+                                                <li>
+                                                    <span class="btn btn-primary btn-sm margin-bottom-10 cursor voucher_details" data-index="{{loop.index}}" data-ordercode="{{order.code}}" >View Voucher</span>
+                                                </li> -->
+                                                {% endif %}
+                                                <li>
+                                                    {% if itmes.feedback|length> 0 %}
+                                                        <div class="ratingStars">
+                                                            {% set max_rating = 5 %}
+                                                            {% set feedback_rating = itmes.feedback[0]['rating']|int %}
+                                                            {% set left_rating = max_rating-feedback_rating %}
+                                                            {% for star_rating in range(0, feedback_rating) %}
+                                                                <i class="fas fa-star" style="color: gold"></i>
+                                                            {% endfor %}
+                                                            {% for i in range(0, left_rating) %}
+                                                                <i class="far fa-star"></i>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {% if itmes.status == 1 and itmes.item_type == 'Product' %}
+                                                            <a id="feedback_button_{{ order.code }}_{{ itmes['product_code'] }}" href="#modal_feedback" onclick="feedbackFunction('{{ itmes['product_code'] }}', '{{ order.code }}', '{{ user_details['customercode'] }}', '{{ itmes.image }}', '{{ itmes.name }}' )" data-target="#feedback_form" id="feedback_value" data-toggle="modal" class="btn btn-primary btn-sm feedback-only" >Leave feedback</a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    <!-- <div class="ratingStars" id="rating_li" style="display: none">
+                                                        <i class="fas fa-star" style="color: gold"></i>
+                                                        <i class="far fa-star"></i>
+                                                    </div> -->
+                                                    <span class="status {{'success' if itmes.status ==1 else 'failed' if itmes.status == 2  else 'warning'}}">{{ config.ORDER_STATUS[itmes.status|string] }}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <div class="orderHistory__item--list">
+                                <div class="productInfo">
+                                    <figure><img src="{{ url_for('static', filename='assets/img/milaap.png') }}" alt=""></figure>
+                                    <div class="txt">
+                                        <p class="big">Milaap (Donation)</p>
+                                    </div>
+                                </div>
+                                <div class="otherDetails">
+                                    <ul>
+                                        <!-- <li class="price"><span>&#8377;</span> {{ order.total_payment }}</li> -->
+                                        <li>
+                                            <span class="points_label">Pts: {{ order.total_points_redeemed }}</span>
+                                        </li>
+                                    </ul>
+                                    <ul class="flex-column align-items-center">
+                                        <li>
+                                            <span class="status {{'success' if order.order_status ==1 else 'failed' if order.order_status == 2  else 'warning'}}">{{ config.ORDER_STATUS[order.order_status|string] }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                                
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="noRecordsFound" id="noRecordsFound">
+                        <div class="noRecordsFound__item">
+                            <div class="icon"><img src="{{ url_for('static', filename='img/no_order.png') }}" alt="no_order"></div>
+                            <h4 class="size21 semi primary_color margin-bottom-0">No Order Placed</h4>
+                        </div>
+                    </div>
+                    {% endif %}                        
+                </div>
+                <div class="noRecordsFound" id="noRecordsFound_new" style="display:none">
+                    <div class="noRecordsFound__item">
+                        <div class="icon"><img src="{{ url_for('static', filename='img/no_order.png') }}" alt="no_order"></div>
+                        <h4 class="size21 semi primary_color margin-bottom-0">No Order Placed</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script type="text/javascript" src="{{ url_for('auth.static', filename='js/src/authenticate.js') }}"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".settingsList li a").click(function (e) {
+			e.preventDefault();
+		});
+
+		$(".settingsList li").click(function () {
+			var tabid = $(this).find("a").attr("href");
+			$(".settingsList li, .settingsTabsContentBox.settingsBoxes").removeClass("active"); // removing active class from tab
+
+			$(".settingsBoxes").hide();
+			$(tabid).show();
+			$(this).addClass("active");
+		});
+	});
+	$(document).on("click", "#desButon", function () {
+		$(".loaderbox").show();
+	});
+	function scrollWin() {
+		window.scrollTo(200, 0);
+	}
+	function get_voucher_details(order_details, voucher_details) {
+		try {
+			var item_data = JSON.parse(voucher_details);
+			var voucher_html = "";
+			$.each(item_data, function (i, item) {
+				voucher_html += '<tr><td class="text-center">' + item.productName + '</td><td class="text-center">' + item.cardNumber + '</td><td class="text-center">' + item.cardPin + "</td></tr>";
+			});
+			var ord_details = "Voucher details <br>Order Code : " + order_details;
+		} catch (ex) {
+			console.log(ex);
+			var voucher_html = "";
+			var ord_details = "";
+		}
+		$("#voucherHeading").html(ord_details);
+		$("#voucherDetailsRow").html(voucher_html);
+		$("#exampleModal").modal("show");
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,95 @@
+<div class="dashboardsidebar">
+	<div class="dashboardlistbox white">
+		<div class="dasboardclogo">
+			<a href="{{ url_for('main.index') }}">
+				<img src="{{ url_for('static', filename='img/ace_logo_white.png') }}" class="img-fluid" />
+			</a>
+		</div>
+		<div class="logo_caption_box">
+			<p>Awards, Celebrations &amp; Expressions <br />Reward and Recognition Platform</p>
+		</div>
+		<div class="dashboardlist">
+			<ul>
+				<li class="employee_name">
+					<div class="employee_image">
+						<center>
+							<img src="{% if session[config['USER_SESSION_KEY']]['imageUrl'] %}{{ session[config['USER_SESSION_KEY']]['imageUrl'] }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="120" class="img-fluid user_image_uploaded" id="userUploadedImages" />
+							<label for="imgupload">
+								<img src="{{ url_for('static', filename='img/user_image.png') }}" width="50" class="user_image_to_upload" />
+							</label>
+							<form method="POST" id="upload_form" enctype="multipart/form-data">
+								<!--<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">-->
+								<input type="file" id="imgupload" style="display: none" name="profilePic" />
+							</form>
+						</center>
+					</div>
+					<!--<center><img src="{{ url_for('static', filename='img/user.png') }}" class="img-fluid"/></center>-->
+					<h3>{{ session[config['USER_SESSION_KEY']]['name'] }}</h3>
+					<p>{{ session[config['USER_SESSION_KEY']]['description'] if session[config['USER_SESSION_KEY']]['description'] != None else "" }}</p>
+					<span>{{ session[config['USER_SESSION_KEY']]['reward_points'] }} Points</span>
+				</li>
+
+				<li class="{% if page == 'home' %}active{% endif %}">
+					<a href="{{ url_for('main.dashboard') }}">
+						<!--<img src="{{ url_for('static', filename='img/home.png') }}" class="onactive"/>
+                        <img src="{{ url_for('static', filename='img/icons/dark/home.png') }}" class="inactive"/>--><i class="fas fa-home"></i> Home</a
+					>
+				</li>
+				<li class="{% if page == 'my_awards' %}active{% endif %}">
+					<a href="{{ url_for('awards.index') }}">
+						<!--<img src="{{ url_for('static', filename='img/award.png') }}" class="onactive"/>
+                        <img src="{{ url_for('static', filename='img/icons/dark/award.png') }}" class="inactive"/>--><i class="fas fa-gift"></i> My Awards</a
+					>
+				</li>
+				<!--<li class="{% if page == 'recognize' %}active{% endif %}">
+                    <a href="{{ url_for('recognize.index') }}">
+                        <img src="{{ url_for('static', filename='img/recognize.png') }}" class="onactive"/>
+                        <img src="{{ url_for('static', filename='img/icons/dark/recognize.png') }}" class="inactive"/>Recognize</a>
+                </li>-->
+				{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or session[config['USER_SESSION_KEY']]['Sr_Mangement_HR'] == True or session[config['USER_SESSION_KEY']]['IsManager'] == True or session[config['USER_SESSION_KEY']]['IsHOD'] == True %}
+				<li class="{% if page == 'nominate' %}active{% endif %}">
+					<a href="{{ url_for('nominate.nomination_list') }}" id="sideBarNotifCnt">
+						<i class="fas fa-trophy"></i> Nomination List </a>
+				</li>
+				{% endif %}
+				<li class="{% if page == 'rewards' %}active{% endif %}">
+					<a href="{{ url_for('rewards.index') }}">
+						<!--<img src="{{ url_for('static', filename='img/rewards.png') }}" class="onactive"/>
+                        <img src="{{ url_for('static', filename='img/icons/dark/rewards.png') }}" class="inactive"/>--><i class="fas fa-medal"></i> Redemption</a
+					>
+				</li>
+				<!--<li class="{% if page == 'notification' %}active{% endif %}">
+                    <a href="{{ url_for('notifications.index') }}" id="sideBarNotifCnt">
+                        <i class="fas fa-envelope"></i> Notifications</a>
+                </li>-->
+				<li class="{% if page == 'setting' %}active{% endif %}">
+					<a href="{{ url_for('main.settings') }}">
+						<!--<img src="{{ url_for('static', filename='img/setting.png') }}" class="onactive"/>
+                        <img src="{{ url_for('static', filename='img/icons/dark/setting.png') }}" class="inactive"/>--><i class="fas fa-user-cog"></i> My Account</a
+					>
+				</li>
+				{% if session[config['USER_SESSION_KEY']]['is_hr'] == True %}
+				<li class="{% if page == 'reports' %}active{% endif %}">
+					<a href="{{ url_for('main.report') }}">
+							<i class="fa-solid fa-table"></i> Report </a>
+				</li>
+				<li>
+					<a href="{{ url_for('auth.upload_customer') }}"><!--<img src="{{ url_for('static', filename='img/icons/dark/logout.png') }}"/>--><i class="fa-solid fa-file-arrow-up"></i> Upload Customers</a>
+				</li>
+				{% endif %}
+				<li>
+					<a href="{{ url_for('auth.logout') }}"><!--<img src="{{ url_for('static', filename='img/icons/dark/logout.png') }}"/>--><i class="fas fa-sign-out-alt"></i> Logout</a>
+				</li>
+			</ul>
+		</div>
+		<!-- <div class="logoutbox" onclick="location.href='index.html'"><img src="img/logout.png"/>Logout</div> -->
+	</div>
+</div>
+
+<script type="text/javascript">
+	$("#imgupload").change(function () {
+		// submit the form
+		$("#upload_form").submit();
+		$(".loaderbox").show();
+	});
+</script>

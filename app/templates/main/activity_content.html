@@ -1,0 +1,132 @@
+{% from "_macros/helpers.html" import flash_messages with context %} {% if top_activities %} {% set count = s_no %} {% for activity in top_activities %} {% set count = count + loop.index %} {% set is_liked = namespace(value=False) %} {% if activity.postLikeUsers %} {% for likeuser in activity.postLikeUsers if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %} {% set is_liked.value = True %} {% else %} {% set is_liked.value = False %} {% endfor %} {% endif %}
+<div class="updates_box">
+	<div class="row update_header_row">
+		<div class="col-md-12">
+			<div class="updater_header">
+				<!--<table>
+                        <tr>
+                            <td><img src="{% if activity.customer.profileimage %}{{ activity.customer.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" width="50"/></td>
+                            <td>
+                                <h4>
+                                    {% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %}
+                                    <a href="#">{{ activity.customer.Emp_Name }}</a> has posted an update regarding <strong>{{activity.transactionData.heading}}</strong>
+                                    {% else %}
+                                    <a href="#">{{ activity.customer.Emp_Name }}</a> has been {% if activity.transactionData.Reward_Cat|lower == 'nominate' %}rewarded{% else %}recognized{% endif %} <strong>{{ activity.transactionData.reward_id }}{% if activity.transactionData.Reward_Cat|lower != 'nominate' %} ({{ activity.transactionData.award_values }}){% endif %}</strong> by <br/><a href="#"><img src="{% if activity.customer.awarded_by_image %}{{ activity.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img"/>{% if activity.customer.awarded_by_name %}{{ activity.customer.awarded_by_name }}{% else %}{{ activity.transactionData.awarded_by_email }}{% endif %}</a>
+                                    {% endif %}
+                                </h4>
+                            </td>
+                        </tr>
+                    </table>-->
+				<div class="updater_header-top">
+					{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' and activity.transactionData.email == session[config['USER_SESSION_KEY']]['email'] %}
+					<a href="javascript:void(0)" class="removeActivity" onclick="delete_post_an_update('{{ activity.transactionId }}')"><img src="{{ url_for('static', filename='img/delete.png') }}" /></a>
+					{% endif %}
+					<h4>
+						<img src="{% if activity.customer.profileimage %}{{ activity.customer.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" width="50" />
+						{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %} {{ activity.customer.Emp_Name }} has posted an update <strong>{{activity.transactionData.heading}}</strong> {% else %} {{ activity.customer.Emp_Name }} has been {% if activity.transactionData.Reward_Cat|lower == 'nominate' %}rewarded{% else %}celebrated/recognized{% endif %} <strong>{{ activity.transactionData.reward_id }}</strong> by <strong class="profileBox">{% if activity.customer.awarded_by_name %}{{ activity.customer.awarded_by_name }}{% else %}{{ activity.transactionData.awarded_by_email }}{% endif %} <img src="{% if activity.customer.awarded_by_image %}{{ activity.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="50" class="recognizer_img" /></strong>{% if activity.transactionData.Reward_Cat|lower != 'nominate' and activity.transactionData.award_values %} <span class="block"> NPCI Way Tenet Exhibited - <strong> {{ activity.transactionData.award_values }}</strong></span
+						>{% endif %} {% endif %}
+					</h4>
+				</div>
+				<div class="updater_header-bottom">
+					<p>{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %}{{ activity.transactionData.post }}{% else %}{{ activity.transactionData.citation_msg }}{% endif %}</p>
+					<p class="award_date">{% if activity.transactionData.transaction_date %}{{ activity.transactionData.transaction_date|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% if activity.awardImage %}
+	<div class="update_image_box">
+		<img src="{{ activity.awardImage }}" class="img-fluid" />
+	</div>
+	{% else %} {% if not activity.awardImage and activity.transactionData.imgURL %} {% set img_ext = activity.transactionData.imgURL.split('.')[-1] %}
+	<div class="update_image_box">
+		{% if img_ext|lower != 'pdf' %}
+		<img src="{{ activity.transactionData.imgURL }}" class="img-fluid" />
+		{% else %}
+		<iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}" width="400px" height="400px" style="border: none"></iframe>
+		{% endif %}
+	</div>
+	{% endif %} {% endif %}
+	<div class="updatefooter">
+		<ul>
+			<li id="likeBoxSection_{{ count }}">
+				<a href="javascript:void(0)" class="like_btn" title="{{ activity.customer.Emp_Name }}" onclick="submit_user_like(this,'{{ is_liked.value }}','{{ activity.transactionId }}','{{ count }}', '{{ activity.totalLikes }}', '{{ activity.customer.Emp_Name }}', '{{ activity.transactionData.email }}', '{{ activity.customer.awarded_by_name }}', '{{ activity.transactionData.awarded_by_email }}', '{{ activity.transactionData.transactionmethodkey }}','{{session[config['USER_SESSION_KEY']]['name']}}','{{session[config['USER_SESSION_KEY']]['email']}}', '{{activity.postLikeUsers|convert_to_json}}')" id="likeBox_{{ count }}"><img src="{% if is_liked.value == True %}{{ url_for('static', filename='img/like_icon_filled.png') }}{% else %}{{ url_for('static', filename='img/like_icon.png') }}{% endif %}" class="likeitbefore" />Like {% if activity.totalLikes %}<small class="ttl_like">{{ activity.totalLikes }}</small>{% endif %}</a>
+				{% if activity.totalLikes and activity.postLikeUsers %}
+					<div class="likedCustomers" id="likedCustomers_{{ count }}">
+						<ul>
+							{% for usr in activity.postLikeUsers %}
+							<li data-email="{{ usr.email }}"><span title="{{ usr.email }}">{% if usr.name %}{{ usr.name }}{% else %}{{ usr.email }}{% endif %}</span></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			</li>
+			<li>
+				<a href="javascript:void(0)" class="comment_btn" id="show_comment_box"><img src="{{ url_for('static', filename='img/reply_icon.png') }}" />Comment</a>
+			</li>
+		</ul>
+	</div>
+	<div class="add_comment" id="addComment_{{ count }}">
+		<form class="comment_frm" id="commentFrm_{{ count }}" name="comment_frm" method="post">
+			<div class="message"></div>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+			<input type="hidden" name="form_index" id="formIndex_{{ count }}" value="{{ count }}" />
+			<input type="hidden" name="transaction_id" id="transactionId_{{ count }}" value="{{ activity.transactionId }}" />
+			<input type="hidden" name="comment_receiver_name" id="commentReceiverName_{{ count }}" value="{{ activity.customer.Emp_Name }}" />
+			<input type="hidden" name="comment_receiver_email" id="commentReceiverEmail_{{ count }}" value="{{ activity.transactionData.email }}" />
+			<input type="hidden" name="comment_awarded_by_name" id="commentAwardedByName_{{ count }}" value="{% if activity.customer.awarded_by_name %}{{ activity.customer.awarded_by_name }}{% endif %}" />
+			<input type="hidden" name="comment_awarded_by_email" id="commentAwardedByEmail_{{ count }}" value="{% if activity.transactionData.awarded_by_email %}{{ activity.transactionData.awarded_by_email }}{% endif %}" />
+			<input type="hidden" name="comment_method_type" id="commentMethodType_{{ count }}" value="{% if activity.transactionData.transactionmethodkey %}{{ activity.transactionData.transactionmethodkey }}{% endif %}" />
+			<textarea rows="2" name="comment_box" id="commentBox_{{ count }}" placeholder="Enter Comment"></textarea>
+			<p class="custom_error"></p>
+			<div class="post_btn_box"><button type="button" class="cancel_comment" id="cancelComment_{{ count }}" onclick="cancel_comment(this,'{{ count }}')">Cancel</button>&nbsp;&nbsp;<button class="submit_comment" type="button" id="submitComment_{{ count }}" onclick="submit_post_comment(this,'{{ count }}')">Post</button></div>
+		</form>
+	</div>
+	<div class="comment_list_box">
+		<!-- <table>
+			<tbody id="tblCommentBox_{{ count }}">
+				{% if activity.postComment %} {% for comm in activity.postComment %} {% set cmt_loop = loop.index %}
+				<tr style="{% if cmt_loop > 4 %}display:none;{% endif %}" class="{% if cmt_loop > 4 %}show_rows{% endif %}">
+					<td width="10%"><img src="{% if comm.profileimage %}{{ comm.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" width="40" /></td>
+					<td width="70%">
+						{{ comm.Emp_Name }}<br />
+						<p>{{ comm.comment }}</p>
+						<a href="javascript:void(0)" class="like_btn"><img src="{{ url_for('static', filename='img/like_icon.png') }}" class="likeitbefore"/></a>
+					</td>
+					<td width="20%">{% if comm.commenteddate %}{{ comm.commenteddate|format_date('%d-%m-%y %I:%M %p') }}{% else %}18-08-22 5:30 PM{% endif %}</td>
+				</tr>
+				{% endfor %} {% if activity.postComment|length > 4 %}
+				<tr align="left" class="show_more_btn">
+					<td colspan="3" class="loadmore_"><a href="javascript:void(0)" onclick="load_more_comment('{{ count }}')" id="show_more_less_{{ count }}">Show More...</a></td>
+				</tr>
+				{% endif %} {% endif %}
+			</tbody>
+		</table> -->
+		<ul id="tblCommentBox_{{ count }}">
+			{% if activity.postComment %} {% for comm in activity.postComment %} {% set cmt_loop = loop.index %}
+
+			<li class="commentBox {% if cmt_loop > 4 %}show_rows{% endif %}" style="{% if cmt_loop > 4 %}display:none;{% endif %}">
+				<div class="commentBox_img">
+					<img src="{% if comm.profileimage %}{{ comm.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" />
+				</div>
+				<div class="commentBox_contant">
+					<p><strong>{{ comm.Emp_Name }}</strong> <span class="block">{{ comm.comment }}</span></p>
+					<p>
+						<span>{% if comm.commenteddate %}{{ comm.commenteddate|format_date('%d-%m-%y %I:%M %p') }}{% else %}18-08-22 5:30
+							PM{% endif %}</span>
+						{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or comm.email == session[config['USER_SESSION_KEY']]['email']
+						%}
+						<span class="deleteComment" onclick="delete_comment('{{comm.id}}')" title="Delete the comment"><img src="/static/img/delete.png" /></span>
+						{% endif %}
+					</p>
+				</div>
+			</li>
+			{% endfor %} {% if activity.postComment|length > 4 %}
+			<li class="commentBox show_more_btn">
+				<div class="commentBox_contant loadmore_"><a href="javascript:void(0)" onclick="load_more_comment('{{ count }}')" id="show_more_less_{{ count }}">Show More...</a></div>
+			</li>
+			{% endif %} {% endif %}
+		</ul>
+	</div>
+</div>
+{% endfor %} {% endif %}

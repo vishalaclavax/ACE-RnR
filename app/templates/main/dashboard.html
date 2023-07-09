@@ -1,0 +1,383 @@
+{% extends "_layout.html" %} {% block page_title %} Employee Dashboard - Awards, Celebrations & Expressions{% endblock %} {% block page_style %}
+<style>
+	.announcement_content_box .img-fluid {
+		margin-right: 10px;
+		width: 30px;
+		height: 30px;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+
+	#readMoreModal .img-fluid {
+		margin-right: 10px;
+		width: 30px;
+		height: 30px;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+</style>
+{% endblock %} {% block page_content %} {% set max_announce = 10 %} {% set max_leader = 5 %} {% set max_receiver = 5 %} {% set max_giver = 5 %} {% set max_bday = 5 %} {% set max_anniversary = 5 %}
+<div class="dashboardportalbox">
+	<div class="newdbhomebox">
+		<div class="dashconbox">
+			<a href="{{ url_for('recognize.index') }}" class="cmnbtn">Recognize Now</a>
+		</div>
+		{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or session[config['USER_SESSION_KEY']]['Sr_Mangement_HR'] == True or session[config['USER_SESSION_KEY']]['IsManager'] == True or session[config['USER_SESSION_KEY']]['IsHOD'] == True %}
+		<div class="dashconbox">
+			<a href="{{ url_for('nominate.index') }}" class="cmnbtn">Nominate Now</a>
+		</div>
+		{% endif %}
+		<div class="dashconbox">
+			<a href="javascript:void(0)" class="cmnbtn popup_btn">Post an Update Now</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xl-9">
+			<div class="">
+				<div class="updatesmainbox" id="activitySection">
+					{% if top_activities %} {% for activity in top_activities %} {% set is_liked = namespace(value=False) %} {% if activity.postLikeUsers %} {% for likeuser in activity.postLikeUsers if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %} {% set is_liked.value = True %} {% else %} {% set is_liked.value = False %} {% endfor %} {% endif %}
+
+					<div class="updates_box">
+						<div class="row update_header_row">
+							<div class="col-xl-12">
+								<div class="updater_header">
+									<div class="updater_header-top">
+										{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %} {% if activity.transactionData.email == session[config['USER_SESSION_KEY']]['email'] or session[config['USER_SESSION_KEY']]['is_hr'] == True %}
+										<a href="javascript:void(0)" class="removeActivity" onclick="delete_post_an_update('{{ activity.transactionId }}')"><img src="{{ url_for('static', filename='img/delete.png') }}" /></a>
+										{% endif %} {% endif %}
+										<h4>
+											<img src="{% if activity.customer.profileimage %}{{ activity.customer.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+											{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %}
+											<strong>{{ activity.customer.Emp_Name }} </strong> has posted an update <strong>{{activity.transactionData.heading}}</strong>
+											{% else %}
+											<strong>{{ activity.customer.Emp_Name }} </strong> has been {% if activity.transactionData.Reward_Cat|lower == 'nominate' %}rewarded{% else %}celebrated/recognized{% endif %} <strong>{{ activity.transactionData.reward_id }}</strong> by <strong class="profileBox">{% if activity.customer.awarded_by_name %}{{ activity.customer.awarded_by_name }}{% else %}{{ activity.transactionData.awarded_by_email }}{% endif %} <img src="{% if activity.customer.awarded_by_image %}{{ activity.customer.awarded_by_image }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="recognizer_img" /></strong>{% if activity.transactionData.Reward_Cat|lower != 'nominate' and activity.transactionData.award_values %} <span class="block"> NPCI Way Tenet Exhibited - <strong> {{ activity.transactionData.award_values }} </strong></span>{% endif %} {% endif %}
+										</h4>
+									</div>
+									<div class="updater_header-bottom">
+										<p>{% if activity.transactionData.transactionmethodkey == 'Post & Announcement' %}{{ activity.transactionData.post }}{% else %}{{ activity.transactionData.citation_msg }}{% endif %}</p>
+										<p class="award_date">{% if activity.transactionData.transaction_date %}{{ activity.transactionData.transaction_date|format_date('%d-%m-%y %I:%M %p') }}{% endif %}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% if activity.awardImage %}
+						<div class="update_image_box">
+							<img src="{{ activity.awardImage }}" class="img-fluid" />
+						</div>
+						{% else %} {% if not activity.awardImage and activity.transactionData.imgURL %} {% set img_ext = activity.transactionData.imgURL.split('.')[-1] %}
+						<div class="update_image_box">
+							{% if img_ext|lower != 'pdf' %}
+							<img src="{{ activity.transactionData.imgURL }}" class="img-fluid" />
+							{% else %}
+							<iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}" width="400px" height="400px" style="border: none"></iframe>
+							{% endif %}
+						</div>
+						{% endif %} {% endif %}
+						<div class="updatefooter">
+							<ul>
+								<li id="likeBoxSection_{{ loop.index }}">
+									<a href="javascript:void(0)" class="like_btn" onclick="submit_user_like(this,'{{ is_liked.value }}','{{ activity.transactionId }}','{{ loop.index }}', '{{ activity.totalLikes }}', '{{ activity.customer.Emp_Name }}', '{{ activity.transactionData.email }}', '{{ activity.customer.awarded_by_name }}', '{{ activity.transactionData.awarded_by_email }}', '{{ activity.transactionData.transactionmethodkey }}','{{session[config['USER_SESSION_KEY']]['name']}}','{{session[config['USER_SESSION_KEY']]['email']}}', '{{activity.postLikeUsers|convert_to_json}}')" id="likeBox_{{ loop.index }}"><img src="{% if is_liked.value == True %}{{ url_for('static', filename='img/like_icon_filled.png') }}{% else %}{{ url_for('static', filename='img/like_icon.png') }}{% endif %}" class="likeitbefore" />Like {% if activity.totalLikes %}<small class="ttl_like">{{ activity.totalLikes }}</small>{% endif %}</a>
+									{% if activity.totalLikes and activity.postLikeUsers %}
+									<div class="likedCustomers" id="likedCustomers_{{ loop.index }}">
+										<ul>
+											{% for usr in activity.postLikeUsers %}
+											<li data-email="{{ usr.email }}"><span title="{{ usr.email }}">{% if usr.name %}{{ usr.name }}{% else %}{{ usr.email }}{% endif %}</span></li>
+											{% endfor %}
+										</ul>
+									</div>
+									{% endif %}
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="comment_btn" id="show_comment_box"><img src="{{ url_for('static', filename='img/reply_icon.png') }}" />Comment</a>
+								</li>
+							</ul>
+						</div>
+						<div class="add_comment" id="addComment_{{ loop.index }}">
+							<form class="comment_frm" id="commentFrm_{{ loop.index }}" name="comment_frm" method="post">
+								<div class="message"></div>
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+								<input type="hidden" name="form_index" id="formIndex_{{ loop.index }}" value="{{ loop.index }}" />
+								<input type="hidden" name="transaction_id" id="transactionId_{{ loop.index }}" value="{{ activity.transactionId }}" />
+								<input type="hidden" name="comment_receiver_name" id="commentReceiverName_{{ loop.index }}" value="{{ activity.customer.Emp_Name }}" />
+								<input type="hidden" name="comment_receiver_email" id="commentReceiverEmail_{{ loop.index }}" value="{{ activity.transactionData.email }}" />
+								<input type="hidden" name="comment_awarded_by_name" id="commentAwardedByName_{{ loop.index }}" value="{% if activity.customer.awarded_by_name %}{{ activity.customer.awarded_by_name }}{% endif %}" />
+								<input type="hidden" name="comment_awarded_by_email" id="commentAwardedByEmail_{{ loop.index }}" value="{% if activity.transactionData.awarded_by_email %}{{ activity.transactionData.awarded_by_email }}{% endif %}" />
+								<input type="hidden" name="comment_method_type" id="commentMethodType_{{ loop.index }}" value="{% if activity.transactionData.transactionmethodkey %}{{ activity.transactionData.transactionmethodkey }}{% endif %}" />
+								<textarea rows="2" name="comment_box" id="commentBox_{{ loop.index }}" placeholder="Enter Comment"></textarea>
+								<p class="custom_error"></p>
+								<div class="post_btn_box"><button type="button" class="cancel_comment" id="cancelComment_{{ loop.index }}" onclick="cancel_comment(this,'{{ loop.index }}')">Cancel</button>&nbsp;&nbsp;<button class="submit_comment" type="button" id="submitComment_{{ loop.index }}" onclick="submit_post_comment(this,'{{ loop.index }}')">Post</button></div>
+							</form>
+						</div>
+						<div class="comment_list_box">
+							<ul id="tblCommentBox_{{ loop.index }}">
+								{% if activity.postComment %} {% for comm in activity.postComment %} {% set cmt_loop = loop.index %}
+								<li class="commentBox {% if cmt_loop > 4 %}show_rows{% endif %}" style="{% if cmt_loop > 4 %}display:none;{% endif %}">
+									<div class="commentBox_img">
+										<img src="{% if comm.profileimage %}{{ comm.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" />
+									</div>
+									<div class="commentBox_contant">
+										<p><strong>{{ comm.Emp_Name }}</strong> <span class="block">{{ comm.comment }}</span></p>
+										<p>
+											<span>{% if comm.commenteddate %}{{ comm.commenteddate|format_date('%d-%m-%y %I:%M %p') }}{% else %}18-08-22 5:30 PM{% endif %}</span>
+											{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or comm.email == session[config['USER_SESSION_KEY']]['email'] %}
+											<span class="deleteComment" onclick="delete_comment('{{comm.id}}')" title="Delete the comment"><img src="/static/img/delete.png" /></span>
+											{% endif %}
+										</p>
+									</div>
+								</li>
+								{% endfor %} {% if activity.postComment|length > 4 %}
+								<li class="commentBox show_more_btn">
+									<div class="commentBox_contant loadmore_"><a href="javascript:void(0)" onclick="load_more_comment('{{ loop.index }}')" id="show_more_less_{{ loop.index }}">Show More...</a></div>
+								</li>
+								{% endif %} {% endif %}
+							</ul>
+						</div>
+					</div>
+					{% endfor %} {% endif %}
+				</div>
+				<div id="loadMorectivity" style="text-align: center">
+					<button class="cmnbtn" type="button" onclick="loadMoreActivity();" id="loadActivityBtn">Load More</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-3 sidebarRight">
+			<div class="sidebarToggle" id="sidebarToggle" title="Leaderboard">
+				<i class="fas fa-list"></i>
+			</div>
+			<div class="sidebarRight__body">
+				<div class="announcement_box">
+					<div class="announcement_heading_box">
+						<h3>Latest Buzz</h3>
+					</div>
+					<div class="announcement_content_box">
+						<ul>
+							{% if annoucements %} {% for annoucement in annoucements %} {% if annoucement.transactionData.transaction_date %} {% set trans_date = annoucement.transactionData.transaction_date|format_date('%d-%m-%y %I:%M %p') %} {% else %} {% set trans_date = '' %} {% endif %} {% if annoucement.transactionData.heading %} {% set post_heading = annoucement.transactionData.heading %} {% else %} {% if annoucement.transactionData.transactionmethodkey|lower == 'post' %} {% set post_heading = 'Recognize' %} {% else %} {% set post_heading = 'Nominate' %} {% endif %} {% endif %} {% if annoucement.transactionData.transactionmethodkey == 'Post & Announcement' %} {% set posted_by = annoucement.get('customer').get('Emp_Name') %} {% else %} {% if annoucement.customer.awarded_by_name %} {% set posted_by = annoucement.get('customer').get('awarded_by_name') %} {% else %} {% set posted_by = annoucement.get('transactionData').get('awarded_by_email') %} {% endif %} {% endif %}
+							<li class="contentBox {% if annoucements and annoucements|length > max_announce and loop.index > max_announce %}show_announcement_content_box{% endif %}" style="{% if annoucements and annoucements|length > max_announce and loop.index > max_announce %}display:none;{% else %}display:flex;{% endif %}">
+								<input type="hidden" class="post" id="postDesc_{{ loop.index }}" value="{{annoucement.transactionData.post|safe }}" />
+								<input type="hidden" class="imgURL" id="postUserImg_{{ loop.index }}" value="{% if annoucement.transactionData.transactionmethodkey == 'Post & Announcement' %}{{annoucement.get('customer').get('profileimage')}}{% else %}{{annoucement.get('customer').get('awarded_by_image')}}{% endif %}" />
+								<input type="hidden" class="heading" id="postHead_{{ loop.index }}" value="{{post_heading}}" />
+								<input type="hidden" class="post_date" id="postDate_{{ loop.index }}" value="{{ trans_date }}" />
+								<input type="hidden" class="user_awarded" id="userAwarded_{{ loop.index }}" value="{{ annoucement.get('customer').get('Emp_Name') }}" />
+								<input type="hidden" class="reward_id" id="rewardId_{{ loop.index }}" value="{{ annoucement.get('transactionData').get('reward_id') }}" />
+								<div class="contentBox_contant">
+									<h5>{% if annoucement.transactionData.heading %} {{annoucement.transactionData.heading }} {% else %} {% if annoucement.transactionData.transactionmethodkey|lower == 'post' %} Recognize {% else %} Nominate {% endif %} {% endif %}</h5>
+									<p>
+										{% if annoucement.transactionData.transactionmethodkey != 'Post & Announcement' %} {% if annoucement.transactionData.transactionmethodkey|lower == 'post' %}
+										<strong>{{annoucement.get('customer').get('Emp_Name')}}</strong> has been celebrated/recognized <strong>{{annoucement.get('transactionData').get('reward_id')[0:20]}}</strong>..<a href="javascript:void(0)" class="readMoreButton" onclick="read_more_announcement('{{post_heading}}','{{posted_by}}','{{ loop.index }}','{{ trans_date }}', '{{annoucement.transactionData.transactionmethodkey}}')">Read More</a>
+										{% else %}
+										<strong>{{annoucement.get('customer').get('Emp_Name')}}</strong> has been celebrated/recognized <strong>{{annoucement.get('transactionData').get('reward_id')[0:20]}}</strong>..<a href="javascript:void(0)" class="readMoreButton" onclick="read_more_announcement('{{post_heading}}','{{posted_by}}','{{ loop.index }}','{{ trans_date }}', '{{annoucement.transactionData.transactionmethodkey}}')">Read More</a> {% endif %} {% else %} {% if annoucement.transactionData.post|length > 40 %} {{annoucement.transactionData.post[0:40] }}..<a href="javascript:void(0)" class="readMoreButton" onclick="read_more_announcement('{{post_heading}}','{{posted_by}}','{{ loop.index }}','{{ trans_date }}', '{{annoucement.transactionData.transactionmethodkey}}')">Read More</a>
+										{% else %} {{annoucement.transactionData.post }} {% endif %} {% endif %}
+									</p>
+									<p class="announcername">By {{ posted_by }}</p>
+									<p class="announcementdate">{{ trans_date }}</p>
+								</div>
+							</li>
+							{% endfor %} {% else %}
+							<li class="contentBox">
+								<div class="contentBox_contant">
+									<p>No data found!</p>
+								</div>
+							</li>
+							{% endif %}
+						</ul>
+					</div>
+					{% if annoucements|length > max_announce %}
+					<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_announcement(this);">View All</a>
+					{% endif %}
+				</div>
+
+				<div class="leaderboardbox">
+					<div class="leaderboard_heading_box">
+						<h3>Leaderboard</h3>
+						<!--<p>Last updated: Nov 20, 8:30 PM</p>-->
+					</div>
+					<div class="leaderboard_content_box">
+						<ul>
+							{% if leadership_board %} {% for board in leadership_board %}
+							<li class="contentBox {% if leadership_board|length > max_leader and loop.index > max_leader %}toggle_leaderboard_data{% endif %}" style="{% if leadership_board|length > max_leader and loop.index > max_leader %}display:none;{% else %}display:flex;{% endif %}">
+								<div class="contentBox_img">
+									<img src="{% if board.profileimage %}{{ board.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+								</div>
+								<div class="contentBox_contant">
+									<p>{{board.customername}} <span class="block">{{board.totalpoints}} points</span></p>
+									<p>#{{loop.index}}</p>
+								</div>
+							</li>
+							{% endfor %} {% else %}
+							<li class="contentBox {% if leadership_board|length > max_leader and loop.index > max_leader %}toggle_leaderboard_data{% endif %}" style="{% if leadership_board|length > max_leader and loop.index > max_leader %}display:none;{% else %}display:flex;{% endif %}">
+								<div class="contentBox_contant">
+									<p>No data found!</p>
+								</div>
+							</li>
+							{% endif %}
+						</ul>
+						{% if leadership_board|length > max_leader %}
+						<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_leaderboard(this);">View All</a>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="giverreceiverbox">
+					<div class="giverreceiver_heading_box">
+						<ul id="receivegivetabs">
+							<li><a href="#receivebox">Top Receivers</a></li>
+							<li><a href="#givebox">Top Givers</a></li>
+						</ul>
+					</div>
+					<div class="giverreceiver_content_box" id="receivegivetabcontent">
+						<div class="rgvtab-content top_receiever_box" id="receivebox">
+							<ul>
+								{% if top_receiver %} {% for receiver in top_receiver %}
+								<li class="contentBox {% if top_receiver|length > max_receiver and loop.index > max_receiver %}toggle_top_receiver{% endif %}" style="{% if top_receiver|length > max_receiver and loop.index > max_receiver %}display:none;{% else %}display:flex;{% endif %}">
+									<div class="contentBox_img">
+										<img src="{% if receiver.profileimage %}{{ receiver.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+									</div>
+									<div class="contentBox_contant">
+										<p>{{receiver.customername}} <span class="block">{{receiver.totalpoints}} points</span></p>
+										<p>#{{loop.index}}</p>
+									</div>
+								</li>
+								{% endfor %} {% endif %}
+							</ul>
+							{% if top_receiver|length > max_receiver %}
+							<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_top_receiver(this)">View All</a>
+							{% endif %}
+						</div>
+						<div class="rgvtab-content top_giver_box" id="givebox">
+							<div class="tablebox">
+								<ul>
+									{% if top_giver %} {% for giver in top_giver %}
+									<li class="contentBox {% if top_giver|length > max_giver and loop.index > max_giver %}toggle_top_giver{% endif %}" style="{% if top_giver|length > max_giver and loop.index > max_giver %}display:none;{% else %}display:flex;{% endif %}">
+										<div class="contentBox_img">
+											<img src="{% if giver.profileimage %}{{ giver.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+										</div>
+										<div class="contentBox_contant">
+											<p>{{giver.customername}} <span class="block">{{giver.totalpoints}} points</span></p>
+											<p>#{{loop.index}}</p>
+										</div>
+									</li>
+									{% endfor %} {% endif %}
+								</ul>
+								{% if top_giver|length > max_giver %}
+								<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_top_giver(this)">View All</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="upcomingeventsbox">
+					<div class="upcomingevents_heading_box">
+						<h3>Upcoming Birthdays</h3>
+					</div>
+					<div class="upcomingevents_content_box">
+						<div class="tablebox">
+							<ul>
+								{% if birthdays %} {% for birthday in birthdays %}
+								<li class="contentBox {% if birthdays|length > max_bday and loop.index > max_bday %}toggle_bday_data{% endif %}" style="{% if birthdays|length > max_bday and loop.index > max_bday %}display:none;{% else %}display:flex;{% endif %}">
+									<div class="contentBox_img">
+										<img src="{% if birthday.profileimage %}{{ birthday.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+									</div>
+									<div class="contentBox_contant">
+										<p>{{birthday.emp_Name}} <span class="block">{{birthday.date|date_month_name}}</span></p>
+									</div>
+								</li>
+								{% endfor %} {% endif %}
+							</ul>
+						</div>
+						{% if birthdays|length > max_bday %}
+						<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_bday(this);">View All</a>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="upcomingeventsbox">
+					<div class="upcomingevents_heading_box">
+						<h3>Upcoming Anniversaries</h3>
+					</div>
+					<div class="upcomingevents_content_box">
+						<div class="tablebox">
+							<ul>
+								{% if anniversary %} {% for versary in anniversary%}
+								<li class="contentBox {% if anniversary|length > max_anniversary and loop.index > max_anniversary %}toggle_anniversary_data{% endif %}" style="{% if anniversary|length > max_anniversary and loop.index > max_anniversary %}display:none;{% else %}display:flex;{% endif %}">
+									<div class="contentBox_img">
+										<img src="{% if versary.profileimage %}{{ versary.profileimage }}{% else %}{{ url_for('static', filename='img/user.png') }}{% endif %}" class="img-fluid" />
+									</div>
+									<div class="contentBox_contant">
+										<p>{{versary.emp_Name}} <span class="block">{{versary.date|date_month_name}}</span></p>
+									</div>
+								</li>
+								{% endfor %} {% endif %}
+							</ul>
+						</div>
+						{% if anniversary|length > max_anniversary %}
+						<a href="javascript:void(0)" class="viewallbtn" onclick="toggle_anniversary_data(this);">View All</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="postanupdatebox">
+	<div class="postanupdatecontentbox">
+		<h2>Post an Update</h2>
+		<form class="postanupdateform" name="post_an_update_frm" id="postAnUpdateFrm" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+			<!--<input type="text" name="post_title" id="post_title" placeholder="Enter Title"/>-->
+			<select name="post_title" id="post_title">
+				<option value="">Select a Title</option>
+				{% if award_values %} {% for val in award_values %}
+				<option value="{{ val }}">{{ val }}</option>
+				{% endfor %} {% endif %}
+			</select>
+			<textarea rows="2" name="post_desc" id="post_desc" placeholder="Post an Update"></textarea>
+			<input type="file" name="post_img" id="post_img" />
+			<button type="submit" id="submitPost">POST</button>
+			<!--<div class="imageboxed">
+                        <img src="img/congratulations.png" class="img-fluid"/>
+                    </div>-->
+		</form>
+		<a class="close_btn popup_close" href="#">x</a>
+	</div>
+</div>
+
+<div class="modal fade" id="readMoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="post"></p>
+				<p id="post_by"></p>
+				<p id="post_date"></p>
+			</div>
+			<!-- <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block page_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+	var is_hr = '{{ session[config['USER_SESSION_KEY']]['is_hr'] }}';
+	var session_user = '{{ session[config['USER_SESSION_KEY']]['email'] }}';
+	   try {
+		var socket = io();
+
+	} catch(e) {
+		console.log("from"+e);
+	}
+	   //$('.loaderbox').show();
+	   //socket.emit('activity response', {data: 'I\'m connected!'});
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/dashboard.js') }}?v=7.0"></script>
+
+{% endblock %}

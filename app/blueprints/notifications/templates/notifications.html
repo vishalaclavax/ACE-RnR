@@ -1,0 +1,94 @@
+{% extends "_layout.html" %}
+{% block page_title %} My Award{% endblock %}
+{% block page_content %}
+
+    <div class="dashboardportalbox">
+        <div class="recongnizebox">
+            <div class="recognize_heading">
+                <h2>Notifications</h2>
+                <p>Get all the updates related to awards send, received and approved</p>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% if notification_list %}
+                    {% for notification in notification_list %}
+                    <div class="notifications_box">
+                        <div class="fullbox">
+                            <div class="twotenthbox">
+                                <img src="{% if notification.campaignimage %}{{ notification.campaignimage }}{% else %}{{ url_for('static', filename='img/well_done_award.png') }}{% endif %}" class="img-fluid"/>
+                            </div>
+                            <div class="sixtenthbox">
+                                <div class="notificationmessage">
+                                    <!--<h4>Rakesh Sharma was nominated for <span>Well Done Award</span></h4>-->
+                                    <h4>{{ notification.message }}</h4>
+                                </div>
+                            </div>
+                            <div class="twotenthbox">
+                                <div class="daysofaward">
+                                    {% if notification.date %}<p>{{ notification.date|format_date('%d-%m-%y %I:%M %p') }}</p>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    No Data Found!
+                    {% endif %}
+                    <!--<div class="notifications_box">
+                        <div class="fullbox">
+                            <div class="twotenthbox">
+                                <img src="{{ url_for('static', filename='img/high_five_reward.png') }}" class="img-fluid"/>
+                            </div>
+                            <div class="sixtenthbox">
+                                <div class="notificationmessage">
+                                    <h4>Deepti Jain was nominated for <span>High Five Award</span></h4>
+                                </div>
+                            </div>
+                            <div class="twotenthbox">
+                                <div class="daysofaward">
+                                    <p>2 days ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notifications_box">
+                        <div class="fullbox">
+                            <div class="twotenthbox">
+                                <img src="{{ url_for('static', filename='img/circle_of_excellence_award.png') }}" class="img-fluid"/>
+                            </div>
+                            <div class="sixtenthbox">
+                                <div class="notificationmessage">
+                                    <h4>Sachin Bansal was nominated for <span>Circle of Excellence Award</span></h4>
+                                </div>
+                            </div>
+                            <div class="twotenthbox">
+                                <div class="daysofaward">
+                                    <p>5 days ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notifications_box">
+                        <div class="fullbox">
+                            <div class="twotenthbox">
+                                <img src="{{ url_for('static', filename='img/shining_star_award.png') }}" class="img-fluid"/>
+                            </div>
+                            <div class="sixtenthbox">
+                                <div class="notificationmessage">
+                                    <h4>Arun Verma has been approved for <span>Shining Star Award</span></h4>
+                                </div>
+                            </div>
+                            <div class="twotenthbox">
+                                <div class="daysofaward">
+                                    <p>6 days ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay"></div>
+
+{% endblock %}

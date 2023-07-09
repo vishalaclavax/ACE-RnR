@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" class="has-hover">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+		<title>NPCI</title>
+
+		<!--//\\ FAVICON \\//-->
+		<link rel="favicon icon" href="{{url_for('static',filename='coming_assets/img/favicon.ico')}}" />
+		<link rel="icon" href="{{url_for('static',filename='coming_assets/img/favicon.ico')}}" />
+
+		<!--//\\ STYLESHEETS \\//-->
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='coming_assets/css/style.css')}}" />
+
+		<!--//\\ jQuery Library \\//-->
+		<script src="{{url_for('static',filename='coming_assets/js/jquery.min.js')}}"></script>
+
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id={{ config.ANALYTICS_CODE }}"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+
+			gtag("config", "{{ config.ANALYTICS_CODE }}");
+		</script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="homeSection">
+				<div class="introSection">
+					<h2 class="reverse">
+						Pay Digital <br />
+						<span>Get Rewarded</span>
+					</h2>
+
+					<div class="tableCell show_on_tabletSmall">
+						<div class="animatedCirle">
+							<!--// Rupee Icon //-->
+							<div class="rupeeIcon"><img src="{{url_for('static',filename='coming_assets/img/landing-page-logo/nth-logo.svg')}}" alt="" /></div>
+
+							<div class="circle-img one"></div>
+							<div class="circle-img two"></div>
+							<div class="circle-img three"></div>
+							<div class="circle-img four"></div>
+							<div class="circle-img five"></div>
+
+							<!--// Cirles with round bg //-->
+							<div class="circle one">
+								<div class="elem"></div>
+							</div>
+							<div class="circle two">
+								<div class="elem"></div>
+							</div>
+							<div class="circle three">
+								<div class="elem"></div>
+							</div>
+							<div class="circle four">
+								<div class="elem"></div>
+							</div>
+							<div class="circle five">
+								<div class="elem"></div>
+							</div>
+						</div>
+					</div>
+					<!--// .tableCell::END //-->
+
+					<!-- <div class="notifyForm">
+					<a href="javascript:void(0);" class="btn btn-primary" data-toggle="modal" data-target="#signupnow">
+						<span>Sign Up Now</span>
+						<img src="img/arrow.svg" alt="arrow">
+					</a>
+				</div> -->
+					<!--// .notifyForm::END //-->
+				</div>
+				<!--// .introSection::END //-->
+
+				<div class="tableCell hide_on_tabletSmall">
+					<div class="animatedCirle">
+						<!--// Rupee Icon //-->
+						<div class="rupeeIcon"><img src="{{url_for('static',filename='coming_assets/img/landing-page-logo/nth-logo.svg')}}" alt="" /></div>
+
+						<div class="circle-img one"></div>
+						<div class="circle-img two"></div>
+						<div class="circle-img three"></div>
+						<div class="circle-img four"></div>
+						<div class="circle-img five"></div>
+
+						<!--// Cirles with round bg //-->
+						<div class="circle one">
+							<div class="elem"></div>
+						</div>
+						<div class="circle two">
+							<div class="elem"></div>
+						</div>
+						<div class="circle three">
+							<div class="elem"></div>
+						</div>
+						<div class="circle four">
+							<div class="elem"></div>
+						</div>
+						<div class="circle five">
+							<div class="elem"></div>
+						</div>
+					</div>
+				</div>
+				<!--// .tableCell::END //-->
+			</div>
+			<!--// .homeSection::END //-->
+
+			<div class="oneNationOneProgram">
+				<div class="titleBlock">
+					<h2>n<sup>th</sup> Rewards <span>One Nation, One Program</span></h2>
+				</div>
+				<!--// .titleBlock::END //-->
+
+				<div class="container">
+					<div class="row flowBlock">
+						<div class="col-sm-4 flow earn">
+							<figure class="earnIcon"></figure>
+							<span>Earn</span>
+						</div>
+						<div class="col-sm-4 flow redeem">
+							<figure class="redeemIcon"></figure>
+							<span>Redeem</span>
+						</div>
+						<div class="col-sm-4 flow shop">
+							<figure class="shopIcon"></figure>
+							<span>Shop</span>
+						</div>
+					</div>
+				</div>
+				<!--// .container::END //-->
+			</div>
+			<!--// .oneNationOneProgram::END //-->
+		</div>
+		<!--// .wrapper::END //-->
+
+		<footer class="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6 copyright">
+						<p style="text-align: left">&copy; Copyright 2019. All Right Reserved.</p>
+					</div>
+					<div class="col-sm-6 sponsored">
+						<p>Sponsored by</p>
+						<img src="{{url_for('static',filename='coming_assets/img/npciLogo.png')}}" />
+					</div>
+				</div>
+			</div>
+			<!--// .container::END //-->
+		</footer>
+		<!--// .footer::END //-->
+
+		<div class="modal fade" id="signupnow" tabindex="-1" role="dialog" aria-labelledby="signupnow" aria-hidden="true">
+			<div class="modal-dialog shadow_01" role="document">
+				<div class="modal-content md white">
+					<a href="javascript:void(0);" data-dismiss="modal" class="modelClose">
+						<img src="{{url_for('static',filename='img/close_black.svg')}}" alt="close" />
+					</a>
+
+					<!-- <div class="signInBox">
+					<h2 class="size45 ebold center primary_color">Sign Up</h2>
+					<form action="" method="POST" class="formBox padding-top-40">
+						<fieldset>
+							<span class="placeholder">Enter Phone Number</span>
+							<input type="text" class="form-control input__field">
+						</fieldset>
+						<fieldset>
+							<span class="placeholder">Enter Email Address</span>
+							<input type="text" class="form-control input__field">
+							<span class="labelPlaceholder">Optional</span>
+						</fieldset>
+	
+						<div class="btnBox">
+							<button class="btn btn-block btn-lg btn-primary uppercase">Proceed</button>
+						</div>
+						<p>By clicking Sign up, you accept <a href="javascript:void(0)">Terms of Service</a> and <a href="javascript:void(0)">Privacy Policy</a></p>
+					</form>
+				</div> -->
+
+					<div class="signInBox">
+						<h2 class="size45 ebold center primary_color">OTP</h2>
+						<h3 class="size30 reverse center">Enter One Time Password (OTP)</h3>
+						<h4 class="size21 reverse center">
+							One Time Password (OTP) has been sent to your <br />
+							mobile ******2585, please enter to login
+						</h4>
+						<form action="" method="POST" class="formBox padding-top-40">
+							<div class="row otpInputs">
+								<div class="col-md-3">
+									<fieldset>
+										<input type="number" maxlength="1" class="form-control otpFirst input__field center font_size21" />
+									</fieldset>
+								</div>
+								<div class="col-md-3">
+									<fieldset>
+										<input type="number" class="form-control input__field center font_size21" />
+									</fieldset>
+								</div>
+								<div class="col-md-3">
+									<fieldset>
+										<input type="number" class="form-control input__field center font_size21" />
+									</fieldset>
+								</div>
+								<div class="col-md-3">
+									<fieldset>
+										<input type="number" pattern="\d*" maxlength="1" class="form-control input__field center font_size21" />
+									</fieldset>
+								</div>
+							</div>
+
+							<div class="btnVerfiy">
+								<a href="javascript:void(0)">
+									<i class="fa fa-repeat"></i>
+									<span>Resend OTP</span>
+								</a>
+							</div>
+
+							<div class="btnBox">
+								<button class="btn btn-block btn-lg btn-primary uppercase">Verify</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- <div class="signInBox">
+					<figure class="center padding-bottom-20"><img src="img/icon_thankyou.png" alt="thank you"></figure>
+					<h2 class="size45 ebold center primary_color">Thank You</h2>
+					<p class="center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+	
+					<div class="btnBox center padding-top-30">
+						<a href="javascript:void(0)" class="btn btn-lg btn-primary uppercase">Continue</a>
+					</div>
+				</div> -->
+				</div>
+			</div>
+		</div>
+		<!--// #signupnow::END //-->
+
+		<!--//\\ JAVASCRIPTS \\//-->
+		<script src="{{url_for('static',filename='coming_assets/js/popper.min.js')}}"></script>
+		<script src="{{url_for('static',filename='coming_assets/js/bootstrap.min.js')}}"></script>
+		<script src="{{url_for('static',filename='coming_assets/js/libs-combined.min.js')}}"></script>
+		<script src="{{url_for('static',filename='coming_assets/js/app.js')}}"></script>
+
+		<script>
+			{
+				// Writing in ES5 Way to make compatible for IE
+				var nodes = document.querySelectorAll(".otpInputs input");
+				var selector = Array.from(nodes);
+
+				var focusNextInput = function (e) {
+					if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+						if (e.target.parentNode.parentNode.nextElementSibling == null) {
+							e.target.blur();
+						} else {
+							e.target.parentNode.parentNode.nextElementSibling.children[0].children[0].removeAttribute("disabled");
+							e.target.parentNode.parentNode.nextElementSibling.children[0].children[0].focus();
+						}
+					}
+				};
+				selector.forEach(function (elem, i, arr) {
+					elem.setAttribute("disabled", "disabled");
+					arr[0].removeAttribute("disabled");
+					elem.addEventListener("keyup", focusNextInput);
+				});
+
+				$("#signupnow").on("show.bs.modal", function (event) {
+					event.target.querySelector(".otpFirst").focus();
+				});
+			}
+		</script>
+	</body>
+</html>
