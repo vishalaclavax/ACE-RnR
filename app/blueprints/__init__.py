@@ -36,8 +36,8 @@ def views_setup(app):
         if not g.novus_api_token:
             abort(500, 'Could not generate novus_api_token.')
         g.novus_api_token_auth = TokenAuth(
-            token=g.novus_api_token.access_token,
-            auth_scheme=g.novus_api_token.token_type,
+            token=g.novus_api_token.get('access_token'),
+            auth_scheme=g.novus_api_token.get('token_type'),
         )
         g.novus_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_api_token_auth)
 
@@ -45,8 +45,8 @@ def views_setup(app):
         if not g.novus_transaction_token:
             abort(500, 'Could not generate novus_transaction_token.')
         g.novus_transaction_token_auth = TokenAuth(
-            token=g.novus_transaction_token.access_token,
-            auth_scheme=g.novus_transaction_token.token_type,
+            token=g.novus_transaction_token.get('access_token'),
+            auth_scheme=g.novus_transaction_token.get('token_type'),
         )
         g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
         g.jolo_api_client = APIClient(current_app.config['JOLO_BASE_URL'],params={'userid':'clavax','key':'179602160480838','client_id':current_app.config['CLIENT_ID']})

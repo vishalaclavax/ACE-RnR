@@ -10,17 +10,18 @@ SESSION_COOKIE_NAME = 'HKLRjcwn2Plh6HD1zVGi2rZPN9iG41u50slin'
 
 ##redis session
 SESSION_TYPE = 'redis'
-SESSION_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
+#SESSION_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
 # SESSION_REDIS = redis.from_url('redis://127.0.0.1:6379/0')
+SESSION_REDIS = redis.from_url('redis://:Tech!123@localhost:6379/0')
 
-CACHE_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
-
+#CACHE_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
+CACHE_REDIS = redis.from_url('redis://:Tech!123@localhost:6379/0')
 # REDIS_CACHING_KEY = 'nth_live_'
 REDIS_CACHING_KEY = 'Npci_rewardz_'
 
 ##Session cookie secure flags
-SESSION_COOKIE_SECURE=False  #False to run project locally.
-SESSION_COOKIE_HTTPONLY=False
+SESSION_COOKIE_SECURE=True  #False to run project locally.
+SESSION_COOKIE_HTTPONLY=True
 SESSION_COOKIE_SAMESITE='Lax'
 
 APP_TITLE = 'NPCI Awards, Celebrations & Expressions'
@@ -46,10 +47,10 @@ USER_SESSION_KEY = '__auth_session_id'
 TEAMS_WEBHOOK_URL = "https://npciorg.webhook.office.com/webhookb2/9451119e-9236-4ef9-b934-73337c6fad99@8ca9216b-1bdf-4056-9775-f5e402a48d32/IncomingWebhook/05c5687f97d04a20a511881fa3db2205/3365d8b7-4761-4f21-8425-0bd08735803f"
 
 # new staging database 
-COSMOS_HOST_URI = 'https://novusloyaltyfulfilmentstaging-new.documents.azure.com:443/'
-COSMOS_AUTH_MASTER_KEY = 'tcRQJyqWwklc7tMtESUp4d6HGWpPnaUTlNVmtO8BicfRjBeepTIeuBEnvxinQx5lSJnb3JFYkKmLt17UBBlOfg=='
-COSMOS_DATABASE_ID = 'CatalogPlatform'
-COSMOS_COLLECTION_ID = 'CatalogMaster'
+# COSMOS_HOST_URI = 'https://novusloyaltyfulfilmentstaging-new.documents.azure.com:443/'
+# COSMOS_AUTH_MASTER_KEY = 'tcRQJyqWwklc7tMtESUp4d6HGWpPnaUTlNVmtO8BicfRjBeepTIeuBEnvxinQx5lSJnb3JFYkKmLt17UBBlOfg=='
+# COSMOS_DATABASE_ID = 'CatalogPlatform'
+# COSMOS_COLLECTION_ID = 'CatalogMaster'
 
 ## LIVE DB
 # COSMOS_HOST_URI = 'https://nthrewardsfulfillmentdb-rs1.documents.azure.com:443/'
@@ -60,8 +61,10 @@ COSMOS_COLLECTION_ID = 'CatalogMaster'
 APP_TZINFO = pytz.timezone('Asia/Kolkata')
 
 ##custom config
-SESSION_TIMEOUT = 9000
+SESSION_TIMEOUT = 900
 REFRESH_SESSION_TIMEOUT = True
+TOKEN_CACHE_TIME = 900
+LOGIN_CACHE_TIME = 3600
 ADMITAT_CACHE_TIME = 72000
 ## Fulfilment platform API
 API_BASE_URL = 'https://fulfillmentadminpro.azurewebsites.net/api'
@@ -70,8 +73,8 @@ ADMITAT_TAGS_URL = "https://nthrewardsprogramapi.novusloyalty.com/"
 
 CLIENT_ID = '56npci-6f44-4bd9-be95-7655tedgsweslkfj696rnr'
 ##NTH LiVe
-NOVUS_API_URL = 'https://nthrewardsprogramapi.novusloyalty.com/api'
-NOVUS_ID_API_URL = 'https://nthrewardsid.novusloyalty.com/connect'
+NOVUS_API_URL = 'https://customerapi.nthrewards.com/api'
+NOVUS_ID_API_URL = 'https://idauth.nthrewards.com/connect'
 NOVUS_API_CLIENT_ID = 'GeneralClient'
 NOVUS_API_CLIENT_SECRET = 'GAZQMSGIRH'
 NOVUS_API_PROVIDER_KEY = 'rnr_id'

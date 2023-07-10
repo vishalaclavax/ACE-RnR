@@ -6,12 +6,12 @@ from flask.sessions import SessionInterface
 # from flask_compress import Compress
 from flask_htmlmin import HTMLMIN
 
-from app.utils.cosmos_connect import CosmosConnect
+#from app.utils.cosmos_connect import CosmosConnect
 from app.services.api_client_service import APIClient
 from flask_socketio import SocketIO
 
 csrf = CSRFProtect() # https://flask-wtf.readthedocs.io/en/v0.14.2/csrf.html
-cosmos = CosmosConnect()
+#cosmos = CosmosConnect()
 # compress = Compress()
 socketio = SocketIO()
 
@@ -40,7 +40,7 @@ def create_app(config=None):
     # extensions
     # sess.init_app(app)
     csrf.init_app(app)
-    cosmos.init_app(app)
+    #cosmos.init_app(app)
     mail.init_app(app)
     socketio.init_app(app)
     # compress.init_app(app)

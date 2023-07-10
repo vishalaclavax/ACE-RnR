@@ -5,7 +5,7 @@ from flask import g, current_app, session, redirect, request, url_for, flash, ab
 from app.services.user_service import get_user, get_user_by_id
 from app.services.common_service import get_res_error_msg
 from app.utils import format_date, parse_date
-from app import cosmos
+#from app import cosmos
 from app.utils import create_hash, random_str
 
 
