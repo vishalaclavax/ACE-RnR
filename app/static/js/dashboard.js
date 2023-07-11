@@ -79,7 +79,38 @@ $(document).ready(function () {
 		},
 		submitHandler: function () {
 			//new FormData($('#postAnUpdateFrm')[0])
-			//needs to add from copy
+			$.ajax({
+				url: app_base_url + "post-an-update",
+				type: "post",
+				contentType: false,
+				processData: false,
+				cache: false,
+				enctype: "multipart/form-data",
+				data: new FormData($("#postAnUpdateFrm")[0]),
+				beforeSend: function () {
+					//$('.overlay').show();
+					$(".loaderbox").show();
+					$("#submitPost").prop("disabled", true);
+				},
+				success: function (response) {
+					$(".loaderbox").hide();
+					$("#submitPost").prop("disabled", false);
+					$("#submitPost").removeProp("disabled");
+					console.log(response);
+					$(".postanupdatebox").hide();
+					try{
+					    socket.emit('activity response', {data: 'From delete post socket!'});
+					}catch(ex){
+					    console.log("exception from comment: "+ ex);
+					}
+					/*if (response.error == 0 && response.redirect_url) {
+						window.location.href = response.redirect_url;
+					}*/
+				},
+				complete: function () {
+					$(".loaderbox").hide();
+				},
+			});
 		},
 	});
 });
@@ -91,10 +122,224 @@ function cancel_comment(el, index) {
 	$("#commentBox_" + index).val("");
 }
 function submit_post_comment(el, index) {
-	//needs to add from copy
+	var comment = $("#commentBox_" + index).val();
+	var transaction_id = $("#transactionId_" + index).val();
+	var data = $("#commentFrm_" + index).serialize();
+	if (comment.trim() != "") {
+		$(el).closest(".comment_frm").find("p.custom_error").html("");
+
+		$.ajax({
+			url: app_base_url + "save-user-comment",
+			type: "post",
+			dataType: "json",
+			cache: false,
+			data: data,
+			beforeSend: function () {
+				$(".loaderbox").show();
+			},
+			success: function (response) {
+				$(".loaderbox").hide();
+				console.log(response);
+				if (response.error == 0) {
+					if (response.data.img) {
+						var img_src = response.data.img;
+					} else {
+						var img_src = "/static/img/user.png";
+					}
+					$("#addComment_" + response.form_index).hide();
+					$("#tblCommentBox_" + response.form_index).prepend('<li class="commentBox"><div class="commentBox_img"><img src="' + img_src + '" width="40"/></div><div class="commentBox_contant"><p><strong>' + response.data.name + '</strong> <span class="block">' + response.data.comment + "</span></p><p>" + response.data.date_time + "</p></div></li>");
+					$("#commentBox_" + response.form_index)
+						.siblings(".custom_error")
+						.html("");
+					$("#commentBox_" + response.form_index).val("");
+					try{
+					    socket.emit('activity response', {data: 'From comment socket!'});
+					}catch(ex){
+					    console.log("exception from comment: "+ ex);
+					}
+
+					/*$('#empregisterform .message').html('<div class="alert alert-success">'+response.msg+'</div>');
+                    window.setTimeout(function(){
+                        $('#empregisterform .message').html('');
+                    }, 2000);*/
+				} else {
+					if (response.fields_error.comment) {
+						$("#commentBox_" + response.form_index)
+							.siblings(".custom_error")
+							.html(response.fields_error.comment);
+					} else {
+						$("#commentBox_" + response.form_index)
+							.siblings(".custom_error")
+							.html("");
+					}
+					if (!response.fields_error.comment) {
+						$("#commentBox_" + response.form_index + ".message").html('<div class="alert alert-danger">' + response.msg + "</div>");
+						window.setTimeout(function () {
+							$("#commentBox_" + response.form_index + ".message").html("");
+						}, 2000);
+					}
+				}
+			},
+			complete: function () {
+				//$('.overlay').hide();
+			},
+		});
+	} else {
+		$(el).closest(".comment_frm").find("p.custom_error").html("Comment is required!");
+	}
 }
 function submit_user_like(el, islike, transaction_id, index, ttl_like,receiver_name,receiver_email,awarded_by_name,awarded_by_email,method_type,usr_name,usr_email,like_list) {
+	/*if($(el).hasClass('image_filled')){
+        $(el).removeClass('image_filled');
+    }else{
+        $(el).addClass('image_filled');
+    }*/
+    var usr_name = usr_name;
+    var usr_email = usr_email;
+    var new_user_like_list = [];
+    console.log(typeof(like_list));
+    console.log(like_list);
+    var user_like_list = JSON.parse(like_list);
 
+	if (islike.toLowerCase() == "false") {
+		is_liked = true;
+	} else {
+		is_liked = false;
+	}
+
+	data = { is_liked: is_liked, transaction_id: transaction_id, form_index: index, ttl_like: ttl_like, 'receiver_name': receiver_name, 'receiver_email': receiver_email, 'awarded_by_name': awarded_by_name, 'awarded_by_email': awarded_by_email, 'method_type': method_type};
+	/* bind like data before proceed*/
+	if (is_liked == true) {
+		var img_src = "/static/img/like_icon_filled.png";
+		//var sec_img_src = '/static/img/like_icon.png';
+	} else {
+		var img_src = "/static/img/like_icon.png";
+		//var sec_img_src = '/static/img/like_icon_filled.png';
+	}
+	var ttl_like = parseInt(ttl_like);
+	var like_cnt = 0;
+	var like_list_html = '';
+	if (is_liked == true) {
+		ttl_like = parseInt(ttl_like) + 1;
+		like_cnt = ttl_like;
+		like_data={name: usr_name,email: usr_email};
+		user_like_list.push(like_data);
+		$.each(user_like_list, function(i, likeuser) {
+            if(likeuser.name){
+                var u_name = likeuser.name;
+            }else{
+                var u_name = likeuser.email;
+            }
+            new_obj = {name: likeuser.name,email: likeuser.email};
+            new_user_like_list.push(new_obj);
+            like_list_html += '<li data-email="'+likeuser.email+'"><span title="'+likeuser.email+'">'+u_name+'</span></li>';
+        });
+	} else {
+		ttl_like = parseInt(ttl_like) - 1;
+		like_cnt = ttl_like;
+		if (ttl_like <= 0 || isNaN(ttl_like)) {
+			like_cnt = "";
+		}
+		/*else{
+		    $('#likedCustomers_'+index+' ul').children('li[data-email="'+usr_email+'"]').remove();
+		}*/
+		console.log("i m outside");
+		if(user_like_list){
+		    console.log("i m hereeeeeeeeeeeeee");
+		    console.log(user_like_list);
+		    console.log(new_user_like_list);
+		    $.each(user_like_list, function(i, likeuser) {
+		        if(likeuser.name){
+                    var u_name = likeuser.name;
+                }else{
+                    var u_name = likeuser.email;
+                }
+                if(likeuser.email != usr_email){
+                    like_list_html += '<li data-email="'+likeuser.email+'"><span title="'+likeuser.email+'">'+u_name+'</span></li>';
+                    new_user_like_list.push({name: likeuser.name,email: likeuser.email});
+                }
+            });
+		}
+
+	}
+	if (ttl_like > 0) {
+		var likes = ttl_like;
+
+	} else {
+		var likes = 0;
+	}
+	var all_like_user_html = '';
+	if(like_list_html){
+	    all_like_user_html = '<div class="likedCustomers" id="likedCustomers_'+index+'"><ul>'+like_list_html+'</ul></div>';
+	}
+	//var json_likes = JSON.stringify(new Object(new_user_like_list));
+
+	var json_likes = JSON.parse(JSON.stringify(new_user_like_list));
+	var json_like = JSON.stringify(json_likes);
+	json_like = json_like.replace(/\"/g, "\&quot\;");  //solves the problem
+
+
+	$("#likeBoxSection_"+index).html('<a href="javascript:void(0)" class="like_btn" onclick="submit_user_like(this,\''+is_liked+'\',\''+transaction_id+'\',\''+index+'\', \''+likes+'\', \''+receiver_name+'\', \''+receiver_email+'\', \''+awarded_by_name+'\', \''+awarded_by_email+'\', \''+method_type+'\',\''+usr_name+'\',\''+usr_email+'\',\''+json_like+'\')" id="likeBox_' + index + '"><img src="' + img_src + '" class="likeitbefore"/>Like <small class="ttl_like">' + like_cnt + "</small></a>"+all_like_user_html);
+	return false;
+	$.ajax({
+		url: app_base_url + "save-user-like",
+		type: "post",
+		dataType: "json",
+		cache: false,
+		headers: {
+			"X-CSRFToken": csrf_token,
+		},
+		data: data,
+		beforeSend: function () {
+			//$('.overlay').show();
+		},
+		success: function (response) {
+			console.log(response);
+			if (response.error == 0) {
+				// /static/img/like_icon_filled.png
+				if (response.is_liked == "true") {
+					var img_src = "/static/img/like_icon_filled.png";
+					//var sec_img_src = '/static/img/like_icon.png';
+				} else {
+					var img_src = "/static/img/like_icon.png";
+					//var sec_img_src = '/static/img/like_icon_filled.png';
+				}
+				if (response.is_liked == "true") {
+					var is_liked = "True";
+				} else {
+					var is_liked = "False";
+				}
+				var ttl_like = 0;
+				var like_cnt = 0;
+				if (response.is_liked == "true" && response.ttl_like) {
+					ttl_like = parseInt(response.ttl_like) + 1;
+					like_cnt = ttl_like;
+				} else {
+					ttl_like = parseInt(response.ttl_like) - 1;
+					like_cnt = ttl_like;
+					if (ttl_like <= 0 || isNaN(ttl_like)) {
+						like_cnt = "";
+					}
+				}
+				if (ttl_like > 0) {
+					var likes = ttl_like;
+				} else {
+					var likes = 0;
+				}
+                try{
+                    socket.emit('activity response', {data: 'From like socket!'});
+                }catch(ex){
+                    console.log("exception from like: "+ ex);
+                }
+				//$('#likeBoxSection_'+response.form_index).html('<a href="javascript:void(0)" class="like_btn" onclick="submit_user_like(this,\''+is_liked+'\',\''+response.transaction_id+'\',\''+response.form_index+'\')" id="likeBox_'+response.form_index+'"><img src="'+img_src+'" class="likeitbefore"/><img src="'+sec_img_src+'" class="likeitafter"/><img src="/static/img/like_icon_filled.png" class="likeitliked"/>Like</a>');
+				//$('#likeBoxSection_'+response.form_index).html('<a href="javascript:void(0)" class="like_btn" onclick="submit_user_like(this,\''+is_liked+'\',\''+response.transaction_id+'\',\''+response.form_index+'\',\''+likes+'\')" id="likeBox_'+response.form_index+'"><img src="'+img_src+'" class="likeitbefore"/>Like <small class="ttl_like">'+like_cnt+'</small></a>');
+			} else {
+			}
+		},
+		complete: function () {
+			//$('.overlay').hide();
+		},
+	});
 }
 function load_more_comment(count) {
 	if (
@@ -146,7 +391,36 @@ function loadMoreActivity() {
 	});
 }
 function delete_post_an_update(transactionid) {
-	//needs to add from copy
+	if (confirm("Do you want delete this post?")) {
+		$.ajax({
+			url: app_base_url + "delete-post-an-update",
+			type: "post",
+			dataType: "json",
+			cache: false,
+			data: { transactionid: transactionid },
+			beforeSend: function () {
+				$(".loaderbox").show();
+			},
+			success: function (response) {
+				$(".loaderbox").hide();
+				if (response.error == 0) {
+					$.growl.notice({ title: "Post an Update ", message: response.msg, size: "large" });
+					try{
+					    socket.emit('activity response', {data: 'From delete post socket!'});
+					}catch(ex){
+					    console.log("exception from comment: "+ ex);
+					}
+					/*window.setTimeout(function () {
+						window.location.reload();
+					}, 1000);*/
+				} else {
+					$.growl.error({ title: "Post an Update ", message: response.msg, size: "large" });
+				}
+			},
+		});
+	} else {
+		return false;
+	}
 }
 function read_more_announcement(heading, by_name, index, date, rec_type) {
 	var post_desc = $("#postDesc_" + index).val();
@@ -234,5 +508,37 @@ function toggle_anniversary_data(el) {
 	}
 }
 function delete_comment(id) {
-	//needs to add from copy
+	console.log(id)
+	if (confirm("Do you want to delete this comment?")) {
+		$.ajax({
+			url: app_base_url + "delete-comment?id="+id,
+			type: "get",
+			dataType: "json",
+			cache: false,
+			data: { id: id },
+			beforeSend: function () {
+				$(".loaderbox").show();
+			},
+			success: function (response) {
+				$(".loaderbox").hide();
+				console.log(response)
+				console.log('response')
+				if (response.error == 0) {
+					$.growl.notice({ title: "Delete a comment ", message: response.message, size: "large" });
+					try{
+					    socket.emit('activity response', {data: 'From delete comment socket!'});
+					}catch(ex){
+					    console.log("exception from comment: "+ ex);
+					}
+					window.setTimeout(function () {
+						window.location.reload();
+					}, 1000);
+				} else {
+					$.growl.error({ title: "Post a comment ", message: response.message, size: "large" });
+				}
+			},
+		});
+	} else {
+		return false;
+	}
 }

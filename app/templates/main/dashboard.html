@@ -375,9 +375,9 @@
 		console.log("from"+e);
 	}
 	   //$('.loaderbox').show();
-	   //socket.emit('activity response', {data: 'I\'m connected!'});
+	   socket.emit('activity response', {data: 'I\'m connected!'});
 </script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/dashboard.js') }}?v=7.0"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dashboard_socket.min.js') }}?v=7.0"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dashboard.min.js') }}?v=7.0"></script>
 
 {% endblock %}

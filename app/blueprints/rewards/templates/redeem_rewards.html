@@ -46,7 +46,7 @@
                                     <input type="hidden" id="giftcard_code" value="{{giftcard.get('code')}}"/>
 
 
-                                    
+                                    <button type="button" id="confirmRedeem" class="cmnbtn">Redeem Points</button>
                                     <!--<button type="submit" class="cmnbtn" onclick="window.location.href='#cont'">Redeem Points</button>-->
                                 </div>
                             </div>
@@ -95,6 +95,7 @@
                         <input type="hidden" name="giftcard_points" id="selectedGiftcardPoints" value=""/>
                         <input type="hidden" id="giftcardCode" name="giftcardCode" value=""/>
 
+                        <button type="submit" class="cmnbtn" id="confirmorderbtn">Submit</button>
                     </form>
 
                 </div>
@@ -116,7 +117,7 @@
 
 {% endblock %}
 {% block page_scripts %}
-    <script type="text/javascript" src="{{ url_for('rewards.static', filename='redeem.js') }}?v={{timestamp}}"></script>
+    <script type="text/javascript" src="{{ url_for('rewards.static', filename='redeem.min.js') }}?v={{timestamp}}"></script>
     <script>
         $(document).on('click','#checkorderfailed', function(){
             window.location.reload();

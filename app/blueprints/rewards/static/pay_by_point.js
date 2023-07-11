@@ -122,7 +122,7 @@ $("#submitPayment").on("click", function () {
 	var amount = $("#orderAmount").val();
 	console.log("amount++++++++++++++++++++", parseFloat(amount));
 
-
+	payment(form);
 	// callRazorPayScript(order_id,amount);
 	// e.preventDefault();
 });
@@ -183,7 +183,36 @@ var callRazorPayScriptRecharge = function (order_id, amount) {
 				razorpay_payment_id = transaction.razorpay_payment_id;
 				order_address = $("#order_address").val();
 				formData = { razorpay_payment_id: razorpay_payment_id, csrf_token: app.config.get("csrf_token"), points_used: points_used };
-
+				$.ajax({
+					type: "POST",
+					url: "/recharge/place-order",
+					data: formData,
+					xhrFields: {
+						withCredentials: true,
+					},
+					dataType: "json",
+					beforeSend: function () {
+						showLoader("body");
+					},
+					success: function (resultData) {
+						// console.log("success+++++++++++",resultData)
+						if (resultData["success"]) {
+							// $('form#recharge_payment').submit();
+							window.location.href = "/recharge/pay-bills";
+							return false;
+						} else {
+							window.location.href = "/recharge/pay-bills";
+						}
+					},
+					error: function (xhr) {
+						// if error occured
+						hideLoader("body");
+						bootoast({
+							message: "No response from server, please try after sometime.",
+							type: "danger",
+						});
+					},
+				});
 			},
 		};
 		window.rzpay = new Razorpay(options);
@@ -214,7 +243,49 @@ function payment(form) {
 
 	$button = $(".amount");
 
+	$.ajax({
+		type: "POST",
+		url: formAction,
+		data: formData,
+		processData: false,
+		dataType: "json",
+		cache: false,
+		beforeSend: function (xhr, settings) {
+			showLoader("body");
+			$button.prop("disabled", true);
+			app.flashMsg("Verifying...", "info", $msgContainer);
+		},
+		success: function (data, status, xhr) {
+			console.log("data+++++++", data);
+			if (status == "success") {
+				hideLoader("body");
+				var order_id = data.order_id;
+				var amount = data.amount;
+				if (data.type == "recharge") {
+					// var order_id = $(".order_id").val();
+					// var amount =($(".amount").val());
+					// $payment_form.submit();
+					callRazorPayScriptRecharge(order_id, amount);
+				} else {
+					// var order_id = $("#orderId").val();
+					// var amount =($("#orderAmount").val());
+					callRazorPayScript(order_id, amount);
+				}
+			} else {
+				hideLoader("body");
 
+				app.flashMsg("Something went wrong! Please try again later.", "error", $msgContainer);
+				$button.prop("disabled", false);
+			}
+		},
+		// error: function (xhr, status, err) {
+		//     console.log(err);
+		//     $button.prop('disabled', false);
+		// hideLoader('body');
+
+		//     app.flashMsg("Something went wrong! Please try again later.", 'error', $msgContainer);
+		// },
+	});
 }
 
 $("#card-payment-frm").validate({
@@ -283,7 +354,35 @@ $(document).ready(function () {
 		//     });
 		//     return false
 		// }
-
+		$.ajax({
+			type: "GET",
+			url: "/orders/getamount",
+			dataType: "json",
+			beforeSend: function () {
+				showLoader("body");
+			},
+			success: function (resultData) {
+				hideLoader("body");
+				if (resultData["success"]) {
+					amount = parseFloat(resultData["amount"]);
+					console.log("amount=" + amount);
+					callRazorPayScript(amount);
+				} else {
+					hideLoader("body");
+					bootoast({
+						message: "No response from server, please try after sometime.",
+						type: "danger",
+					});
+				}
+			},
+			error: function () {
+				hideLoader("body");
+				bootoast({
+					message: "No response from server, please try after sometime.",
+					type: "danger",
+				});
+			},
+		});
 	});
 
 	$(".paymentOption").on("click", function () {
@@ -619,7 +718,36 @@ function pay_by_points() {
 	var redeem_val = parseFloat($("#points_used").val().toFixed(2));
 	formData = { csrf_token: app.config.get("csrf_token"), redeem_type: 1, redeem_val: redeem_val };
 
-
+	$.ajax({
+		type: "POST",
+		url: "/travel/confirm-booking-points",
+		data: formData,
+		dataType: "json",
+		beforeSend: function () {
+			showLoader("body");
+		},
+		success: function (resultData) {
+			if (resultData["success"]) {
+				order_id = resultData["data"]["code"];
+				window.location.href = "/orders/detail/" + order_id;
+				return false;
+			} else {
+				hideLoader("body");
+				var msg = resultData["msg"];
+				bootoast({
+					message: msg,
+					type: "danger",
+				});
+			}
+		},
+		error: function () {
+			hideLoader("body");
+			bootoast({
+				message: "No response from server, please try after sometime.",
+				type: "danger",
+			});
+		},
+	});
 }
 
 $(document).on("click", "#pay_points", function () {
