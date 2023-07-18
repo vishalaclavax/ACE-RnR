@@ -137,7 +137,8 @@ def login_required(target_function):
 
 def create_login_session(customercode):
     reward_points = 0
-    user = get_user(customercode=customercode)
+    #user = get_user(customercode=customercode)
+    user = customercode
     print("create_login_session", user)
     if 'wallet' in user and 'point' in user['wallet']:
         reward_points = int(user['wallet']['point'])
@@ -201,7 +202,8 @@ def do_login(email, password):
         print("do_login", res)
 
         if res.response.status_code == 200 and res.get('data', {}).get('customercode'):
-            user = get_user(customercode=res.get('data', {}).get('customercode'))
+            #user = get_user(customercode=res.get('data', {}).get('customercode'))
+            user = res.get('data')
             session['user'] = user['first_name'] if 'first_name' in user else 'User'
 
             if "login_data" in session:
@@ -214,9 +216,9 @@ def do_login(email, password):
                 session.pop("_checkout_info")
 
             if user and user.get('customercode'):
-                g.current_user = get_user_by_id(user.get('customercode'))
-                print(g.current_user,"g.current_user")
-                success = create_login_session(user.get('customercode'))
+                # g.current_user = get_user_by_id(user.get('customercode'))
+                # print(g.current_user,"g.current_user")
+                success = create_login_session(user)
 
             else:
                 success = False
