@@ -314,7 +314,8 @@ def change_nominate_status():
                 awarded_by_name = data['transactionDetail']['awarded_by_email'] if 'transactionDetail' in data and 'awarded_by_email' in data['transactionDetail'] else None
                 awarded_by = data['transactionDetail']['awarded_by_email'] if 'transactionDetail' in data and 'awarded_by_email' in data['transactionDetail'] else None
                 awarded_by_email = data['transactionDetail']['awarded_by_email'] if 'transactionDetail' in data and 'awarded_by_email' in data['transactionDetail'] else None
-                awarded_by_detail = user_service.get_user(email=awarded_by_email)
+                #awarded_by_detail = user_service.get_user(email=awarded_by_email)
+                awarded_by_detail = read_user_session().get('user')
                 awarded_by_name = awarded_by_detail.get('Emp_Name')
                 awarded_by_image = awarded_by_detail.get('imageUrl')
             if action == 'approved' and award_type.lower() == 'well done':

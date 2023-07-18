@@ -40,6 +40,7 @@ def create_user_session(session_data):
         'IsHOD': session_data.get('IsHOD'),
         'customercode': session_data.get('customercode'),
         'Incharge_and_above': session_data.get('Incharge_and_above'),
+        'user': session_data.get('user'),
     }
     # print(session[USER_SESSION_KEY]['manager_email_id'])
     return session[USER_SESSION_KEY]
@@ -173,6 +174,7 @@ def create_login_session(customercode):
             'IsManager': user.get('IsManager') if 'IsManager' in user else "",
             'IsHOD': user.get('IsHOD') if 'IsHOD' in user else "",
             'Incharge_and_above': user.get('Incharge_and_above') if 'Incharge_and_above' in user and user['Incharge_and_above'] else False,
+            'user' : user,
 
         }
         # if fulfilment_user is None:

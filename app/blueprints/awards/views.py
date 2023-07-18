@@ -34,7 +34,8 @@ def index():
     myRewards = []
     userEmail = read_user_session().get('email')
 
-    user = get_user_by_id(userEmail)  ## akashs@clavax.com  
+    #user = get_user_by_id(userEmail) 
+    user = read_user_session().get('user') ## akashs@clavax.com
     customercode = user.get('customercode')
     req_data = {
         'customercode': customercode,
@@ -68,7 +69,8 @@ def award_list():
     myRewards = []
     userEmail = read_user_session().get('email')
 
-    user = get_user_by_id(userEmail)  ## akashs@clavax.com
+    #user = get_user_by_id(userEmail)
+    user = read_user_session().get('user')  # akashs@clavax.com
     customercode = user.get('customercode')
 
     my_awardss = get_myawards(customercode)
@@ -107,7 +109,8 @@ def load_more_awards():
         else:
             awd_type = 'receiver'
         userEmail = read_user_session().get('email')
-        user = get_user_by_id(userEmail)  ## akashs@clavax.com
+        #user = get_user_by_id(userEmail)  ## akashs@clavax.com
+        user = read_user_session().get('user')
         customercode = user.get('customercode')
         req_data = {
             'customercode': customercode,

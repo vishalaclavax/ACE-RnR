@@ -170,7 +170,9 @@ def settings():
     if not auth_service.is_logged_in():
         return redirect(url_for('main.index'))
     email = auth_service.read_user_session().get('email')
-    user_detail = user_service.get_user(email=email)
+    #user_detail = user_service.get_user(email=email)
+    user_detail = auth_service.read_user_session().get('user')
+    print(user_detail,"user----------------")
     customercode = user_detail['customercode']
 
     # print(user_detail['customercode'])
@@ -255,7 +257,8 @@ def uploadImage():
         if not auth_service.is_logged_in():
             return redirect(url_for('main.index'))
         email = auth_service.read_user_session().get('email')
-        user_detail = user_service.get_user(email=email)
+        #user_detail = user_service.get_user(email=email)
+        user_detail = auth_service.read_user_session().get('user')
         session['imageUrl'] = ''
         if request.method=="POST":
             image = request.files.get("profilePic")
@@ -604,7 +607,8 @@ def upload_image():
         if request.method=="POST":
             response_data = {'success': False, 'error': 1, 'msg': 'Some error occurs, please try again !'}
             email = auth_service.read_user_session().get('email')
-            user_detail = user_service.get_user(email=email)
+            #user_detail = user_service.get_user(email=email)
+            user_detail = auth_service.read_user_session().get('user')
             session['imageUrl'] = ''
             image = request.files.get("profilePic")
             page_err, filename,image_url = upload_image_obj.upload_images(image)
@@ -673,7 +677,8 @@ def upload_image_mobile():
         if request.method=="POST":
             response_data = {'success': False, 'error': 1, 'msg': 'Some error occurs, please try again !'}
             email = auth_service.read_user_session().get('email')
-            user_detail = user_service.get_user(email=email)
+            #user_detail = user_service.get_user(email=email)
+            user_detail = auth_service.read_user_session().get('user')
             session['imageUrl'] = ''
             image = request.files.get("profileMobilePic")
             page_err, filename,image_url = upload_image_obj.upload_images(image)
@@ -1025,7 +1030,8 @@ def upload_excel():
             response_data = {'success': False, 'error': 1,
                              'msg': 'Some error occurs, please try again !'}
             email = auth_service.read_user_session().get('email')
-            user_detail = user_service.get_user(email=email)
+            #user_detail = user_service.get_user(email=email)
+            user_detail = auth_service.read_user_session().get('user')
             session['imageUrl'] = ''
             image = request.files["customercsv"]
             data_filename = secure_filename(image.filename)

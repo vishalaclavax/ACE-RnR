@@ -12,10 +12,10 @@ SESSION_COOKIE_NAME = 'HKLRjcwn2Plh6HD1zVGi2rZPN9iG41u50slin'
 SESSION_TYPE = 'redis'
 #SESSION_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
 # SESSION_REDIS = redis.from_url('redis://127.0.0.1:6379/0')
-SESSION_REDIS = redis.from_url('redis://:Tech!123@localhost:6379/0')
+SESSION_REDIS = redis.from_url('redis://fulReD85kgjurt@localhost:6379/0')
 
 #CACHE_REDIS = redis.from_url('rediss://:MsJE6WoevZwDfDEp2QjbvgqzHl6OPCSv7Q+CXi7RW2I=@nthfffront.redis.cache.windows.net:6380/0')
-CACHE_REDIS = redis.from_url('redis://:Tech!123@localhost:6379/0')
+CACHE_REDIS = redis.from_url('redis://fulReD85kgjurt@localhost:6379/0')
 # REDIS_CACHING_KEY = 'nth_live_'
 REDIS_CACHING_KEY = 'Npci_rewardz_'
 
