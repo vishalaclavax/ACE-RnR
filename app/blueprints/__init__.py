@@ -4,7 +4,7 @@ from locale import currency
 from werkzeug.utils import find_modules, import_string
 from flask import g, current_app, abort, request, session
 from app.services.api_client_service import TokenAuth, APIClient
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token, get_novus_transaction_token,proxy_test
 from app.services.auth_service import get_current_user, is_logged_in, check_session_timeout 
 from app.services.common_service import calc_target_time, check_target_time
 from app.services.offers_tag_service import get_offer_mapping_tag
@@ -51,12 +51,14 @@ def views_setup(app):
         )
         g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
         g.jolo_api_client = APIClient(current_app.config['JOLO_BASE_URL'],params={'userid':'clavax','key':'179602160480838','client_id':current_app.config['CLIENT_ID']})
+        proxy_test()
         proxies = {
             "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
             "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
         }
         auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
-        g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=False)
+        g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=True)
+        # g.api_client = APIClient(current_app.config['API_BASE_URL'])
         g.vm_client = APIClient(current_app.config['VM_BASE_URL'])
         g.current_user = get_current_user()
         g.cache_redis = current_app.config['CACHE_REDIS']

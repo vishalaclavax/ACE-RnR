@@ -176,9 +176,12 @@ def settings():
     customercode = user_detail['customercode']
 
     # print(user_detail['customercode'])
-    order_list = get_orderNdonation_list(customercode)
-    print("settings :", order_list['data'])
-
+    try:
+        order_list = get_orderNdonation_list(customercode)
+        print("settings :", order_list['data'])
+    except KeyError as exp:
+        print(exp,"exp from order list")
+        order_list = []
     profileimage = user_detail.get('profileimage')
     session['imageUrl'] = profileimage
     description = user_detail.get('description')

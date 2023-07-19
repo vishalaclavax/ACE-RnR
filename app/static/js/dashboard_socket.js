@@ -3,8 +3,8 @@
 });*/
 
 socket.on('activity response', function(data) {
-    // console.log("data from activity response");
-    // console.log(data.data);
+    console.log("data from activity response");
+    console.log(data.data);
     activity_data = data.data;
     var usr_name = data.usr_name;
     var usr_email = data.usr_email;
@@ -133,16 +133,24 @@ socket.on('activity response', function(data) {
             }else{
                 var award_image_html = '';
                 var activity_cont = '';
-                if(activity.transactionData.Reward_Cat.toLowerCase() == 'nominate'){
-                    activity_txt = 'rewarded';
-                }else{
+                try{
+                    if(activity.transactionData.Reward_Cat.toLowerCase() == 'nominate'){
+                        activity_txt = 'rewarded';
+                    }else{
+                        activity_txt = 'celebrated/recognized';
+                    }
+                    if(activity.transactionData.Reward_Cat.toLowerCase() != 'nominate' && activity.transactionData.award_values){
+                        var award_value_txt = '<span class="block">NPCI Way Tenet Exhibited - <strong>'+activity.transactionData.award_values+'</strong></span>';
+                    }else{
+                        var award_value_txt = '';
+                    }
+                }catch(ex){
+                    console.log(ex);
                     activity_txt = 'celebrated/recognized';
-                }
-                if(activity.transactionData.Reward_Cat.toLowerCase() != 'nominate' && activity.transactionData.award_values){
-                    var award_value_txt = '<span class="block">NPCI Way Tenet Exhibited - <strong>'+activity.transactionData.award_values+'</strong></span>';
-                }else{
                     var award_value_txt = '';
                 }
+
+
                 if(activity.customer.profileimage){
                     var award_receiver_img = activity.customer.profileimage;
                 }else{

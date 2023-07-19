@@ -1,6 +1,7 @@
 from time import time
 from flask import current_app, g
 import json
+import requests
 # from app import cosmos
 # from app.entities.token_entity import TokenEntity
 from app.services.api_client_service import APIClient
@@ -192,3 +193,22 @@ def generate_novus_transaction_token():
             return res.json
         else:
             return None
+
+def proxy_test():
+    try:
+        proxies = {
+            "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+            "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+        }
+        url = "https://fulfillmentadminpro.azurewebsites.net/api/get-settings/6825bcf4-45bf-4b69-be65-312528959c03"
+        headers = {"content-type": "application/json",
+                   }
+        #auth = {
+        #     "username": "nth.rewards",
+        #     "password": "Ultimate@2023"
+        # }
+        auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
+        response = requests.request("GET", url, headers=headers, proxies=proxies, verify=False)
+        print(response)
+    except Exception as exp:
+        print(exp,"exp from proxy test")
