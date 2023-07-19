@@ -56,7 +56,7 @@ def views_setup(app):
             "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
         }
         auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
-        g.api_client = APIClient(current_app.config['API_BASE_URL'], auth=g.novus_api_token_auth)#proxies=proxies, verify=False)
+        g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=False)
         g.vm_client = APIClient(current_app.config['VM_BASE_URL'])
         g.current_user = get_current_user()
         g.cache_redis = current_app.config['CACHE_REDIS']
