@@ -188,6 +188,7 @@ def create_login_session(customercode):
         #     save_user(user_id,updateData)
 
         user_session = create_user_session(data)
+        print(user_session,"session data in auth service------------------------")
         return True
     else:
         return False
@@ -206,6 +207,7 @@ def do_login(email, password):
         if res.response.status_code == 200 and res.get('data', {}).get('customercode'):
             #user = get_user(customercode=res.get('data', {}).get('customercode'))
             user = res.get('data')
+            print(user,"user in login service--------------------")
             session['user'] = user['first_name'] if 'first_name' in user else 'User'
 
             if "login_data" in session:
@@ -221,6 +223,7 @@ def do_login(email, password):
                 # g.current_user = get_user_by_id(user.get('customercode'))
                 # print(g.current_user,"g.current_user")
                 success = create_login_session(user)
+                print(success,"success in login service---------------")
 
             else:
                 success = False

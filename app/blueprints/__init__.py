@@ -13,6 +13,7 @@ from datetime import datetime
 from samesite_compat_check import should_send_same_site_none
 from app.services.order_service import  get_cart_details,get_updated_cart
 import json
+from requests.auth import HTTPProxyAuth
 
 def register(app, import_path='app.blueprints', **options):
     """Register all blueprints of given `import_path` on `app`."""
@@ -50,7 +51,12 @@ def views_setup(app):
         )
         g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
         g.jolo_api_client = APIClient(current_app.config['JOLO_BASE_URL'],params={'userid':'clavax','key':'179602160480838','client_id':current_app.config['CLIENT_ID']})
-        g.api_client = APIClient(current_app.config['API_BASE_URL'], auth=g.novus_api_token_auth)
+        proxies = {
+            "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+            "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+        }
+        auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
+        g.api_client = APIClient(current_app.config['API_BASE_URL'], auth=g.novus_api_token_auth)#proxies=proxies, verify=False)
         g.vm_client = APIClient(current_app.config['VM_BASE_URL'])
         g.current_user = get_current_user()
         g.cache_redis = current_app.config['CACHE_REDIS']
