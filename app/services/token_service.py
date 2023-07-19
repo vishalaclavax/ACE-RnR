@@ -5,6 +5,7 @@ import requests
 # from app import cosmos
 # from app.entities.token_entity import TokenEntity
 from app.services.api_client_service import APIClient
+from requests.auth import HTTPProxyAuth
 
 
 # Token = TokenEntity()
