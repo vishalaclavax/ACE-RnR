@@ -111,8 +111,6 @@ BANK_NAME = 'sleepsia'
 
 ##emailer sendgrid config
 EMAILER_SENDGRID_DEBUG = True if os.environ.get('MAIL_DEBUG') else False
-# SENDGRID_APIKEY = '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'
-# SENDGRID_APIKEY = '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'
 SENDGRID_APIKEY = os.getenv('SENDGRID_APIKEY')
 
 ## JOLO API
