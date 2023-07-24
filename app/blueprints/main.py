@@ -133,7 +133,7 @@ def dashboard():
         anniversary = json.loads(g.cache_redis.get(g.redis_caching_key + 'anniversary').decode('utf-8'))
         print("in cache+++")
     else:
-        anniversary = get_birthday_anniversary('Aniversary')
+        anniversary = get_birthday_anniversary('Anniversary')
         g.cache_redis.set(g.redis_caching_key + 'anniversary', json.dumps(anniversary),current_app.config['ADMITAT_CACHE_TIME'])
 
     # anniversary = get_birthday_anniversary('Aniversary')

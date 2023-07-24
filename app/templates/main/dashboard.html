@@ -281,7 +281,12 @@
 										<p>{{birthday.emp_Name}} <span class="block">{{birthday.date|date_month_name}}</span></p>
 									</div>
 								</li>
-								{% endfor %} {% endif %}
+								{% endfor %}
+								{% else %}
+								<div class="contentBox_contant">
+									<p> In the next seven days, you don't have any birthdays to celebrate </p>
+								</div>
+								{% endif %}
 							</ul>
 						</div>
 						{% if birthdays|length > max_bday %}
@@ -306,7 +311,13 @@
 										<p>{{versary.emp_Name}} <span class="block">{{versary.date|date_month_name}}</span></p>
 									</div>
 								</li>
-								{% endfor %} {% endif %}
+								{% endfor %}
+								{% else %}
+								<div class="contentBox_contant">
+									<br/>
+									<p>In the next seven days, you don't have any anniversaries to celebrate</p>
+								</div>
+								{% endif %}
 							</ul>
 						</div>
 						{% if anniversary|length > max_anniversary %}
