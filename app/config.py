@@ -38,13 +38,13 @@ BBPS_LOG_TABLE = "BbpsLog"
 USER_SESSION_KEY = '__auth_session_id'
 ##CLAVAX TEAMS URL
 
-# TEAMS_WEBHOOK_URL = 'https://clavaxtech.webhook.office.com/webhookb2/90bedb4c-fce7-4c68-86b6-83cb415c612e@8978af36-f413-4efa-bfb5-ff6fa322e2ce/IncomingWebhook/ac734012f8be4ed683203580d6d30dd0/caea3ba0-9b98-4a1d-8561-5d8009ab2f87'
+TEAMS_WEBHOOK_URL = 'https://clavaxtech.webhook.office.com/webhookb2/90bedb4c-fce7-4c68-86b6-83cb415c612e@8978af36-f413-4efa-bfb5-ff6fa322e2ce/IncomingWebhook/ac734012f8be4ed683203580d6d30dd0/caea3ba0-9b98-4a1d-8561-5d8009ab2f87'
 
 # NPCI test Team URL
 # TEAMS_WEBHOOK_URL = 'https://npciorg.webhook.office.com/webhookb2/1bef82cb-7601-4188-995f-3fa712102ede@8ca9216b-1bdf-4056-9775-f5e402a48d32/IncomingWebhook/3cbb37cf18284945978679efe5481167/3365d8b7-4761-4f21-8425-0bd08735803f'
 
 ##NPCI TEAMS URL
-TEAMS_WEBHOOK_URL = "https://npciorg.webhook.office.com/webhookb2/9451119e-9236-4ef9-b934-73337c6fad99@8ca9216b-1bdf-4056-9775-f5e402a48d32/IncomingWebhook/05c5687f97d04a20a511881fa3db2205/3365d8b7-4761-4f21-8425-0bd08735803f"
+# TEAMS_WEBHOOK_URL = "https://npciorg.webhook.office.com/webhookb2/9451119e-9236-4ef9-b934-73337c6fad99@8ca9216b-1bdf-4056-9775-f5e402a48d32/IncomingWebhook/05c5687f97d04a20a511881fa3db2205/3365d8b7-4761-4f21-8425-0bd08735803f"
 
 # new staging database 
 # COSMOS_HOST_URI = 'https://novusloyaltyfulfilmentstaging-new.documents.azure.com:443/'
