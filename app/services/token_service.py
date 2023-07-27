@@ -144,21 +144,22 @@ def get_novus_token():
 
 def get_novus_transaction_token():
     provider = current_app.config.get('NOVUS_TRANSACTION_PROVIDER_KEY')
-    if current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider) and current_app.config['CACHE_REDIS'].get(
-            current_app.config['REDIS_CACHING_KEY'] + provider).decode('UTF-8') != 'null':
-        token = json.loads(
-            current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider).decode('utf-8'))
-    else:
-        token_data = generate_novus_transaction_token()
-        if token_data and token_data.get('access_token'):
-                token = {
-                    'provider': provider,
-                    'token_type': token_data.get('token_type', 'Bearer'),
-                    'access_token': token_data.get('access_token'),
-                    'expires_in': token_data.get('expires_in', 3600),
-                }
-        current_app.config['CACHE_REDIS'].set(
-            current_app.config['REDIS_CACHING_KEY'] + provider, json.dumps(token), current_app.config['TOKEN_CACHE_TIME'])
+    token = ''
+    # if current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider) and current_app.config['CACHE_REDIS'].get(
+    #         current_app.config['REDIS_CACHING_KEY'] + provider).decode('UTF-8') != 'null':
+    #     token = json.loads(
+    #         current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider).decode('utf-8'))
+    # else:
+    token_data = generate_novus_transaction_token()
+    if token_data and token_data.get('access_token'):
+            token = {
+                'provider': provider,
+                'token_type': token_data.get('token_type', 'Bearer'),
+                'access_token': token_data.get('access_token'),
+                'expires_in': token_data.get('expires_in', 3600),
+            }
+    current_app.config['CACHE_REDIS'].set(
+        current_app.config['REDIS_CACHING_KEY'] + provider, json.dumps(token), current_app.config['TOKEN_CACHE_TIME'])
     # token = read_token(provider)
     # if not token:
     #     token_data = generate_novus_transaction_token()
