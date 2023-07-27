@@ -149,7 +149,7 @@ def get_novus_transaction_token():
         token = json.loads(
             current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider).decode('utf-8'))
     else:
-        token_data = generate_novus_api_token()
+        token_data = generate_novus_transaction_token()
         if token_data and token_data.get('access_token'):
                 token = {
                     'provider': provider,

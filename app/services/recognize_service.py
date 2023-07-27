@@ -148,9 +148,9 @@ def get_nomination_list(req):
         token = get_novus_transaction_token()
         access_token = token.get('access_token')
         if is_hr:
-            res = g.novus_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
+            res = g.transaction_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
         else:
-            res = g.novus_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
+            res = g.transaction_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
 
 
         res_data = res.get('data') if res.response.status_code == 200 and res.get('data') else []
@@ -237,22 +237,33 @@ def get_award_list(req):
         offset = req['page'] if 'page' in req else 1
         limit = req['page_size'] if 'page_size' in req else 10
         award_type = req['award_type'] if 'award_type' in req else 'receiver'
-        token = get_novus_transaction_token()
-        access_token = token.get('access_token')
+        #print('line 240-------------------------')
+        #token = get_novus_transaction_token()
+        #print(token,"token-------------------------")
+        #access_token = token.get('access_token')
+        #print(access_token,"access_token--------------------------")
         if award_type == 'receiver':
-            url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(current_app.config['NOVUS_API_URL'],offset,limit,customercode,award_type)
+            res = g.transaction_client.get("/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(offset, limit, customercode, award_type))
+            #print(res,"res--------------receiver-----------------")
+            #url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(current_app.config['NOVUS_API_URL'],offset,limit,customercode,award_type)
         else:
             awarded_by_email = read_user_session().get('email')
             searchData = {"key5":{"awarded_by_email":awarded_by_email,"isCustomerField5":"transactionDetail"}}
             search_param = json.dumps(searchData)
-            url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}&searchString={}".format(
-                current_app.config['NOVUS_API_URL'], offset, limit, customercode, award_type,search_param)
+            res = g.transaction_client.get(
+                "/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}&searchString={}".format(offset, limit, customercode, award_type, search_param))
+            #print(res, "res--------------giver-----------------")
+            # url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}&searchString={}".format(offset, limit, customercode, award_type,search_param)
 
 
-        headers = {"content-type": "application/json", "Authorization": "Bearer "+access_token}
-        response = requests.request("GET", url, headers=headers)
-        res = response.json()
-        return res.get('data') if response.status_code == 200 and res.get('data') else []
+        # headers = {"content-type": "application/json", "Authorization": "Bearer "+access_token}
+        # print(headers,"headers---------------------")
+        # print(url,"url----------------------------------")
+        # response = requests.request("GET", url, headers=headers)
+        # print(response,"response------------------------")
+        # res = response.json()
+        #print(res,"res---------------------------------")
+        return res.get('data') if res.response.status_code == 200 and res.get('data') else []
     except Exception as e:
         print(e)
         return []
@@ -280,8 +291,10 @@ def save_nominate_employee(data):
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL'] + "/Transaction/CustomerTransaction"
         headers = {"Authorization": "Bearer " + access_token}
-        res = requests.request("POST", url, headers=headers, json=data)
-        return True if res.status_code == 200 else False
+        res = res = g.transaction_client.post('/Transaction/CustomerTransaction', json=data)
+        #res = requests.request("POST", url, headers=headers, json=data)
+        # print(res,"res--------------------")
+        return True if res.response.status_code == 200 else False
     except Exception as e:
         print(e)
         return []
