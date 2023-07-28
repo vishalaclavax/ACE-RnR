@@ -57,8 +57,6 @@ def views_setup(app):
         #     "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
         # }
         proxies = {
-            "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
-            "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
             "http": "http://nth.rewards:Ultimate%402023@proxy2.npci.org.in:8080",
             "https": "https://nth.rewards:Ultimate%402023@proxy2.npci.org.in/:8080",
         }
