@@ -198,14 +198,14 @@ def generate_novus_transaction_token():
 
 def proxy_test():
     try:
-        # proxies = {
-        #     "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
-        #     "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
-        # }
         proxies = {
-            "http": "http://nth.rewards:Ultimate%402023@proxy2.npci.org.in:8080",
-            "https": "https://nth.rewards:Ultimate%402023@proxy2.npci.org.in/:8080",
+            "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+            "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
         }
+        # proxies = {
+        #     "http": "http://nth.rewards:Ultimate%402023@proxy2.npci.org.in:8080",
+        #     "https": "https://nth.rewards:Ultimate%402023@proxy2.npci.org.in/:8080",
+        # }
         url = "https://fulfillmentadminpro.azurewebsites.net/api/get-settings/6825bcf4-45bf-4b69-be65-312528959c03"
         headers = {"content-type": "application/json",
                    }
