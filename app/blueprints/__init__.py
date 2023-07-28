@@ -52,9 +52,15 @@ def views_setup(app):
         g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
         g.jolo_api_client = APIClient(current_app.config['JOLO_BASE_URL'],params={'userid':'clavax','key':'179602160480838','client_id':current_app.config['CLIENT_ID']})
         proxy_test()
+        # proxies = {
+        #     "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+        #     "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+        # }
         proxies = {
             "http": "http://nth.rewards:Ultimate%402023@10.8.22.8:8080",
             "https": "https://nth.rewards:Ultimate%402023@10.8.22.8:8080",
+            "http": "http://nth.rewards:Ultimate%402023@proxy2.npci.org.in:8080",
+            "https": "https://nth.rewards:Ultimate%402023@proxy2.npci.org.in/:8080",
         }
         auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
         g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=True)
