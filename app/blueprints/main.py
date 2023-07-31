@@ -958,7 +958,7 @@ def handle_my_custom_event(data):
             request_url = '{}/GetActivity?offset={}&limit={}&merchantClientId={}'.format(
                 current_app.config['NOVUS_API_URL'], page, page_size, client)
 
-        headers = {"content-type": "application/json", "Authorization": "Bearer " + access_token}
+        headers = {"Authorization": "Bearer " + access_token}
         response = requests.request("GET", request_url, headers=headers)
         res = response.json()
         top_activities = res.get('data')

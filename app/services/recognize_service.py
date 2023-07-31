@@ -61,7 +61,7 @@ def get_myawards(customercode):
         token = get_novus_transaction_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL']+"/Transaction/Transactions/"+customercode
-        headers = {"content-type": "application/json", "Authorization": "Bearer "+access_token}
+        headers = {"Authorization": "Bearer "+access_token}
         response = requests.request("GET", url, headers=headers)
         res = response.json()
         return res if response.status_code == 200 and len(res)>=1 else []

@@ -120,7 +120,7 @@ def get_vouchers(payload=None):
     token = get_novus_token()
     access_token = token.get('access_token')
  
-    headers = {"content-type": "application/json", "Authorization": "Bearer "+access_token}
+    headers = {"Authorization": "Bearer "+access_token}
     url = current_app.config['NOVUS_API_URL']+'/Customer/Vouchers'
     response = requests.request("GET", url, headers=headers, json=payload)
  
