@@ -157,36 +157,36 @@ class APIClient(object):
         return APIResponse(res, self.logger)
 
     def get(self, path, **kwargs):
-        print("from get req", path, kwargs)
+        # print("from get req", path, kwargs)
         # proxies = {
         #     "http": "http://nth.rewards:'Ultimate%402023'@10.8.22.8:8080",
         # }
         if 'https://fulfillmentadminpro.azurewebsites.net/api' in path:
-            print(self.proxies, self.verify, "ok get ful req")
+            # print(self.proxies, self.verify, "ok get ful req")
             return self.request('GET', path, proxies=self.proxies, verify=self.verify)
         return self.request('GET', path, **kwargs)
 
     def post(self, path, **kwargs):
         if 'https://fulfillmentadminpro.azurewebsites.net/api' in path:
-            print(self.proxies, self.verify, "ok get ful req")
+            # print(self.proxies, self.verify, "ok get ful req")
             return self.request('POST', path, proxies=self.proxies, verify=self.verify)
         return self.request('POST', path, **kwargs)
 
     def put(self, path, **kwargs):
         if 'https://fulfillmentadminpro.azurewebsites.net/api' in path:
-            print(self.proxies, self.verify, "ok PUT ful req")
+            # print(self.proxies, self.verify, "ok PUT ful req")
             return self.request('PUT', path, proxies=self.proxies, verify=self.verify)
         return self.request('PUT', path, **kwargs)
 
     def patch(self, path, **kwargs):
         if 'https://fulfillmentadminpro.azurewebsites.net/api' in path:
-            print(self.proxies, self.verify, "ok PATCH ful req")
+            # print(self.proxies, self.verify, "ok PATCH ful req")
             return self.request('PATCH', path, proxies=self.proxies, verify=self.verify)
         return self.request('PATCH', path, **kwargs)
 
     def delete(self, path, **kwargs):
         if 'https://fulfillmentadminpro.azurewebsites.net/api' in path:
-            print(self.proxies, self.verify, "ok DELETE ful req")
+            # print(self.proxies, self.verify, "ok DELETE ful req")
             return self.request('DELETE', path, proxies=self.proxies, verify=self.verify)
         return self.request('DELETE', path, **kwargs)
 

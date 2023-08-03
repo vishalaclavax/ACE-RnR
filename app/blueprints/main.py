@@ -647,11 +647,12 @@ def delete_post_an_update():
     page_err = None
     if request.method == 'POST':
         email = auth_service.read_user_session().get('email')
+        customercode = auth_service.read_user_session().get('customercode')
         transactionid = request.form.get('transactionid')
 
         req_data = {
             'transactionid': transactionid,
-            'email': email,
+            'customercode': customercode,
             'requestfrom': 'FrontEnd'
         }
         delete_post = delete_post_update(req_data)

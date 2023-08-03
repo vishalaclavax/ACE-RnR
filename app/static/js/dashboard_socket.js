@@ -91,7 +91,7 @@ socket.on('activity response', function(data) {
                     }
                     if(activity.transactionData.email == comm.email || is_hr == 'True' ){
                     //logged in user has posted an update
-                    delete_btn_html = '<span class="deleteComment" onclick="delete_comment(\''+comm.id+'\')" title="Delete the comment"><img src="/static/img/delete.png" /></span>';
+                    delete_btn_html = '<span class="deleteComment" onclick="delete_comment(\''+comm._id+'\')" title="Delete the comment"><img src="/static/img/delete.png" /></span>';
                 }
                     all_comment_html += '<li class="commentBox '+show_more_class+'" style=""><div class="commentBox_img"><img src="'+cmt_profile_img+'"></div><div class="commentBox_contant"><p><strong>'+comm.Emp_Name+'</strong><span class="block">'+comm.comment+'</span></p><p><span>'+cmt_date_added+'</span>'+delete_btn_html+'</p></div></li>';
                 });
@@ -118,9 +118,15 @@ socket.on('activity response', function(data) {
                 if(!activity.awardImage && activity.transactionData.imgURL){
                     activity_image = activity.transactionData.imgURL;
                     var activity_image_ext = activity_image.split('.');
-                    img_ext = activity_image_ext[activity_image_ext.length-1];
-                    if(img_ext != 'pdf'){
-                        activity_image_html = '<div class="update_image_box"><img src="'+activity_image+'" class="img-fluid" /></div>';
+                    var activity_image_len = activity_image.split(':')
+                    img_ext = activity_image_ext[activity_image_ext.length - 1];
+                    img_server = activity_image_len[0]
+                    if (img_ext != 'pdf') {
+                        if (img_server == 'https') {
+                            activity_image_html = '<div class="update_image_box"><img src="' + activity_image + '" class="img-fluid" /></div>';
+                        } else {
+                            activity_image_html = '<div class="update_image_box"><img src="https://customerapi.nthrewards.com' + activity_image + '" class="img-fluid" /></div>';
+                        }
                     }else{
                         activity_image_html = '<div class="update_image_box"><iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url='+activity_image+'" width="400px" height="400px" style="border: none"></iframe></div>';
                     }

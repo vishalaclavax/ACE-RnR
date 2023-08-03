@@ -188,7 +188,7 @@ function submit_post_comment(el, index) {
 		$(el).closest(".comment_frm").find("p.custom_error").html("Comment is required!");
 	}
 }
-function submit_user_like(el, islike, transaction_id, index, ttl_like,receiver_name,receiver_email,awarded_by_name,awarded_by_email,method_type,usr_name,usr_email,like_list) {
+function submit_user_like(el, islike, transaction_id, index, ttl_like, receiver_name, receiver_email, awarded_by_name, awarded_by_email, method_type, usr_name, usr_email, like_list) {
 	/*if($(el).hasClass('image_filled')){
         $(el).removeClass('image_filled');
     }else{
@@ -280,7 +280,7 @@ function submit_user_like(el, islike, transaction_id, index, ttl_like,receiver_n
 
 
 	$("#likeBoxSection_"+index).html('<a href="javascript:void(0)" class="like_btn" onclick="submit_user_like(this,\''+is_liked+'\',\''+transaction_id+'\',\''+index+'\', \''+likes+'\', \''+receiver_name+'\', \''+receiver_email+'\', \''+awarded_by_name+'\', \''+awarded_by_email+'\', \''+method_type+'\',\''+usr_name+'\',\''+usr_email+'\',\''+json_like+'\')" id="likeBox_' + index + '"><img src="' + img_src + '" class="likeitbefore"/>Like <small class="ttl_like">' + like_cnt + "</small></a>"+all_like_user_html);
-	return false;
+	// return false;
 	$.ajax({
 		url: app_base_url + "save-user-like",
 		type: "post",

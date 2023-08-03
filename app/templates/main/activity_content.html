@@ -41,9 +41,16 @@
 	{% else %} {% if not activity.awardImage and activity.transactionData.imgURL %} {% set img_ext = activity.transactionData.imgURL.split('.')[-1] %}
 	<div class="update_image_box">
 		{% if img_ext|lower != 'pdf' %}
+		{% if activity.transactionData.imgURL.split(':')[0]|lower == 'https' %}
 		<img src="{{ activity.transactionData.imgURL }}" class="img-fluid" />
 		{% else %}
-		<iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}" width="400px" height="400px" style="border: none"></iframe>
+		<img src="https://customerapi.nthrewards.com{{ activity.transactionData.imgURL }}" class="img-fluid" />
+		{% endif %}
+		{% else %}
+		<iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}"
+			width="400px" height="400px" style="border: none"></iframe>
+		{% endif %}
+		<!-- <iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}" width="400px" height="400px" style="border: none"></iframe> -->
 		{% endif %}
 	</div>
 	{% endif %} {% endif %}
@@ -116,7 +123,7 @@
 							PM{% endif %}</span>
 						{% if session[config['USER_SESSION_KEY']]['is_hr'] == True or comm.email == session[config['USER_SESSION_KEY']]['email']
 						%}
-						<span class="deleteComment" onclick="delete_comment('{{comm.id}}')" title="Delete the comment"><img src="/static/img/delete.png" /></span>
+						<span class="deleteComment" onclick="delete_comment('{{comm._id}}')" title="Delete the comment"><img src="/static/img/delete.png" /></span>
 						{% endif %}
 					</p>
 				</div>

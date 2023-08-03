@@ -81,9 +81,9 @@ def get_top_receiver_giver(rgtype=None):
     client = current_app.config['NOVUS_TRANSACTION_CLIENT_ID']
     try:
         if rgtype:
-            res = g.novus_client.post('/Customer/GetLeaderboard?offset=1&limit=10&merchantclientId={}&type={}'.format(client,rgtype))
+            res = g.novus_client.get('/Customer/GetLeaderboard?offset=1&limit=10&merchantclientId={}&type={}'.format(client,rgtype))
         else:
-            res = g.novus_client.post('/Customer/GetLeaderboard?offset=1&limit=10&merchantclientId={}'.format(client,rgtype))
+            res = g.novus_client.get('/Customer/GetLeaderboard?offset=1&limit=10&merchantclientId={}'.format(client,rgtype))
         return res.get('data') if res.response.status_code == 200 and res.get('data') else []
     except Exception as e:
         print(e)
@@ -113,7 +113,7 @@ def get_activities(req):
                 request_url = '/GetActivity?ident={}&offset={}&limit={}&merchantClientId={}'.format(ident, page, page_size,client)
         except:
             request_url = '/GetActivity?offset={}&limit={}&merchantClientId={}'.format(page, page_size,client)
-        print(request_url,"request_urllllllllll")
+        #print(request_url,"request_urllllllllll")
         res = g.novus_client.get(request_url)
         return res.get('data') if res.response.status_code == 200 and res.get('data') else []
     except Exception as e:
@@ -148,17 +148,17 @@ def get_nomination_list(req):
         token = get_novus_transaction_token()
         access_token = token.get('access_token')
         if is_hr:
-            res = g.transaction_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
+            res = g.transaction_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
         else:
-            res = g.transaction_client.post('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
+            res = g.transaction_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
 
-
+        #print(res,"res-----------------------------")
         res_data = res.get('data') if res.response.status_code == 200 and res.get('data') else []
         total_count = res.get('totalCount') if res.response.status_code == 200 and res.get('totalCount') else 0
         return res.response.status_code, total_count, res_data
         # return res.get('data') if res.status_code == 200 and res.get('data') else []
     except Exception as e:
-        print(e)
+        print(e,"exception-------------------")
         return []
 
 def post_user_like(data):
@@ -318,6 +318,6 @@ def send_notification(data):
 def delete_single_comment(id):
     # print(id, "id--------")
     # print('/Transaction/Transactions/DeleteComment?id='+id,"'/Transaction/Transactions/DeleteComment?id='+id------")
-    res = g.novus_client.delete('/Transaction/Transactions/DeleteComment?id='+id)
+    res = g.transaction_client.get('/Transaction/DeleteComment?id='+id)
     return True if res.response.status_code == 200 else False
     #return True
