@@ -138,8 +138,8 @@ def login_required(target_function):
 
 def create_login_session(customercode):
     reward_points = 0
-    #user = get_user(customercode=customercode)
-    user = customercode
+    user = get_user(customercode=customercode)
+    #user = customercode
     print("create_login_session", user)
     if 'wallet' in user and 'point' in user['wallet']:
         reward_points = int(user['wallet']['point'])
@@ -222,7 +222,7 @@ def do_login(email, password):
             if user and user.get('customercode'):
                 # g.current_user = get_user_by_id(user.get('customercode'))
                 # print(g.current_user,"g.current_user")
-                success = create_login_session(user)
+                success = create_login_session(user.get('customercode'))
                 print(success,"success in login service---------------")
 
             else:
