@@ -138,6 +138,7 @@ def login_required(target_function):
 
 def create_login_session(customercode):
     reward_points = 0
+    #customercode = 'CUS975599498531'
     user = get_user(customercode=customercode)
     #user = customercode
     print("create_login_session", user)
@@ -517,7 +518,9 @@ def validate_email(email):
 
 def reset_password_mail(data=None):
     try:
-        res = g.api_client.post('/reset-password-email/', json=data)
+        #print(data,"data-------------------------")
+        res = g.api_client.post('/forget_password_npci/', json=data)
+        #print(res,"res------------------------------")
         return res
     except Exception as e:
         print(e)

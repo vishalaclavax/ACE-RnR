@@ -61,7 +61,7 @@ def views_setup(app):
         #     "https": "https://nth.rewards:Ultimate%402023@proxy2.npci.org.in/:8080",
         # }
         auth = HTTPProxyAuth("nth.rewards", "Ultimate%402023")
-        g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=True)
+        g.api_client = APIClient(current_app.config['API_BASE_URL'],proxies=proxies, verify=False)
         # g.api_client = APIClient(current_app.config['API_BASE_URL'])
         g.vm_client = APIClient(current_app.config['VM_BASE_URL'])
         g.current_user = get_current_user()

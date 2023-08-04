@@ -11,7 +11,7 @@ from app.services import update_password as upwd
 from app.services.common_service import get_hash_string
 import hashlib
 import time
-from app.services.auth_service import login_required
+from app.services.auth_service import login_required, reset_password_mail
 # from app.utils.upload_image import upload_excel
 # upload_image_obj = upload_excel
 
@@ -482,16 +482,22 @@ def forget_password():
                 time_now = time.time()
                 msg = "Reset password link sent to " + email
                 link = current_app.config['APP_BASE_URL'] + url_for("auth.reset_password", email=email,hash=hash_str,expiry=time_now)[1:]
+                data = {
+                    'email':email,
+                    'links':link
+                }
+                emailertest = reset_password_mail(data)
+                #print(emailertest,"emailertest--------")
 
-                current_app.config.update(
-                    EMAILER_TYPE='app.services.emailer_service.EmailerSendGrid'
-                )
-                email_response = Emailer(send_async=False).send(
-                    subject='Reset Password',
-                    sender=(current_app.config['APP_ADMIN_NAME'], current_app.config['APP_ADMIN_EMAIL']),
-                    recipients=[email],
-                    html_body=render_template('main/emails/npci_forget_password_emailer.html', link=link)
-                )
+                # current_app.config.update(
+                #     EMAILER_TYPE='app.services.emailer_service.EmailerSendGrid'
+                # )
+                # email_response = Emailer(send_async=False).send(
+                #     subject='Reset Password',
+                #     sender=(current_app.config['APP_ADMIN_NAME'], current_app.config['APP_ADMIN_EMAIL']),
+                #     recipients=[email],
+                #     html_body=render_template('main/emails/npci_forget_password_emailer.html', link=link)
+                # )
                 msg = "Reset password link sent to " + email
                 return jsonify({'success': True, 'error': 0, 'msg': msg})
             else:
