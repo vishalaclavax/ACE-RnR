@@ -133,20 +133,32 @@ def send_teams_notification(req_data):
         print(e)
         return False
 
-def send_user_email(subject, email_to, bcc_list, data, template_path):
-    print(email_to, bcc_list, data, "send_user_email")
-    send_mail = False
+
+def send_user_email(subject, email_to, bcc_list, email_data, template_path):
+    #print(email_to, bcc_list, email_data, "send_user_email")
     try:
-        current_app.config.update(
-            EMAILER_TYPE='app.services.emailer_service.EmailerSendGrid'
-        )
-        send_mail = Emailer(send_async=False).send(
-            subject=subject,
-            sender=(current_app.config['APP_ADMIN_NAME'], current_app.config['APP_ADMIN_EMAIL']),
-            recipients=email_to,
-            cc_list=bcc_list,
-            html_body=render_template(template_path, data=data)
-        )
-    except Exception as exp:
-        print(exp)
-    return send_mail
+        data = {
+            'subject': subject, 'email_to': email_to, 'bcc_list': bcc_list, 'email_data': email_data, 'template_path': template_path
+        }
+        #print(data,"data-------------------------")
+        res = g.api_client.post('/send_user_email_npci/', json=data)
+        #print(res,"res------------------------------")
+        return res
+    except Exception as e:
+        print(e)
+        return []
+    # send_mail = False
+    # try:
+    #     current_app.config.update(
+    #         EMAILER_TYPE='app.services.emailer_service.EmailerSendGrid'
+    #     )
+    #     send_mail = Emailer(send_async=False).send(
+    #         subject=subject,
+    #         sender=(current_app.config['APP_ADMIN_NAME'], current_app.config['APP_ADMIN_EMAIL']),
+    #         recipients=email_to,
+    #         cc_list=bcc_list,
+    #         html_body=render_template(template_path, data=data)
+    #     )
+    # except Exception as exp:
+    #     print(exp)
+    # return send_mail

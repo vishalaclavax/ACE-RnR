@@ -25,7 +25,7 @@ def update_user_profile(user_id, data):
     success = True
     message = 'Details updated successfully!'
     try:
-        res = g.novus_client.put('/Customer/'+user_id, json=data)
+        res = g.novus_client.post('/Customer/'+user_id, json=data)
         if res.response.status_code != 200:
             success = False
             message = get_res_error_msg(res)
