@@ -6,7 +6,7 @@
         <a href="{{ url_for('rewards.index') }}" class="backtorewards">Back to Rewards</a>
         <div class="recongnizebox">
             <div class="recognize_heading">
-                <h2 class="text-center">Amazon E-Voucher</h2>
+                <h2 class="text-center">{{ giftcard.title }}</h2>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -102,7 +102,7 @@
                 <div class="rewardsubmitbox" id="orderplaced">
                     <img  class="voucher_image" src="" id="voucher_image_placed" class="img-fluid"/>
                     <h3>Congratulations!</h3>
-                    <p>Your order has been placed & voucher details <br/>will be send on registered email after order has been processed. <b id="email"></b></p>
+                    <p>Your order has been placed & voucher details <br/>will be sent to your registered email within 24 - 48 hours. <b id="email"></b></p>
                     <!-- <h3 id="voucherCode">Voucher Code : ----</h3>
                     <h3 id="pin">PIN :---</h3> -->
                     <a href="javascript:void(0)" class="cmnbtn" id="checkorderfailed">Thank You</a>
