@@ -210,7 +210,7 @@ def update_approval_status(data):
         #     email: "as@clavax.com",
         #     action: "approved" / "rejected"
         # }
-        res = g.novus_client.put('/Customer/ApproveWallet', json=data)
+        res = g.novus_client.post('/Customer/ApproveWallet', json=data)
         if data['action'] == 'approved':
             return res.get('data') if res.response.status_code == 200 else False
         else:
@@ -308,7 +308,7 @@ def get_notification_list(email):
         return []
 
 def read_user_notification(email):
-    res = g.novus_client.put('/Transaction/UpdateCustomerNotification?email='+email)
+    res = g.novus_client.post('/Transaction/UpdateCustomerNotification?email='+email)
     return True if res.response.status_code == 200 else False
 
 def send_notification(data):
