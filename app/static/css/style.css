@@ -2911,10 +2911,11 @@ a.skiptodashboard {
 /*** Redeem Rewards ***/
 
 .backtorewards {
-	display: inline-block;
+	display: flex;
 	color: #03163a;
 	margin-bottom: 10px;
 	font-size: 14px;
+	align-items: center;
 }
 
 .dashboardportalbox .backtorewards:before {
@@ -2925,7 +2926,6 @@ a.skiptodashboard {
 	height: 15px;
 	background-size: cover;
 	margin-right: 5px;
-	margin-bottom: 45px;
 }
 
 .rewardredemptionbox {
