@@ -62,7 +62,8 @@
 .orderdetailsPopup .infoBlock .productInfo {
     display: flex;
     padding: 15px;
-    align-items: center;
+    align-items: flex-start;
+    overflow-x: scroll;
 }
 @media (max-width: 990px) {
     .orderdetailsPopup .infoBlock .productInfo {
@@ -94,6 +95,8 @@
     width: 40%;
     display: flex;
     justify-content: flex-end;
+    margin-left: 10px;
+    flex-direction: column;
 }
 .orderdetailsPopup .infoBlock .productInfo .totals .bold{
     font-weight: 600;
@@ -244,6 +247,7 @@
                             {% endif %}
                                
                                 <div class="totals">
+                                    <p class="margin-bottom-10">Total</p>
                                     <p class="big bold margin-bottom-0">&#8377; {{product.amount}}</p>
 <!--                                    <p class="points_label">Pts {{(product.amount|int *4) + (product.delivery_charge|int*4 if 'delivery_charge' in product else 0) }}</p>-->
                                 </div>
