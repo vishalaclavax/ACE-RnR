@@ -35,7 +35,19 @@
 		<div class="col-xl-9">
 			<div class="">
 				<div class="updatesmainbox" id="activitySection">
-					{% if top_activities %} {% for activity in top_activities %} {% set is_liked = namespace(value=False) %} {% if activity.postLikeUsers %} {% for likeuser in activity.postLikeUsers if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %} {% set is_liked.value = True %} {% else %} {% set is_liked.value = False %} {% endfor %} {% endif %}
+					{% if top_activities %}
+						{% for activity in top_activities %}
+							{% set is_liked = namespace(value=False) %}
+								{% if activity.postLikeUsers %}
+									{% for likeuser in activity.postLikeUsers %}
+										{% if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %}
+											{% set is_liked.value = True %}
+										{% else %}
+											{% set is_liked.value = False %}
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+
 					<div class="updates_box">
 						<div class="row update_header_row">
 							<div class="col-xl-12">

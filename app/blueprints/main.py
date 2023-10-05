@@ -531,10 +531,14 @@ def post_an_update():
                   "post": post_desc,
                }
             }
+
         if imageUrl:
             request_data['transactionDetail']['imgURL'] = imageUrl
+        # print(request_data, "request_dataaaaaaaa post an update")
+        # return jsonify({'success': True, 'error': 1, 'msg': "Something went wrong!"})
         # user_like = post_user_like(request_data)
         updateNomination = update_nomination(request_data)
+        # print(updateNomination,"updateNomination")
         if updateNomination:
             profileimage = auth_service.read_user_session().get('imageUrl')
             Emp_Name = auth_service.read_user_session().get('name')

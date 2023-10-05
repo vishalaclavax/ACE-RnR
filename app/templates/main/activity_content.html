@@ -1,4 +1,18 @@
-{% from "_macros/helpers.html" import flash_messages with context %} {% if top_activities %} {% set count = s_no %} {% for activity in top_activities %} {% set count = count + loop.index %} {% set is_liked = namespace(value=False) %} {% if activity.postLikeUsers %} {% for likeuser in activity.postLikeUsers if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %} {% set is_liked.value = True %} {% else %} {% set is_liked.value = False %} {% endfor %} {% endif %}
+{% from "_macros/helpers.html" import flash_messages with context %}
+{% if top_activities %}
+	{% set count = s_no %}
+	{% for activity in top_activities %}
+		{% set count = count + loop.index %}
+		{% set is_liked = namespace(value=False) %}
+		{% if activity.postLikeUsers %}
+			{% for likeuser in activity.postLikeUsers %}
+				{% if likeuser.email == session[config['USER_SESSION_KEY']]['email'] %}
+					{% set is_liked.value = True %}
+				{% else %}
+					{% set is_liked.value = False %}
+				{% endif %}
+			{% endfor %}
+		{% endif %}
 <div class="updates_box">
 	<div class="row update_header_row">
 		<div class="col-md-12">
@@ -38,22 +52,25 @@
 	<div class="update_image_box">
 		<img src="{{ activity.awardImage }}" class="img-fluid" />
 	</div>
-	{% else %} {% if not activity.awardImage and activity.transactionData.imgURL %} {% set img_ext = activity.transactionData.imgURL.split('.')[-1] %}
+	{% else %}
+	{% if not activity.awardImage and activity.transactionData.imgURL %}
+		{% set img_ext = activity.transactionData.imgURL.split('.')[-1] %}
 	<div class="update_image_box">
 		{% if img_ext|lower != 'pdf' %}
-		{% if activity.transactionData.imgURL.split(':')[0]|lower == 'https' %}
-		<img src="{{ activity.transactionData.imgURL }}" class="img-fluid" />
-		{% else %}
-		<img src="https://customerapi.nthrewards.com{{ activity.transactionData.imgURL }}" class="img-fluid" />
-		{% endif %}
+			{% if activity.transactionData.imgURL.split(':')[0]|lower == 'https' %}
+			<img src="{{ activity.transactionData.imgURL }}" class="img-fluid" />
+			{% else %}
+			<img src="https://customerapi.nthrewards.com{{ activity.transactionData.imgURL }}" class="img-fluid" />
+			{% endif %}
 		{% else %}
 		<iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}"
 			width="400px" height="400px" style="border: none"></iframe>
 		{% endif %}
 		<!-- <iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url={{ activity.transactionData.imgURL }}" width="400px" height="400px" style="border: none"></iframe> -->
-		{% endif %}
+
 	</div>
-	{% endif %} {% endif %}
+	{% endif %}
+	{% endif %}
 	<div class="updatefooter">
 		<ul>
 			<li id="likeBoxSection_{{ count }}">
@@ -128,7 +145,8 @@
 					</p>
 				</div>
 			</li>
-			{% endfor %} {% if activity.postComment|length > 4 %}
+			{% endfor %}
+			{% if activity.postComment|length > 4 %}
 			<li class="commentBox show_more_btn">
 				<div class="commentBox_contant loadmore_"><a href="javascript:void(0)" onclick="load_more_comment('{{ count }}')" id="show_more_less_{{ count }}">Show More...</a></div>
 			</li>
@@ -136,4 +154,5 @@
 		</ul>
 	</div>
 </div>
-{% endfor %} {% endif %}
+{% endfor %}
+{% endif %}
