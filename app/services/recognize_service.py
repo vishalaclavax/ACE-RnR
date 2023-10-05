@@ -281,6 +281,7 @@ def delete_post_update(data):
         url = current_app.config['NOVUS_API_URL'] + "/Transaction/DeleteTransaction"
         headers = {"Authorization": "Bearer " + access_token}
         res = requests.request("POST", url, headers=headers, json=data)
+        # print(data,res, "res from delete post update")
         return True if res.status_code == 200 else False
     except Exception as e:
         print(e)
