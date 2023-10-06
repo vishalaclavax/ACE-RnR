@@ -498,10 +498,12 @@ def post_an_update():
         error = 0
         post_title = request.form.get('post_title')
         post_desc = request.form.get('post_desc')
+        print("underrrrrrrrrrrrr post method")
         try:
             image = request.files.get('post_img')
             # page_err, filename, image_url = upload_image_obj.upload_images(image)
             page_err, filename, image_url = upload_image_obj.upload_activi_images(image)
+            print(page_err, filename, image_url, "image when uploaded in local")
             image_URL = image_url
             with open(image_url, "rb") as f:
                 # pic = f
@@ -511,7 +513,7 @@ def post_an_update():
             os.remove(image_url)
         except Exception as exp:
             imageUrl = ''
-            print(exp)
+            print(exp,"exception from image upload section")
 
         if not imageUrl:
             imageUrl = ''
@@ -534,11 +536,11 @@ def post_an_update():
 
         if imageUrl:
             request_data['transactionDetail']['imgURL'] = imageUrl
-        # print(request_data, "request_dataaaaaaaa post an update")
+        print(request_data, "request_dataaaaaaaa post an update")
         # return jsonify({'success': True, 'error': 1, 'msg': "Something went wrong!"})
         # user_like = post_user_like(request_data)
         updateNomination = update_nomination(request_data)
-        # print(updateNomination,"updateNomination")
+        print(updateNomination,"updateNomination")
         if updateNomination:
             profileimage = auth_service.read_user_session().get('imageUrl')
             Emp_Name = auth_service.read_user_session().get('name')
@@ -560,6 +562,7 @@ def post_an_update():
                 'type': 'post_update'
             }
             teams_notification = send_teams_notification(noti_data)
+            print(teams_notification,"teams_notification")
             act_data = {
                 'ident': auth_service.read_user_session().get('email'),
                 'page': 1,

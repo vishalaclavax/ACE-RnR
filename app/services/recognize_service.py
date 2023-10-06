@@ -8,6 +8,7 @@ import urllib.parse
 def update_nomination(data):
     try:
         res = g.transaction_client.post('/Transaction/TransactionManager', json=data)
+        print(res,"respose from update_nomination")
         if res.response.status_code == 200 and res.get('data'):
             return res.get('data')
         elif res.response.status_code == 200 and res.get('totalCount'):
@@ -225,7 +226,7 @@ def upload_activity_images(data):
         url = current_app.config['NOVUS_API_URL']+"/Customer/ImageUpload"
         headers = {"Authorization": "Bearer "+access_token}
         response = requests.request("POST", url, headers=headers,files=data)
-        # print(response,response.status_code, response.text,"from upload_activity_images")
+        print(response,response.status_code, response.text,"from upload_activity_images")
         res = response.text
         return res
     # except Exception as e:
