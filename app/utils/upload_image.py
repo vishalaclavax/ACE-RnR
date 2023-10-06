@@ -82,48 +82,52 @@ class UploadImage(object):
         return page_err, None
 
     def upload_activi_images(self, img_file):
-        page_err = None
-        # mimetype=get_mimes(get_file_extension(img_file.filename))
-        name_len = len(img_file.filename.split('.'))
+        try:
+            page_err = None
+            # mimetype=get_mimes(get_file_extension(img_file.filename))
+            name_len = len(img_file.filename.split('.'))
 
-        if not is_valid_file(img_file.filename, ['png', 'jpg', 'jpeg', 'gif', 'pdf', 'doc', 'docx'], img_file.mimetype):
-            print('if----')
-            page_err = 'Please select valid file to upload.'
-        elif name_len >= 3:
-            print("elif")
-            page_err = 'Please select valid file to upload.'
-        elif len(img_file.read()) > current_app.config['MAX_UPLOAD_SIZE']:
-            page_err = 'Please select file of maximum ' + bytes_to_unit(
-                current_app.config['MAX_UPLOAD_SIZE']) + ' size.'
-        else:
-            img_file.seek(0)
-            # blob_username = current_app.config['BLOB_USERNAME']
-            # blob_key = current_app.config['BLOB_KEY']
-            # container = current_app.config['CONTAINER']
-            # block_blob_service =BlockBlobService(account_name=blob_username, account_key=blob_key)
-            org_filename = secure_filename(img_file.filename)
-            filename = str(uuid.uuid4()) + '_' + org_filename
-            target_url = os.getcwd() + '/app/static/uploads/temp/'
-            img_file.save(os.path.join(target_url, filename))
-            source_url = target_url + filename
+            if not is_valid_file(img_file.filename, ['png', 'jpg', 'jpeg', 'gif', 'pdf', 'doc', 'docx'], img_file.mimetype):
+                print('if----')
+                page_err = 'Please select valid file to upload.'
+            elif name_len >= 3:
+                print("elif")
+                page_err = 'Please select valid file to upload.'
+            elif len(img_file.read()) > current_app.config['MAX_UPLOAD_SIZE']:
+                page_err = 'Please select file of maximum ' + bytes_to_unit(
+                    current_app.config['MAX_UPLOAD_SIZE']) + ' size.'
+            else:
+                img_file.seek(0)
+                # blob_username = current_app.config['BLOB_USERNAME']
+                # blob_key = current_app.config['BLOB_KEY']
+                # container = current_app.config['CONTAINER']
+                # block_blob_service =BlockBlobService(account_name=blob_username, account_key=blob_key)
+                org_filename = secure_filename(img_file.filename)
+                filename = str(uuid.uuid4()) + '_' + org_filename
+                target_url = os.getcwd() + '/app/static/uploads/temp/'
+                img_file.save(os.path.join(target_url, filename))
+                source_url = target_url + filename
 
-            mywidth = 762
-            img_file = Image.open(source_url)
-            wpercent = (mywidth / float(img_file.size[0]))
-            hsize = int((float(img_file.size[1]) * float(wpercent)))
-            img_file = img_file.resize((mywidth, hsize), PIL.Image.ANTIALIAS)
-            # filename = str(uuid.uuid4()) + '_' + org_filename
-            # target_url = os.getcwd() + '/app/static/uploads/temp/'
-            img_file.save(os.path.join(target_url, filename))
-            # blob_props = block_blob_service.create_blob_from_path(
-            #     container,
-            #     filename,
-            #     source_url,
-            #     content_settings=ContentSettings(content_type='image/png')
-            # )
-            # return None, block_blob_service.make_blob_url(container, filename)
-            return None, filename, source_url
-        return page_err, None, None
+                mywidth = 762
+                img_file = Image.open(source_url)
+                wpercent = (mywidth / float(img_file.size[0]))
+                hsize = int((float(img_file.size[1]) * float(wpercent)))
+                img_file = img_file.resize((mywidth, hsize), PIL.Image.ANTIALIAS)
+                # filename = str(uuid.uuid4()) + '_' + org_filename
+                # target_url = os.getcwd() + '/app/static/uploads/temp/'
+                img_file.save(os.path.join(target_url, filename))
+                # blob_props = block_blob_service.create_blob_from_path(
+                #     container,
+                #     filename,
+                #     source_url,
+                #     content_settings=ContentSettings(content_type='image/png')
+                # )
+                # return None, block_blob_service.make_blob_url(container, filename)
+                return None, filename, source_url
+            return page_err, None, None
+        except Exception as exp:
+            print(exp,"exception from file upload to local")
+            return None, None, None
 
 
     def upload_string(self, source_url, filename):

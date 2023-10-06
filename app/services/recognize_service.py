@@ -221,6 +221,7 @@ def update_approval_status(data):
         return []
 
 def upload_activity_images(data):
+    try:
         token = get_novus_transaction_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL']+"/Customer/ImageUpload"
@@ -229,9 +230,9 @@ def upload_activity_images(data):
         print(response,response.status_code, response.text,"from upload_activity_images")
         res = response.text
         return res
-    # except Exception as e:
-    #     print(e)
-    #     return []
+    except Exception as e:
+        print(e,"when calling to customer api")
+        return []
 
 def get_award_list(req):
     try:
