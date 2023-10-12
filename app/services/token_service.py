@@ -68,19 +68,19 @@ def read_token(provider):
     #     return None
 
 
-def generate_novus_api_token():
-    with APIClient(current_app.config['NOVUS_ID_API_URL'], verify=False) as api_client:
-        # print("API HITTING+++++++++++++++++++++++++++")
-        res = api_client.post('/token', data={
-            'client_id': current_app.config['NOVUS_API_CLIENT_ID'],
-            'client_secret': current_app.config['NOVUS_API_CLIENT_SECRET'],
-            'grant_type': 'client_credentials',
-        })
-        # print(res,"res------------------------")
-        if res and res.response.status_code == 200 and res.json:
-            return res.json
-        else:
-            return None
+# def generate_novus_api_token():
+#     with APIClient(current_app.config['NOVUS_ID_API_URL'], verify=False) as api_client:
+#         # print("API HITTING+++++++++++++++++++++++++++")
+#         res = api_client.post('/token', data={
+#             'client_id': current_app.config['NOVUS_API_CLIENT_ID'],
+#             'client_secret': current_app.config['NOVUS_API_CLIENT_SECRET'],
+#             'grant_type': 'client_credentials',
+#         })
+#         # print(res,"res------------------------")
+#         if res and res.response.status_code == 200 and res.json:
+#             return res.json
+#         else:
+#             return None
 
 
 def get_novus_token():
@@ -128,7 +128,7 @@ def get_novus_token():
     #     # # print('token++++++++++++',token)
     # except Exception as e:
     #     print(str(e))
-    token_data = generate_novus_api_token()
+    token_data = generate_novus_transaction_token()
     if token_data and token_data.get('access_token'):
         token = {
             'provider': provider,
@@ -142,46 +142,46 @@ def get_novus_token():
     return token
 
 
-def get_novus_transaction_token():
-    provider = current_app.config.get('NOVUS_TRANSACTION_PROVIDER_KEY')
-    token = ''
-    # if current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider) and current_app.config['CACHE_REDIS'].get(
-    #         current_app.config['REDIS_CACHING_KEY'] + provider).decode('UTF-8') != 'null':
-    #     token = json.loads(
-    #         current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider).decode('utf-8'))
-    # else:
-    token_data = generate_novus_transaction_token()
-    if token_data and token_data.get('access_token'):
-            token = {
-                'provider': provider,
-                'token_type': token_data.get('token_type', 'Bearer'),
-                'access_token': token_data.get('access_token'),
-                'expires_in': token_data.get('expires_in', 3600),
-            }
-    current_app.config['CACHE_REDIS'].set(
-        current_app.config['REDIS_CACHING_KEY'] + provider, json.dumps(token), current_app.config['TOKEN_CACHE_TIME'])
-    # token = read_token(provider)
-    # if not token:
-    #     token_data = generate_novus_transaction_token()
-    #     if token_data and token_data.get('access_token'):
-    #         if not token:
-    #             token = {
-    #                 'provider': provider,
-    #                 'token_type': token_data.get('token_type', 'Bearer'),
-    #                 'access_token': token_data.get('access_token'),
-    #                 'expires_in': token_data.get('expires_in', 3600),
-    #             }
-    #             g.cache_redis.set(current_app.config['CACHE_REDIS'] + provider, json.dumps(token))
+# def get_novus_transaction_token():
+#     provider = current_app.config.get('NOVUS_TRANSACTION_PROVIDER_KEY')
+#     token = ''
+#     # if current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider) and current_app.config['CACHE_REDIS'].get(
+#     #         current_app.config['REDIS_CACHING_KEY'] + provider).decode('UTF-8') != 'null':
+#     #     token = json.loads(
+#     #         current_app.config['CACHE_REDIS'].get(current_app.config['REDIS_CACHING_KEY'] + provider).decode('utf-8'))
+#     # else:
+#     token_data = generate_novus_transaction_token()
+#     if token_data and token_data.get('access_token'):
+#             token = {
+#                 'provider': provider,
+#                 'token_type': token_data.get('token_type', 'Bearer'),
+#                 'access_token': token_data.get('access_token'),
+#                 'expires_in': token_data.get('expires_in', 3600),
+#             }
+#     current_app.config['CACHE_REDIS'].set(
+#         current_app.config['REDIS_CACHING_KEY'] + provider, json.dumps(token), current_app.config['TOKEN_CACHE_TIME'])
+#     # token = read_token(provider)
+#     # if not token:
+#     #     token_data = generate_novus_transaction_token()
+#     #     if token_data and token_data.get('access_token'):
+#     #         if not token:
+#     #             token = {
+#     #                 'provider': provider,
+#     #                 'token_type': token_data.get('token_type', 'Bearer'),
+#     #                 'access_token': token_data.get('access_token'),
+#     #                 'expires_in': token_data.get('expires_in', 3600),
+#     #             }
+#     #             g.cache_redis.set(current_app.config['CACHE_REDIS'] + provider, json.dumps(token))
 
-    #         else:
-    #             token = {
-    #                 'token_type': token_data.get('token_type', 'Bearer'),
-    #                 'access_token': token_data.get('access_token'),
-    #                 'expires_in': token_data.get('expires_in', 3600),
-    #             }
-    #             g.cache_redis.set(current_app.config['CACHE_REDIS'] + provider, json.dumps(token))
+#     #         else:
+#     #             token = {
+#     #                 'token_type': token_data.get('token_type', 'Bearer'),
+#     #                 'access_token': token_data.get('access_token'),
+#     #                 'expires_in': token_data.get('expires_in', 3600),
+#     #             }
+#     #             g.cache_redis.set(current_app.config['CACHE_REDIS'] + provider, json.dumps(token))
 
-    return token
+#     return token
 
 
 def generate_novus_transaction_token():

@@ -4,7 +4,7 @@ from locale import currency
 from werkzeug.utils import find_modules, import_string
 from flask import g, current_app, abort, request, session
 from app.services.api_client_service import TokenAuth, APIClient
-from app.services.token_service import get_novus_token, get_novus_transaction_token,proxy_test
+from app.services.token_service import get_novus_token,proxy_test
 from app.services.auth_service import get_current_user, is_logged_in, check_session_timeout 
 from app.services.common_service import calc_target_time, check_target_time
 from app.services.offers_tag_service import get_offer_mapping_tag
@@ -42,14 +42,14 @@ def views_setup(app):
         )
         g.novus_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_api_token_auth)
 
-        g.novus_transaction_token = get_novus_transaction_token()
-        if not g.novus_transaction_token:
-            abort(500, 'Could not generate novus_transaction_token.')
-        g.novus_transaction_token_auth = TokenAuth(
-            token=g.novus_transaction_token.get('access_token'),
-            auth_scheme=g.novus_transaction_token.get('token_type'),
-        )
-        g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
+        # g.novus_transaction_token = get_novus_transaction_token()
+        # if not g.novus_transaction_token:
+        #     abort(500, 'Could not generate novus_transaction_token.')
+        # g.novus_transaction_token_auth = TokenAuth(
+        #     token=g.novus_transaction_token.get('access_token'),
+        #     auth_scheme=g.novus_transaction_token.get('token_type'),
+        # )
+        # g.transaction_client = APIClient(current_app.config['NOVUS_API_URL'], auth=g.novus_transaction_token_auth)
         g.jolo_api_client = APIClient(current_app.config['JOLO_BASE_URL'],params={'userid':'clavax','key':'179602160480838','client_id':current_app.config['CLIENT_ID']})
         proxy_test()
         proxies = {
@@ -164,8 +164,8 @@ def views_setup(app):
     def manipulate_response(response):
         if hasattr(g, 'novus_client'):
             g.novus_client.close_session()
-        if hasattr(g, 'transaction_client'):
-            g.transaction_client.close_session()
+        # if hasattr(g, 'transaction_client'):
+        #     g.transaction_client.close_session()
         if hasattr(g, 'api_client'):
             g.api_client.close_session()
         

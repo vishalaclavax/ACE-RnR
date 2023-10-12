@@ -57,7 +57,7 @@ def pay_by_points(data=None,redeem_type=None):
     print("pay by point :", data)
     try:
         response = {}
-        res = g.transaction_client.post('/Transaction/redeem', json=data) 
+        res = g.novus_client.post('/Transaction/redeem', json=data) 
         print("redeem res++++++++++++",res)   
         if res.response.status_code == 200 or res.response.status_code == 201 :
             response['success'] = True

@@ -1,7 +1,7 @@
 import requests
 from flask import g, json,current_app, render_template
 from app.services.common_service import get_res_error_msg
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token
 from app.services.auth_service import read_user_session
 import requests
 import urllib.parse

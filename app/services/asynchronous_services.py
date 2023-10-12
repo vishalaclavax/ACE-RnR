@@ -1,6 +1,6 @@
 from flask import g, json, current_app, session
 from app.services.common_service import get_res_error_msg
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token
 from app.services.auth_service import read_user_session
 import requests
 import urllib.parse
@@ -15,7 +15,7 @@ def get_activities_url(req_data):
         page_size = req_data['page_size']
         search_data = json.dumps(data)
         encode_data = urllib.parse.quote(search_data)
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = '/Customer?offSet={}&limit={}&searchParms={}'.format(page, page_size, encode_data)
         return url
@@ -25,7 +25,7 @@ def get_activities_url(req_data):
 
 def get_top_receiver_giver_url(rgtype=None):
     try:
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         if rgtype:
             url = '/Customer/GetLeaderboard?type={}'.format(rgtype)

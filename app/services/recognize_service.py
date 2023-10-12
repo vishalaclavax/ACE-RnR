@@ -1,13 +1,13 @@
 from flask import g, json, current_app, session
 from app.services.common_service import get_res_error_msg
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token
 from app.services.auth_service import read_user_session
 import requests
 import urllib.parse
 
 def update_nomination(data):
     try:
-        res = g.transaction_client.post('/Transaction/TransactionManager', json=data)
+        res = g.novus_client.post('/Transaction/TransactionManager', json=data)
         print(res,"respose from update_nomination")
         if res.response.status_code == 200 and res.get('data'):
             return res.get('data')
@@ -59,7 +59,7 @@ def get_all_customer(req_data):
 
 def get_myawards(customercode):
     try:
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL']+"/Transaction/Transactions/"+customercode
         headers = {"Authorization": "Bearer "+access_token}
@@ -146,12 +146,12 @@ def get_nomination_list(req):
         else:
             isSr_mgt = 'false'
 
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         if is_hr:
-            res = g.transaction_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
+            res = g.novus_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident='+email+'&isSr_mgt='+str(isSr_mgt)+'&isHr='+str(is_hr)+'&status='+str(status))
         else:
-            res = g.transaction_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
+            res = g.novus_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
 
         #print(res,"res-----------------------------")
         res_data = res.get('data') if res.response.status_code == 200 and res.get('data') else []
@@ -195,7 +195,7 @@ def post_user_comment(data):
         return []
 
 def upload_user_images(data):
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL']+"/Customer/ImageUpload?email="+read_user_session().get('email')
         headers = {"Authorization": "Bearer "+access_token}
@@ -222,7 +222,7 @@ def update_approval_status(data):
 
 def upload_activity_images(data):
     try:
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL']+"/Customer/ImageUpload"
         headers = {"Authorization": "Bearer "+access_token}
@@ -241,19 +241,19 @@ def get_award_list(req):
         limit = req['page_size'] if 'page_size' in req else 10
         award_type = req['award_type'] if 'award_type' in req else 'receiver'
         #print('line 240-------------------------')
-        #token = get_novus_transaction_token()
+        #token = get_novus_token()
         #print(token,"token-------------------------")
         #access_token = token.get('access_token')
         #print(access_token,"access_token--------------------------")
         if award_type == 'receiver':
-            res = g.transaction_client.get("/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(offset, limit, customercode, award_type))
+            res = g.novus_client.get("/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(offset, limit, customercode, award_type))
             #print(res,"res--------------receiver-----------------")
             #url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}".format(current_app.config['NOVUS_API_URL'],offset,limit,customercode,award_type)
         else:
             awarded_by_email = read_user_session().get('email')
             searchData = {"key5":{"awarded_by_email":awarded_by_email,"isCustomerField5":"transactionDetail"}}
             search_param = json.dumps(searchData)
-            res = g.transaction_client.get(
+            res = g.novus_client.get(
                 "/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}&searchString={}".format(offset, limit, customercode, award_type, search_param))
             #print(res, "res--------------giver-----------------")
             # url = "{}/Transaction/AwardList?offSet={}&limit={}&ident={}&type={}&searchString={}".format(offset, limit, customercode, award_type,search_param)
@@ -278,12 +278,12 @@ def get_redeeem_history(data):
 
 def delete_post_update(data):
     try:
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL'] + "/Transaction/DeleteTransaction"
         headers = {"Authorization": "Bearer " + access_token}
         res = requests.request("POST", url, headers=headers, json=data)
-        # print(data,res, "res from delete post update")
+        print(data,res, "res from delete post update")
         return True if res.status_code == 200 else False
     except Exception as e:
         print(e)
@@ -291,11 +291,11 @@ def delete_post_update(data):
 
 def save_nominate_employee(data):
     try:
-        token = get_novus_transaction_token()
+        token = get_novus_token()
         access_token = token.get('access_token')
         url = current_app.config['NOVUS_API_URL'] + "/Transaction/CustomerTransaction"
         headers = {"Authorization": "Bearer " + access_token}
-        res = res = g.transaction_client.post('/Transaction/CustomerTransaction', json=data)
+        res = res = g.novus_client.post('/Transaction/CustomerTransaction', json=data)
         #res = requests.request("POST", url, headers=headers, json=data)
         # print(res,"res--------------------")
         return True if res.response.status_code == 200 else False
@@ -322,6 +322,6 @@ def send_notification(data):
 def delete_single_comment(id):
     # print(id, "id--------")
     # print('/Transaction/Transactions/DeleteComment?id='+id,"'/Transaction/Transactions/DeleteComment?id='+id------")
-    res = g.transaction_client.get('/Transaction/DeleteComment?id='+id)
+    res = g.novus_client.get('/Transaction/DeleteComment?id='+id)
     return True if res.response.status_code == 200 else False
     #return True

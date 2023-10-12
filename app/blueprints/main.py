@@ -22,7 +22,7 @@ from app.services.recognize_service import get_top_receiver_giver, get_birthday_
 import urllib.parse
 from datetime import datetime, timedelta
 from requests import get, post
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token
 from app.services.email_notifications_services import send_teams_notification, send_user_email
 # from app.services.asynchronous_services import *
 from app.services.emailer_service import Emailer
@@ -800,7 +800,7 @@ def load_more_employee():
 #             'page_size': current_app.config['PER_PAGE'],
 #             'data': searchdata
 #         }
-#         token = get_novus_transaction_token()
+#         token = get_novus_token()
 #         access_token = token.get('access_token')
 #         print("access_token",access_token)
 #         act_ident = act_data['ident'] if 'ident' in act_data else None
@@ -966,7 +966,7 @@ def handle_my_custom_event(data):
     client = current_app.config['NOVUS_TRANSACTION_CLIENT_ID']
     res = {}
     email = auth_service.read_user_session().get('email')
-    token = get_novus_transaction_token()
+    token = get_novus_token()
     access_token = token.get('access_token')
     req = {
         'ident': email,

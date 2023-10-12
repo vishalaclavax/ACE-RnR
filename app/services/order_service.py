@@ -180,7 +180,7 @@ def send_novus_transaction(data=None):
             "transactionDetail": custTransaction
         }
 
-        res = g.transaction_client.post('/Transaction/TransactionManager', json=request_data)
+        res = g.novus_client.post('/Transaction/TransactionManager', json=request_data)
 
         if res.response.status_code == 200:
             response = {}
@@ -232,7 +232,7 @@ def delete_address(data=None):
 
 def pay_by_points_multibank(data=None):
     try:
-        res = g.transaction_client.post('/Transaction/MultipleRedeem', json=data)
+        res = g.novus_client.post('/Transaction/MultipleRedeem', json=data)
         response = {}
         if 'data' in res and (res.response.status_code == 200 or res.response.status_code == 201) :
             response['success'] = True
@@ -408,7 +408,7 @@ def update_quantity(data):
     
 def refund_points(data=None,redeem_type=None):
     try:
-        res = g.transaction_client.post('/Transaction/refund', json=data)        
+        res = g.novus_client.post('/Transaction/refund', json=data)        
         return res if res else []
     except Exception as e:
         print(e)
@@ -418,7 +418,7 @@ def refund_points(data=None,redeem_type=None):
 def pay_by_points(data=None,redeem_type=None):
     try:
         response = {}
-        res = g.transaction_client.post('/Transaction/redeem', json=data)    
+        res = g.novus_client.post('/Transaction/redeem', json=data)    
         if res.response.status_code == 200 or res.response.status_code == 201 :
             response['success'] = True
             response['message'] = res['data']['responceMessage']

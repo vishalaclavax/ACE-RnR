@@ -1,6 +1,6 @@
 from flask import g, json,current_app
 from app.services.common_service import get_res_error_msg
-from app.services.token_service import get_novus_token, get_novus_transaction_token
+from app.services.token_service import get_novus_token
 import requests
 
 
@@ -144,7 +144,7 @@ def redeem_voucher(data):
     message = 'Request Faied..!!'
     response={}
     response['success'] = False
-    res = g.transaction_client.post('/Transaction/redeemvoucher',json=data)
+    res = g.novus_client.post('/Transaction/redeemvoucher',json=data)
     # print("redeem+++",res,res.response.status_code)
     if res.response.status_code == 400:
         response['message'] = res['message']
@@ -237,7 +237,7 @@ def check_news_letter(email=None):
             https://localhost:5003/api/Reports/Specialreport?filename=award_stuck_in_approval&customertype=NPCI%20Employee """
 
 def download_report(filename,Month=None,year=None):
-    token = get_novus_transaction_token()
+    token = get_novus_token()
     access_token = token.get('access_token')
     headers = {"Authorization": "Bearer "+access_token}
     # print("filename+++++++++",filename)
