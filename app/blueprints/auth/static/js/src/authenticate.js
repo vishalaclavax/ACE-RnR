@@ -63,11 +63,16 @@ $(document).ready(function() {
         },
         submitHandler: function(){
             $.ajax({
-                url: app_base_url+'auth/login/',
+                url: '/auth/login/',
                 type: 'post',
-                dataType: 'json',
                 cache: false,
                 data: $('#emploginform').serialize(),
+                dataType: "json",
+                cors: true,
+                secure: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
                 beforeSend: function(){
                     $('.loaderbox').show();
                 },
