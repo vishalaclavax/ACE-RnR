@@ -160,8 +160,11 @@ def get_nomination_list(req):
         # return res.get('data') if res.status_code == 200 and res.get('data') else []
     except Exception as e:
         print(e,"exception-------------------")
-
-        return res.response.status_code, 0, []
+        try:
+            response_code = res.response.status_code
+        except:
+            response_code = 400
+        return response_code, 0, []
 
 def post_user_like(data):
     try:
