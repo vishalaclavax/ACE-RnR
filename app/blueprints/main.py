@@ -532,6 +532,7 @@ def post_an_update():
                 # pic = f
                 files = [('file', (filename, f, 'image/jpeg'))]
                 imageUrl = upload_activity_images(files)
+                print(imageUrl,"from upload activity image")
             f.close()
             os.remove(image_url)
         except Exception as exp:
@@ -564,7 +565,7 @@ def post_an_update():
         # return jsonify({'success': True, 'error': 1, 'msg': "Something went wrong!"})
         # user_like = post_user_like(request_data)
         updateNomination = update_nomination(request_data)
-        print(updateNomination, "updateNomination")
+        print(updateNomination, "updateNominationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
         if updateNomination:
             profileimage = auth_service.read_user_session().get('imageUrl')
             Emp_Name = auth_service.read_user_session().get('name')
