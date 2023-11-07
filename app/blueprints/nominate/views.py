@@ -261,6 +261,7 @@ def nomination_list():
 
     # if not is_logged_in():
     #     return redirect(url_for('main.index'))
+
     all_status_code,all_count,all_nomination = get_nomination_list({'status':'', 'page': 1, 'page_size': 20})
     pending_status_code,pending_count,pending_approval = get_nomination_list({'status':0, 'page': 1, 'page_size': 20})
     apr_status_code,apr_count,previously_approved = get_nomination_list({'status':1, 'page': 1, 'page_size': 20})
@@ -594,7 +595,13 @@ def get_pending_nomination():
     page_err = None
     email = read_user_session().get('email')
     print("pending",email)
-    status_code,total_count,pending_approval = get_nomination_list({'status':0, 'page': 1, 'page_size': 20})
+    try:
+        status_code,total_count,pending_approval = get_nomination_list({'status':0, 'page': 1, 'page_size': 20})
+    except Exception as exp:
+        print(exp)
+        status_code = 400
+        total_count = 0
+        pending_approval = 0
     print("status_code")
     print(status_code)
     print(pending_approval)

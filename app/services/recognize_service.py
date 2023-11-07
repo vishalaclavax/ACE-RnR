@@ -153,14 +153,15 @@ def get_nomination_list(req):
         else:
             res = g.novus_client.get('/Customer/GetNominationList?offSet=1&limit=10&ident=' + email + '&isSr_mgt=' + str(isSr_mgt)+'&status='+str(status))
 
-        #print(res,"res-----------------------------")
+        print(res,"res from nomination list-----------------------------")
         res_data = res.get('data') if res.response.status_code == 200 and res.get('data') else []
         total_count = res.get('totalCount') if res.response.status_code == 200 and res.get('totalCount') else 0
         return res.response.status_code, total_count, res_data
         # return res.get('data') if res.status_code == 200 and res.get('data') else []
     except Exception as e:
         print(e,"exception-------------------")
-        return []
+
+        return res.response.status_code, 0, []
 
 def post_user_like(data):
     try:
@@ -227,7 +228,7 @@ def upload_activity_images(data):
         url = current_app.config['NOVUS_API_URL']+"/Customer/ImageUpload"
         headers = {"Authorization": "Bearer "+access_token}
         response = requests.request("POST", url, headers=headers,files=data)
-        # print(response,response.status_code, response.text,"from upload_activity_images")
+        print(response,response.status_code, response.text,"from upload_activity_images")
         res = response.text
         return res
     except Exception as e:
