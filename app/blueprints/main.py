@@ -157,6 +157,17 @@ def dashboard():
         top_activities = get_activities(act_data)
         g.cache_redis.set(g.redis_caching_key + 'top_activities', json.dumps(top_activities),
                           current_app.config['ADMITAT_CACHE_TIME'])
+    new_activity = []    
+    if top_activities:    
+        for act in top_activities:        
+            if 'transactionData' in act and act['transactionData'] and 'reward_id' in act['transactionData']:
+                new_activity.append(act)
+    g.cache_redis.set(g.redis_caching_key + 'top_activities', json.dumps(new_activity),
+                          current_app.config['ADMITAT_CACHE_TIME'])
+        
+    # print(top_activities,"top_activities-----------------------")
+    # print('/n')
+    # print(new_activity,"new------------------")
 
     # top_activities = get_activities(act_data)
     # g.cache_redis.set(g.redis_caching_key + 'top_activities', json.dumps(top_activities),
@@ -169,7 +180,7 @@ def dashboard():
         top_giver=top_giver,
         birthdays=birthdays,
         anniversary=anniversary,
-        top_activities=top_activities,
+        top_activities=new_activity,
         leadership_board=leadership_board,
         annoucements=annoucements,
         award_values=award_values,
@@ -621,6 +632,7 @@ def load_more_activity():
     if request.method == 'POST':
         # session.pop('otp', None)
         fields_error = {}
+        new_activity=[]
         email = auth_service.read_user_session().get('email')
         page = request.form.get('page')
         page_size = request.form.get('page_size')
@@ -631,8 +643,15 @@ def load_more_activity():
         }
         s_no = ((int(page) - 1) * int(page_size))
         top_activities = get_activities(act_data)
+        # print(page,"page-------------------")
+        # print(top_activities,'activity----------------648')
+        if top_activities:    
+            for act in top_activities:        
+                if 'transactionData' in act and act['transactionData'] and 'reward_id' in act['transactionData']:
+                    print('653------------------')
+                    new_activity.append(act)
         headers = {'Content-Type': 'text/html'}
-        activity_html = render_template('main/activity_content.html', top_activities=top_activities, s_no=s_no)
+        activity_html = render_template('main/activity_content.html', top_activities=new_activity, s_no=s_no)
         return jsonify({'success': True, 'error': 0, 'activity_data': activity_html})
 
 
@@ -965,7 +984,7 @@ def connect_handler():
 @socketio.on('activity response')
 def handle_my_custom_event(data):
     client = current_app.config['NOVUS_TRANSACTION_CLIENT_ID']
-    res = {}
+    resp, new_activity = {}, []
     email = auth_service.read_user_session().get('email')
     token = get_novus_token()
     access_token = token.get('access_token')
@@ -1003,16 +1022,26 @@ def handle_my_custom_event(data):
         response = requests.request("GET", request_url, headers=headers)
         res = response.json()
         top_activities = res.get('data')
+        if top_activities:    
+            for act in top_activities:        
+                if 'transactionData' in act and act['transactionData'] and 'reward_id' in act['transactionData']:
+                    new_activity.append(act)
+        # print(new_activity,"------------------------------------------1025-------------")
         current_app.config['CACHE_REDIS'].set(current_app.config['REDIS_CACHING_KEY'] + 'top_activities',
-                                              json.dumps(top_activities),
+                                              json.dumps(new_activity),
                                               current_app.config['ADMITAT_CACHE_TIME'])
     except Exception as exp:
         print("response from socket: " + str(exp))
         top_activities = []
-    res['top_activities'] = top_activities
-    res['usr_name'] = auth_service.read_user_session().get('name')
-    res['usr_email'] = auth_service.read_user_session().get('email')
-    emit('activity response', res, broadcast=True)
+    resp = {
+        'top_activities': new_activity,
+        'usr_name': auth_service.read_user_session().get('name'),
+        'usr_email': auth_service.read_user_session().get('email')
+    }
+    # resp['top_activities'] = new_activity
+    # resp['usr_name'] = auth_service.read_user_session().get('name')
+    # resp['usr_email'] = auth_service.read_user_session().get('email')
+    emit('activity response', resp, broadcast=True)
 
 
 @csrf.exempt
