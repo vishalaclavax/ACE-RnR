@@ -17,7 +17,9 @@ from app.services.emailer_service import Emailer
 @bp.route('/', methods = ['POST', 'GET'])
 def index():
     category_code = None
-    giftcards = get_giftcards(category_code)
+    client = current_app.config.get('CLIENT_ID')
+    # print(client,"client=================================")
+    giftcards = get_giftcards(category_code,None,None,None,client)
     return render_template(
         'rewards.html',
         data="my data",

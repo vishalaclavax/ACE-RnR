@@ -1,9 +1,11 @@
 from flask import g, current_app
 
 
-def get_giftcards(category_code=None,title=None,is_featured=None):
+def get_giftcards(category_code=None,title=None, is_featured=None,limit=None,client=None):
     try:
-        res = g.api_client.get('/giftcards/', params={'category_code': category_code,'title':title,'is_featured':is_featured})
+        # print(client,"client-----------------------------")
+        res = g.api_client.get('/giftcards/', params={'category_code': category_code,'title':title, 'is_featured':is_featured,'end_limit':limit,'client':client})
+        # print(res,"res----------------------------")
         return res.get('data') if res.response.status_code == 200 and res.get('data') else []
     except Exception as e:
         print(e)
