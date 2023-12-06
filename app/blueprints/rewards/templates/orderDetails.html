@@ -1,7 +1,7 @@
 {% if 'payment_type' in order_detail['data'] and order_detail['data']['payment_type'] =='currency'  %}
     {% set total_delivery_charges = 0 %}
 {% else %}  
-    {% set total_delivery_charges = order_detail['data']['delivery_charge'] %}  
+    {% set total_delivery_charges = order_detail['data']['delivery_charge']|int %}  
 {% endif %} 
 <style>
     .modal-dialog.large {
@@ -316,8 +316,8 @@
                                 </div>
                                 <div class="summaryTable__tr total">
                                     <div class="summary">Total</div>
-                                    <div class="price">&#8377;{{ order_detail['data']['total_payment']+total_delivery_charges }}</div>
-                                    <div class="points">Pts {{ (order_detail['data']['total_payment']+total_delivery_charges) * 4}}</div>
+                                    <div class="price">&#8377;{{ order_detail['data']['total_payment']+total_delivery_charges|int }}</div>
+                                    <div class="points">Pts {{ (order_detail['data']['total_payment']+total_delivery_charges|int) * 4}}</div>
                                 </div>
                         {% endif %}
                             </div>

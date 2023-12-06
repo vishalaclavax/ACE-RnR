@@ -72,7 +72,7 @@ def save_transaction(payment_data=None):
 def get_order_detail(order_code=None):
     try:
         res = g.api_client.get('/order_rnr/'+order_code)
-        print("get_order_detail : ", res)
+        # print("get_order_detail : ", res)
         return res if res else []
     except Exception as e:
         print(e)

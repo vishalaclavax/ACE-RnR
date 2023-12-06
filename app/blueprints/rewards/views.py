@@ -201,9 +201,9 @@ def send_giftcard_deatils(cardData):
 @bp.route('/order_detail/<string:order_code>', methods=['GET'])
 @login_required
 def myorderdetail(order_code):
-    print("order_code from my order details", order_code)  
+    # print("order_code from my order details", order_code)  
     order_detail = get_order_detail(order_code)
-    print("order_detail from my order details", order_detail)
+    # print("order_detail from my order details", order_detail)
     order_user_code = ""
     response = {}
     if "data" in order_detail:
@@ -234,5 +234,5 @@ def myorderdetail(order_code):
     else:
         response['msg'] = 'Something went wrong, please try after some time.'
         response['success'] = False
-    print("Respose from my order details", response)    
+    # print("Respose from my order details", response)    
     return jsonify(response)
