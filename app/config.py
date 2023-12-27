@@ -120,7 +120,8 @@ JOLO_BASE_URL = 'https://joloapi.com/api/v1/'
 VM_BASE_URL = 'https://bbps.novusloyalty.com/api'
 
 # app base url
-APP_BASE_URL = 'https://ace.rnr.nthrewards.com/'
+APP_BASE_URL = 'https://acernr.nthrewards.com/'
+# APP_BASE_URL = 'https://ace.rnr.nthrewards.com/'
 
 # Razorpay payment api key and secret key
 RAZORPAY_ID = 'rzp_test_r1kZ0eQ229Q3hY'
