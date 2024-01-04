@@ -27,7 +27,7 @@ SESSION_COOKIE_SAMESITE='Lax'
 APP_TITLE = 'NPCI Awards, Celebrations & Expressions'
 APP_ADMIN_NAME = 'ACE R & R'
 APP_ADMIN_EMAIL = 'support@nthrewards.com'
-PER_PAGE = 1500
+PER_PAGE = 2500
 
 ## Blob Config for log storage
 ACCOUNT_NAME = "fulfilmentadminstorage"
@@ -46,7 +46,7 @@ TEAMS_WEBHOOK_URL = 'https://clavaxtech.webhook.office.com/webhookb2/90bedb4c-fc
 ##NPCI TEAMS URL
 # TEAMS_WEBHOOK_URL = "https://npciorg.webhook.office.com/webhookb2/9451119e-9236-4ef9-b934-73337c6fad99@8ca9216b-1bdf-4056-9775-f5e402a48d32/IncomingWebhook/05c5687f97d04a20a511881fa3db2205/3365d8b7-4761-4f21-8425-0bd08735803f"
 
-# new staging database 
+# new staging database
 # COSMOS_HOST_URI = 'https://novusloyaltyfulfilmentstaging-new.documents.azure.com:443/'
 # COSMOS_AUTH_MASTER_KEY = 'tcRQJyqWwklc7tMtESUp4d6HGWpPnaUTlNVmtO8BicfRjBeepTIeuBEnvxinQx5lSJnb3JFYkKmLt17UBBlOfg=='
 # COSMOS_DATABASE_ID = 'CatalogPlatform'
@@ -314,7 +314,7 @@ TEMPLATE_ID_FORGOT_PASSWORD= '5eec8c94d6fc0544c179b1ba'
 ## MSG91 SMS
 SENDER = "EQURWD"
 TEMPLATE_POINTS_REDEMPTION = "5f1039b6d6fc05316424ea51"
-TEMPLATE_ORDER_SMS = "5ef097fcd6fc052f5956624f"  
+TEMPLATE_ORDER_SMS = "5ef097fcd6fc052f5956624f"
 
 SEND_OTP_SMS_FULFILMENT = True
 
