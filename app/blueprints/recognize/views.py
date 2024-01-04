@@ -46,13 +46,14 @@ def index():
     # all_customers = get_all_customer(cust_req_data)
     # g.cache_redis.set(g.redis_caching_key + 'all_customers', json.dumps(all_customers),
     #                   current_app.config['ADMITAT_CACHE_TIME'])
-    if g.cache_redis.get(g.redis_caching_key + 'all_customers'):
-        all_customers = json.loads(g.cache_redis.get(g.redis_caching_key + 'all_customers').decode('utf-8'))
-
-    else:
-        all_customers = get_all_customer(cust_req_data)
-        g.cache_redis.set(g.redis_caching_key + 'all_customers', json.dumps(all_customers),
-                          current_app.config['ADMITAT_CACHE_TIME'])
+    # if g.cache_redis.get(g.redis_caching_key + 'all_customers'):
+    #     all_customers = json.loads(g.cache_redis.get(g.redis_caching_key + 'all_customers').decode('utf-8'))
+    #
+    # else:
+    all_customers = get_all_customer(cust_req_data)
+    g.cache_redis.set(g.redis_caching_key + 'all_customers', json.dumps(all_customers),
+                      current_app.config['ADMITAT_CACHE_TIME'])
+    print(all_customers,"allllllllllllllllllllllllllllllllllll")
     try:
         award_value_list = get_award_values()
         award_values = award_value_list['schema']['properties']['transactionDetail']['properties']['award_values']['enum']

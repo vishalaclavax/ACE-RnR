@@ -775,6 +775,7 @@ def load_more_employee():
         is_data = 0
         page = request.form.get('page')
         page_size = request.form.get('page_size')
+        print(page, page_size,"dataaaaaaaaaaaaaaaaaaa")
         cust_data = {
             "key8": {
                 "customer_type": "NPCI Employee",

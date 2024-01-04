@@ -5,9 +5,10 @@ $(document).ready(function(){
     });*/
     $(document).on("keyup","#employeeSearch",function() {
         var keyword = $(this).val().toLowerCase();
-        $( ".employee_name" ).each(function() {
+        $( ".employee_name, .employee_email" ).each(function() {
 
             string = $(this).text().toLowerCase();
+           // console.log(string,"string from search area");
             if(string.includes(keyword)){
                 $(this).closest('.employeeDetails').show();
                 $(this).closest('.employeeDetails').addClass('show');

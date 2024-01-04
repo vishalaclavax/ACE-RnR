@@ -10,6 +10,7 @@ $(document).ready(function(){
         $( ".employee_name, .employee_email" ).each(function() {
 
             string = $(this).text().toLowerCase();
+            //console.log(string,"string from search area");
             if(string.includes(keyword)){
                 $(this).closest('.employeeDetails').show();
                 $(this).closest('.employeeDetails').addClass('show');
