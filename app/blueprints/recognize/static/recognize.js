@@ -4,21 +4,17 @@ $(document).ready(function(){
         $('#selectareward').show();
     });*/
     $(document).on("keyup","#employeeSearch",function() {
-        var keyword = $(this).val().toLowerCase();
-        $( ".employee_name, .employee_email" ).each(function() {
-
-            string = $(this).text().toLowerCase();
-           // console.log(string,"string from search area");
-            if(string.includes(keyword)){
+        var keyword = $(this).val().toLowerCase().replace(/^\s+|\s+$/gm,'');
+        $('.employeeDetails').hide();
+        $('.employeeDetails').removeClass('show').addClass('hide');
+        $( ".employee_name").each(function() {
+           string = $(this).text().toLowerCase().replace(/^\s+|\s+$/gm,'');
+           string_email = $(this).siblings('.employee_email').text().toLowerCase().replace(/^\s+|\s+$/gm,'');
+            if(string.includes(keyword) || string_email.includes(keyword)){
                 $(this).closest('.employeeDetails').show();
                 $(this).closest('.employeeDetails').addClass('show');
                 $(this).closest('.employeeDetails').removeClass('hide');
             }
-            else {
-                $(this).closest('.employeeDetails').hide();
-                $(this).closest('.employeeDetails').removeClass('show');
-                $(this).closest('.employeeDetails').addClass('hide');
-            }    
         });
     });
     $(document).on("click",".rempselectbox",function() {
